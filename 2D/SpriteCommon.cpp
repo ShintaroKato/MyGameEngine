@@ -3,7 +3,6 @@
 #include <d3dx12.h>
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
-#include "WinApp.h"
 
 #pragma comment(lib, "d3dcompiler.lib")
 
@@ -18,22 +17,22 @@ UINT SpriteCommon::descriptorHandleIncrementSize;
 ID3D12GraphicsCommandList* SpriteCommon::cmdList = nullptr;
 ComPtr<ID3D12RootSignature> SpriteCommon::rootSignature;
 ComPtr<ID3D12PipelineState> SpriteCommon::pipelineState;
-//XMMATRIX Sprite::matProjection;
-//ComPtr<ID3D12DescriptorHeap> Sprite::descHeap;
-//ComPtr<ID3D12Resource> Sprite::texBuff[srvCount];
 
-void SpriteCommon::Initialize(ID3D12Device* dev)
+void SpriteCommon::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmdList, int window_width, int window_height)
 {
-	device = dev;
-
 	HRESULT result;
 
+	device = dev;
+	this->cmdList = cmdList;
+
 	// スプライト用パイプライン生成
-	CreateGraphicsPipeline(device);
+	CreateGraphicsPipeline();
 
 	// 並行投影の射影行列生成
 	matProjection = XMMatrixOrthographicOffCenterLH(
-		0.0f, (float)WinApp::window_width, (float)WinApp::window_height, 0.0f, 0.0f, 1.0f);
+		0.0f, (float)window_width,
+		(float)window_height, 0.0f,
+		0.0f, 1.0f);
 
 	// デスクリプタヒープを生成 
 	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
@@ -43,7 +42,16 @@ void SpriteCommon::Initialize(ID3D12Device* dev)
 	result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descHeap));
 }
 
-void SpriteCommon::CreateGraphicsPipeline(ID3D12Device* dev)
+void SpriteCommon::SetGraphicsRootDescriptorTable(UINT rootParamIndex, UINT texNumber)
+{
+	cmdList->SetGraphicsRootDescriptorTable(rootParamIndex,
+		CD3DX12_GPU_DESCRIPTOR_HANDLE(
+			descHeap->GetGPUDescriptorHandleForHeapStart(),
+			texNumber,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)));
+}
+
+void SpriteCommon::CreateGraphicsPipeline()
 {
 	HRESULT result;
 
@@ -171,7 +179,7 @@ void SpriteCommon::CreateGraphicsPipeline(ID3D12Device* dev)
 }
 
 // スプライト共通テクスチャ読み込み
-void SpriteCommon::SpriteCommonLoadTexture(UINT texnumber, const wchar_t* filename)
+void SpriteCommon::LoadTexture(UINT texnumber, const wchar_t* filename)
 {
 	// 異常な番号の指定を検出
 	assert(texnumber <= spriteSRVCount - 1);
@@ -228,4 +236,34 @@ void SpriteCommon::SpriteCommonLoadTexture(UINT texnumber, const wchar_t* filena
 		&srvDesc, //テクスチャ設定情報
 		CD3DX12_CPU_DESCRIPTOR_HANDLE(descHeap->GetCPUDescriptorHandleForHeapStart(), texnumber, device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV))
 	);
+}
+
+void SpriteCommon::PreDraw()
+{
+	// コマンドリストをセット
+	SpriteCommon::cmdList = cmdList;
+
+	// パイプラインステートの設定
+	cmdList->SetPipelineState(pipelineSet.pipelinestate.Get());
+	// ルートシグネチャの設定
+	cmdList->SetGraphicsRootSignature(pipelineSet.rootsignature.Get());
+	// プリミティブ形状を設定
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	// テクスチャ用デスクリプタヒープの設定
+	ID3D12DescriptorHeap* ppHeaps[] = { descHeap.Get() };
+	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+}
+
+void SpriteCommon::PostDraw()
+{
+	// コマンドリストを解除
+	SpriteCommon::cmdList = nullptr;
+}
+
+ID3D12Resource* SpriteCommon::GetTexBuff(UINT texNumber)
+{
+	assert(0 <= texNumber && texNumber < spriteSRVCount);
+
+	return texBuff[texNumber].Get();
 }

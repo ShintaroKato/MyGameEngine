@@ -20,6 +20,8 @@ public:
 	static const int spriteSRVCount = 512;
 	// 頂点数
 	static const int vertNum = 4;
+
+private:
 	// デバイス
 	static ID3D12Device* device;
 	// デスクリプタサイズ
@@ -34,22 +36,32 @@ public:
 	static ComPtr<ID3D12DescriptorHeap> descHeap;
 	// テクスチャバッファ
 	static ComPtr<ID3D12Resource> texBuff[spriteSRVCount];
-private:
 	// パイプラインセット
-	PipelineSet pipelineSet;
+	static PipelineSet pipelineSet;
 	// 射影行列
-	XMMATRIX matProjection{};
-	// テクスチャ用デスクリプタヒープの生成
-	ComPtr<ID3D12DescriptorHeap> descHeap;
-	// テクスチャリソース（テクスチャバッファ）の配列
-	ComPtr<ID3D12Resource> texBuff[spriteSRVCount];
+	static XMMATRIX matProjection;
 
 public:
-	void Initialize(ID3D12Device* dev);
-
-	// スプライト用パイプライン生成
-	void CreateGraphicsPipeline(ID3D12Device* dev);
+	void Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmdList, int window_width, int window_height);
 
 	// スプライト共通テクスチャ読み込み
-	void SpriteCommonLoadTexture(UINT texnumber, const wchar_t* filename);
+	void LoadTexture(UINT texnumber, const wchar_t* filename);
+
+	void PreDraw();
+
+	void PostDraw();
+
+	ID3D12Resource* GetTexBuff(UINT texNumber);
+
+	ID3D12Device* GetDevice() { return device; }
+
+	const XMMATRIX GetMatProjection() { return matProjection; }
+
+	ID3D12GraphicsCommandList* GetCommandList() { return cmdList; }
+
+	void SetGraphicsRootDescriptorTable(UINT rootParamIndex, UINT texNumber);
+
+private:
+	// スプライト用パイプライン生成
+	void CreateGraphicsPipeline();
 };
