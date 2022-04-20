@@ -28,10 +28,6 @@ private:
 	static UINT descriptorHandleIncrementSize;
 	// コマンドリスト
 	static ID3D12GraphicsCommandList* cmdList;
-	// ルートシグネチャ
-	static ComPtr<ID3D12RootSignature> rootSignature;
-	// パイプラインステートオブジェクト
-	static ComPtr<ID3D12PipelineState> pipelineState;
 	// デスクリプタヒープ
 	static ComPtr<ID3D12DescriptorHeap> descHeap;
 	// テクスチャバッファ
@@ -47,7 +43,7 @@ public:
 	// スプライト共通テクスチャ読み込み
 	void LoadTexture(UINT texnumber, const wchar_t* filename);
 
-	void PreDraw();
+	void PreDraw(ID3D12GraphicsCommandList* cmdList);
 
 	void PostDraw();
 

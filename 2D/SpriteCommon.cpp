@@ -12,11 +12,13 @@ using namespace Microsoft::WRL;
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-ID3D12Device* SpriteCommon::device = nullptr;
+ID3D12Device* SpriteCommon::device;
 UINT SpriteCommon::descriptorHandleIncrementSize;
-ID3D12GraphicsCommandList* SpriteCommon::cmdList = nullptr;
-ComPtr<ID3D12RootSignature> SpriteCommon::rootSignature;
-ComPtr<ID3D12PipelineState> SpriteCommon::pipelineState;
+ID3D12GraphicsCommandList* SpriteCommon::cmdList;
+ComPtr<ID3D12DescriptorHeap> SpriteCommon::descHeap;
+ComPtr<ID3D12Resource> SpriteCommon::texBuff[spriteSRVCount];
+PipelineSet SpriteCommon::pipelineSet;
+XMMATRIX SpriteCommon::matProjection;
 
 void SpriteCommon::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmdList, int window_width, int window_height)
 {
@@ -238,10 +240,9 @@ void SpriteCommon::LoadTexture(UINT texnumber, const wchar_t* filename)
 	);
 }
 
-void SpriteCommon::PreDraw()
+void SpriteCommon::PreDraw(ID3D12GraphicsCommandList* cmdList)
 {
-	// コマンドリストをセット
-	SpriteCommon::cmdList = cmdList;
+	this->cmdList = cmdList;
 
 	// パイプラインステートの設定
 	cmdList->SetPipelineState(pipelineSet.pipelinestate.Get());

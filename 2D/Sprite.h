@@ -37,16 +37,19 @@ public: // サブクラス
 
 public:
 	// コンストラクタ
-	Sprite(UINT texNumber, XMFLOAT2 position, XMFLOAT2 size, XMFLOAT4 color, XMFLOAT2 anchorpoint, bool isFlipX, bool isFlipY);
+	Sprite();
 
-	void Initialize(SpriteCommon* spriteCommon, UINT texNumber, XMFLOAT2 position,
+	static Sprite* Create(SpriteCommon* spriteCommon, UINT texNumber, XMFLOAT2 position,
 		XMFLOAT2 anchorpoint = { 0.5f,0.5f }, bool isFlipX = false, bool isFlipY = false);
 
+	void Initialize(SpriteCommon* spriteCommon, UINT texNumber, XMFLOAT2 position,
+		XMFLOAT2 anchorpoint, bool isFlipX, bool isFlipY);
+
 	// スプライト単体更新
-	static void Update();
+	void Update();
 
 	// スプライト単体描画
-	static void Draw();
+	void Draw();
 
 	/// <summary>
 	/// 角度の設定
@@ -58,19 +61,19 @@ public:
 	/// 座標の設定
 	/// </summary>
 	/// <param name="position">座標</param>
-	void SetPosition(XMFLOAT2& position) { this->position = position; }
+	void SetPosition(const XMFLOAT2& position) { this->position = position; }
 
 	/// <summary>
 	/// サイズの設定
 	/// </summary>
 	/// <param name="size">サイズ</param>
-	void SetSize(XMFLOAT2& size) { this->size = size; }
+	void SetSize(const XMFLOAT2& size) { this->size = size; }
 
 	/// <summary>
 	/// アンカーポイントの設定
 	/// </summary>
 	/// <param name="anchorpoint">アンカーポイント</param>
-	void SetAnchorPoint(XMFLOAT2& anchorpoint) { this->anchorpoint = anchorpoint; }
+	void SetAnchorPoint(const XMFLOAT2& anchorpoint) { this->anchorpoint = anchorpoint; }
 
 	/// <summary>
 	/// 左右反転の設定

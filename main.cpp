@@ -283,25 +283,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	}
 #endif
 
-	DirectXCommon* dxCommon = nullptr;
+	HRESULT result;
 
+	DirectXCommon* dxCommon = nullptr;
 	dxCommon = new DirectXCommon();
 	dxCommon->Initialize(winApp);
 
-	HRESULT result;
-	
-
-	// スプライト
-	SpriteCommon* spriteCommon = nullptr;
-
-	spriteCommon = new SpriteCommon();
-	spriteCommon->Initialize(dxCommon->GetDev(), dxCommon->GetCmdList(), winApp->window_width, winApp->window_width);
-	const int SPRITES_NUM = 1;
-	Sprite* sprites[SPRITES_NUM]{};
-
 	//ポインター置き場
 	Input* input = nullptr;
-
 	input = new Input();
 	input->Initialize(winApp);
 
@@ -329,39 +318,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #pragma region 描画初期化処理
 
 	// スプライト共通データ生成
-	spriteCommon->Initialize(dxCommon->GetDev(), dxCommon->GetCmdList(), winApp->window_width, winApp->window_height);
+	SpriteCommon* spriteCommon = nullptr;
+	spriteCommon->Initialize(dxCommon->GetDev(), dxCommon->GetCmdList(), winApp->window_width, winApp->window_width);
+
 	// スプライト共通テクスチャ読み込み
 	spriteCommon->LoadTexture(0, L"Resources/texture.png");
 	spriteCommon->LoadTexture(1, L"Resources/house.png");
 
-	// スプライトの生成
-	for (int i = 0; i < _countof(sprites); i++)
+	// スプライト
+	std::vector<Sprite*> sprites;
+	Sprite* sprite = Sprite::Create(spriteCommon, 0, { 0,0 });
+	sprites.push_back(sprite);
+
+	for (int i = 0; i < 5; i++)
 	{
-		int texNumber = rand() % 2;
-		sprites[i]->Initialize(spriteCommon, texNumber, { 0,0 });
-
-		// スプライトの座標変更
-		sprites[i]->SetPosition({ 1280 / 2 ,720 / 2 });
-		//sprites[i].isInvisible = true;
-		//sprites[i].position.x = (float)(rand() % 1280);
-		//sprites[i].position.y = (float)(rand() % 720);
-
-		//sprites[i].rotation = (float)(rand() % 360);
-		//sprites[i].rotation = 0;
-
-		//sprites[i].size.x = 400.0f;
-		//sprites[i].size.y = 100.0f;
+		int texNum = rand() % 2;
+		sprite = Sprite::Create(spriteCommon, 0, { 0,0 });
+		sprite->Update();
 	}
-
-	//// デバッグテキスト
-	//DebugText debugText;
-
-	//// デバッグテキスト用のテクスチャ番号を指定
-	//const int debugTextTexNumber = 2;
-	//// デバッグテキスト用のテクスチャ読み込み
-	//LoadTexture(spriteCommon, debugTextTexNumber, L"Resources/debugfont.png", dxCommon->GetDev());
-	//// デバッグテキスト初期化
-	//debugText.Initialize(dxCommon->GetDev(), winApp->window_width, winApp->window_height, debugTextTexNumber, spriteCommon);
 
 	// 3Dオブジェクト静的初期化
 	Object3d::StaticInitialize(dxCommon->GetDev(), WinApp::window_width, WinApp::window_height);
@@ -390,37 +364,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		input->Update();
 		object3d->Update();
-
-		//if (input->TriggerKey(DIK_0)) // 数字の0キーが押されていたら
-		//{
-		//    OutputDebugStringA("Hit 0\n");  // 出力ウィンドウに「Hit 0」と表示
-		//}        
-
-		//float clearColor[] = { 0.1f,0.25f, 0.5f,0.0f }; // 青っぽい色
-
-		//if (input->TriggerKey(DIK_SPACE))     // スペースキーが押されていたら
-		//{
-		//    // 画面クリアカラーの数値を書き換える
-		//    clearColor[1] = 1.0f;
-		//}
-
-		//// 座標操作
-		//if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
-		//{
-		//    if (input->PushKey(DIK_UP)) { object3ds[0].position.y += 1.0f; }
-		//    else if (input->PushKey(DIK_DOWN)) { object3ds[0].position.y -= 1.0f; }
-		//    if (input->PushKey(DIK_RIGHT)) { object3ds[0].position.x += 1.0f; }
-		//    else if (input->PushKey(DIK_LEFT)) { object3ds[0].position.x -= 1.0f; }
-		//}
-
-		//// X座標,Y座標を指定して表示
-		//debugText.Print(spriteCommon, "Hello,DirectX!!", 200, 100);
-		//// X座標,Y座標,縮尺を指定して表示
-		//debugText.Print(spriteCommon, "Nihon Kogakuin", 200, 200, 2.0f);
-
-		//sprite.rotation = 45;
-		//sprite.position = {1280/2, 720/2, 0};
-		//sprite.color = {0, 0, 1, 1};
 		
 		// DirectX毎フレーム処理　ここまで
 #pragma endregion DirectX毎フレーム処理
@@ -439,20 +382,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		// ４．描画コマンドここから
 
 		// スプライト共通コマンド
-		Sprite::Draw();
+		spriteCommon->PreDraw(dxCommon->GetCmdList());
 		// スプライト描画
-		for (int i = 0; i < _countof(sprites); i++)
-		{
-			sprites[i]->Draw();
-		}
+		sprites[0]->Draw();
 		// デバッグテキスト描画
 		//debugText.DrawAll(dxCommon->GetCmdList(), spriteCommon, dxCommon->GetDev());
 
+		spriteCommon->PostDraw();
 		// ４．描画コマンドここまで
 
 		dxCommon->PostDraw();
-
-
 #pragma endregion グラフィックスコマンド
 
 	}

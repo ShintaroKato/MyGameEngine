@@ -3,17 +3,9 @@
 
 using namespace DirectX;
 
-Sprite::Sprite(UINT texNumber, XMFLOAT2 position, XMFLOAT2 size, XMFLOAT4 color, XMFLOAT2 anchorpoint, bool isFlipX, bool isFlipY)
+Sprite::Sprite()
 {
-	//this->position = position;
-	//this->size = size;
-	//this->anchorpoint = anchorpoint;
-	//this->matWorld = XMMatrixIdentity();
-	//this->color = color;
-	//this->texNumber = texNumber;
-	//this->isFlipX = isFlipX;
-	//this->isFlipY = isFlipY;
-	//this->texSize = size;
+
 }
 
 // スプライト生成
@@ -76,6 +68,15 @@ void Sprite::Initialize(SpriteCommon* spriteCommon, UINT texNumber, XMFLOAT2 pos
 	constBuff->Unmap(0, nullptr);
 }
 
+Sprite* Sprite::Create(SpriteCommon* spriteCommon, UINT texNumber, XMFLOAT2 position, XMFLOAT2 anchorpoint, bool isFlipX, bool isFlipY)
+{
+	Sprite* instance = new Sprite();
+
+	instance->Initialize(spriteCommon, texNumber, position, anchorpoint, isFlipX, isFlipY);
+
+	return instance;
+}
+
 void Sprite::Update()
 {
 	// ワールド行列の更新
@@ -85,7 +86,9 @@ void Sprite::Update()
 	// 平行移動
 	matWorld *= XMMatrixTranslation(position.x, position.y, 0.0f);
 
-	// 定数バッファの転送
+	TransferVertexBuffer();
+
+	// 定数バッファへの転送
 	ConstBufferData* constMap = nullptr;
 	HRESULT result = constBuff->Map(0, nullptr, (void**)&constMap);
 	constMap->mat = matWorld * this->spriteCommon->GetMatProjection();
