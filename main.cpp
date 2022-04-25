@@ -12,13 +12,13 @@
 #include <d3dcompiler.h>
 #pragma comment(lib, "d3dcompiler.lib")
 
-
-
 #include <DirectXTex.h>
 #include <wrl.h>
 
 #include <xaudio2.h>
 #pragma comment(lib,"xaudio2.lib")
+
+//#include "fbxsdk.h"
 
 #include "WinApp.h"
 #include "Input.h"
@@ -316,6 +316,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #pragma endregion DirectX初期化処理
 
 #pragma region 描画初期化処理
+
+	//FbxManager* fbxManager = FbxManager::Create();
 
 	// スプライト共通データ生成
 	SpriteCommon* spriteCommon = nullptr;

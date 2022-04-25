@@ -78,13 +78,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)lib\DirectXTex\lib\Release;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)lib\DirectXTex\lib\Release;$(ProjectDir)lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(ProjectDir)lib\DirectXTex\lib\Release;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)lib\DirectXTex\lib\Release;$(ProjectDir)lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -125,6 +125,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libfbxsdk-md.lib;libxml2-md.lib;zlib-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -143,13 +144,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libfbxsdk-mt.lib;libxml2-mt.lib;zlib-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\GE3\DirectXGame\3d\Object3d.cpp" />
     <ClCompile Include="2D\Sprite.cpp" />
     <ClCompile Include="2D\SpriteCommon.cpp" />
     <ClCompile Include="3D\Model.cpp" />
+    <ClCompile Include="3D\Object3d.cpp" />
     <ClCompile Include="Base\DirectXCommon.cpp" />
     <ClCompile Include="Base\WinApp.cpp" />
     <ClCompile Include="Input\Input.cpp" />
