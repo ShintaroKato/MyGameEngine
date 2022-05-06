@@ -324,7 +324,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	spriteCommon->Initialize(dxCommon->GetDev(), dxCommon->GetCmdList(), winApp->window_width, winApp->window_width);
 
 	// スプライト共通テクスチャ読み込み
-	spriteCommon->LoadTexture(0, L"Resources/texture.png");
+	spriteCommon->LoadTexture(0, L"Resources/background.png");
 	spriteCommon->LoadTexture(1, L"Resources/house.png");
 
 	// スプライト
