@@ -5,7 +5,7 @@ GameScene::GameScene()
 {
 }
 
-void GameScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input)
+void GameScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
 {
 	// nullptrチェック
 	assert(dxCommon);

@@ -5,6 +5,7 @@
 #include "Sprite.h"
 #include "Text.h"
 #include "Object3d.h"
+#include "Audio.h"
 #include "TitleScene.h"
 #include "GameScene.h"
 
@@ -28,7 +29,7 @@ public:
 	/// <summary>
 	/// èâä˙âª
 	/// </summary>
-	void Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input);
+	void Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input, Audio* audio);
 
 	/// <summary>
 	/// çXêV
@@ -58,4 +59,5 @@ private:
 	DirectXCommon* dxCommon_ = nullptr;
 	SpriteCommon* spriteCommon_ = nullptr;
 	Input* input_ = nullptr;
+	Audio* audio_ = nullptr;
 };

@@ -5,7 +5,7 @@ TitleScene::TitleScene()
 {
 }
 
-void TitleScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input)
+void TitleScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
 {
 	// nullptrチェック
 	assert(dxCommon);

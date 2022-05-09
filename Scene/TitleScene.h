@@ -5,6 +5,7 @@
 #include "Sprite.h"
 #include "Text.h"
 #include "Object3d.h"
+#include "Audio.h"
 
 /// <summary>
 /// ゲームシーン
@@ -34,7 +35,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input);
+	void Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio);
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -50,29 +51,15 @@ private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
 	SpriteCommon* spriteCommon = nullptr;
 	Input* input = nullptr;
-	//Audio* audio = nullptr;
+	Audio* audio = nullptr;
 	Text* text;
 
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-	//DebugCamera* camera = nullptr;
-	//ParticleManager* particleMan = nullptr;
 	Sprite* spriteBG = nullptr;
 
 	Model* modelSphere = nullptr;
 
 	Object3d* objSphere = nullptr;
-
-	//LightGroup* lightGroup = nullptr;
-	//float ambientColor0[3] = { 1,1,1 };
-	//// 光線方向初期値
-	//float lightDir0[3] = { 0,0,1 };
-	//float lightColor0[3] = { 1,0,0 };
-
-	//float lightDir1[3] = { 0,1,0 };
-	//float lightColor1[3] = { 0,1,0 };
-
-	//float lightDir2[3] = { 1,0,0 };
-	//float lightColor2[3] = { 0,0,1 };
 };

@@ -155,6 +155,7 @@
     <ClCompile Include="3D\Mesh.cpp" />
     <ClCompile Include="3D\Model.cpp" />
     <ClCompile Include="3D\Object3d.cpp" />
+    <ClCompile Include="Audio\Audio.cpp" />
     <ClCompile Include="Base\DirectXCommon.cpp" />
     <ClCompile Include="Base\WinApp.cpp" />
     <ClCompile Include="Input\Input.cpp" />
@@ -219,6 +220,7 @@
     <ClInclude Include="3D\Mesh.h" />
     <ClInclude Include="3D\Model.h" />
     <ClInclude Include="3D\Object3d.h" />
+    <ClInclude Include="Audio\Audio.h" />
     <ClInclude Include="Base\DirectXCommon.h" />
     <ClInclude Include="Base\PipelineSet.h" />
     <ClInclude Include="Base\WinApp.h" />

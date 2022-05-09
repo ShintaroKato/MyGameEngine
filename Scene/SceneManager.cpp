@@ -3,7 +3,7 @@
 int SceneManager::scene = TITLE;
 SceneNum SceneManager::currentScene = TITLE;
 
-void SceneManager::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input)
+void SceneManager::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input, Audio* audio)
 {
 	// nullptrチェック
 	assert(dxCommon);
@@ -13,12 +13,13 @@ void SceneManager::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommo
 	this->dxCommon_ = dxCommon;
 	this->spriteCommon_ = spriteCommon;
 	this->input_ = input;
+	this->audio_ = audio;
 
 	titleScene = new TitleScene();
-	titleScene->Initialize(dxCommon_, spriteCommon_, input_);
+	titleScene->Initialize(dxCommon_, spriteCommon_, input_, audio_);
 
 	gameScene = new GameScene();
-	gameScene->Initialize(dxCommon_, spriteCommon_, input_);
+	gameScene->Initialize(dxCommon_, spriteCommon_, input_, audio_);
 }
 
 void SceneManager::Update()

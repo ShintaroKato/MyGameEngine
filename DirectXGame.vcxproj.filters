@@ -46,6 +46,12 @@
     <Filter Include="ヘッダー ファイル\Scene">
       <UniqueIdentifier>{8f3a4131-0845-4dcb-a6c9-cfc0b13c803d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Audio">
+      <UniqueIdentifier>{dd9039c8-a23b-4908-ba7d-2b0a7803aaf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Audio">
+      <UniqueIdentifier>{fb582314-2e4c-4c0d-b694-a6bbdc44060f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -89,6 +95,9 @@
     </ClCompile>
     <ClCompile Include="Scene\TitleScene.cpp">
       <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio\Audio.cpp">
+      <Filter>ソース ファイル\Audio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +173,9 @@
     </ClInclude>
     <ClInclude Include="Scene\TitleScene.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio\Audio.h">
+      <Filter>ヘッダー ファイル\Audio</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
