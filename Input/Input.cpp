@@ -1,6 +1,15 @@
+#include "d3dx12.h"
+#include "Input.h"
+
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
-#include "Input.h"
+
+Input* Input::GetInstance()
+{
+	static Input instance;
+
+	return &instance;
+}
 
 void Input::Initialize(WinApp* winApp)
 {
@@ -32,6 +41,7 @@ void Input::Update()
 
 bool Input::PushKey(BYTE keyNumber)
 {
+
 	//w’èƒL[‚ğ‰Ÿ‚µ‚Ä‚¢‚ê‚Îtrue
 	if (key[keyNumber])
 	{
@@ -42,6 +52,7 @@ bool Input::PushKey(BYTE keyNumber)
 
 bool Input::TriggerKey(BYTE keyNumber)
 {
+
 	if (!keyPre[keyNumber] && key[keyNumber])
 	{
 		return true;

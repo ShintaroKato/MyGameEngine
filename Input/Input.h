@@ -21,6 +21,7 @@ private:
 	WinApp* winApp = nullptr;
 
 public:
+	static Input* Input::GetInstance();
 	void Initialize(WinApp* winApp);
 	void Update();
 	bool PushKey(BYTE keyNumber);

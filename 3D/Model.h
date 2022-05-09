@@ -33,7 +33,7 @@ public: //サブクラス
 		XMFLOAT2 uv;  // uv座標
 	};
 
-public: //静的メンバ変数
+protected: //静的メンバ変数
 	//デバイス
 	static ID3D12Device* device;
 	// デスクリプタサイズ
@@ -45,7 +45,7 @@ public: //静的メンバ関数
 	static void StaticInitialize(ID3D12Device* device);
 
 	//.objから3Dモデル読み込み
-	static Model* LoadFromOBJ(const std::string modelName, bool smoothing = false);
+	static Model* LoadObj(const std::string modelName, bool smoothing = false);
 
 	/// <summary>
 	/// デスクリプタヒープの初期化

@@ -25,7 +25,7 @@ void Model::StaticInitialize(ID3D12Device* device)
 	Mesh::StaticInitialize(device);
 }
 
-Model* Model::LoadFromOBJ(const string modelName, bool smoothing)
+Model* Model::LoadObj(const string modelName, bool smoothing)
 {
 	//新たなModel型のインスタンスのメモリを確保
 	Model* model = new Model();
