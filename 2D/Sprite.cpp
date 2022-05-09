@@ -118,6 +118,15 @@ void Sprite::Draw()
 	cmdList->DrawInstanced(4, 1, 0, 0);
 }
 
+void Sprite::SetTextureRect(XMFLOAT2 texLeftTop, XMFLOAT2 texSize)
+{
+	this->texLeftTop = texLeftTop;
+	this->texSize = texSize;
+
+	// 頂点バッファへデータ転送
+	TransferVertexBuffer();
+}
+
 // スプライト単体頂点バッファの転送
 void Sprite::TransferVertexBuffer()
 {

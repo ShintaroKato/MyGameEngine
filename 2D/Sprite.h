@@ -87,6 +87,13 @@ public:
 	/// <param name="isFlipX">上下反転</param>
 	void SetIsFlipY(bool isFlipY) { this->isFlipY = isFlipY; }
 
+	/// <summary>
+	/// テクスチャ範囲設定
+	/// </summary>
+	/// <param name="texBase">テクスチャ左上座標</param>
+	/// <param name="texSize">テクスチャサイズ</param>
+	void SetTextureRect(XMFLOAT2 texLeftTop, XMFLOAT2 texSize);
+
 private: // メンバ関数
 	/// <summary>
 	/// 頂点データ転送
