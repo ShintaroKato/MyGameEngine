@@ -18,7 +18,6 @@
 #include <xaudio2.h>
 #pragma comment(lib,"xaudio2.lib")
 
-//#include "fbxsdk.h"
 
 #include "WinApp.h"
 #include "Input.h"
@@ -28,6 +27,7 @@
 #include "Sprite.h"
 #include "SceneManager.h"
 #include "Audio.h"
+#include "FBXLoader.h"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -83,6 +83,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// 3Dオブジェクト静的初期化
 	Object3d::StaticInitialize(dxCommon->GetDev(), WinApp::window_width, WinApp::window_height);
 
+	// FBX初期化
+	FBXLoader::GetInstance()->Initialize(dxCommon->GetDev());
+
 	// シーン初期化
 	SceneManager* sceneManager = nullptr;
 	sceneManager = new SceneManager();
@@ -103,12 +106,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		sceneManager->Draw();
 	}
 
+	FBXLoader::GetInstance()->Finalize();
 	delete sceneManager;
-
-	//// XAudio2解放
-	//xAudio2.Reset();
-	//// 音声データ解放
-	//SoundUnload(&soundData1);
 
 #pragma region WindowsAPI後始末
 	winApp->Finalize();

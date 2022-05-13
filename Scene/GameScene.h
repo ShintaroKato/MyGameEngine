@@ -6,6 +6,7 @@
 #include "Text.h"
 #include "Object3d.h"
 #include "Audio.h"
+#include "FbxLoader.h"
 
 /// <summary>
 /// ゲームシーン
@@ -59,13 +60,9 @@ private: // メンバ変数
 	/// </summary>
 	Sprite* spriteBG = nullptr;
 
-	Model* modelSkydome = nullptr;
-	Model* modelGround = nullptr;
-	Model* modelFighter = nullptr;
-	Model* modelSphere = nullptr;
+	//Model* modelSphere = nullptr;
 
-	Object3d* objSkydome = nullptr;
-	Object3d* objGround = nullptr;
-	Object3d* objFighter = nullptr;
-	Object3d* objSphere = nullptr;
+	//Object3d* objSphere = nullptr;
+
+	FBXLoader* fbxCube = nullptr;
 };
