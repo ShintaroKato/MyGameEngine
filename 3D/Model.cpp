@@ -25,7 +25,7 @@ void Model::StaticInitialize(ID3D12Device* device)
 	Mesh::StaticInitialize(device);
 }
 
-Model* Model::LoadObj(const string modelName, bool smoothing)
+Model* Model::LoadObj(const string& modelName, bool smoothing)
 {
 	//新たなModel型のインスタンスのメモリを確保
 	Model* model = new Model();
@@ -92,7 +92,7 @@ void Model::InitializeDescriptorHeap()
 
 }
 
-void Model::LoadFromOBJInternal(const string modelName, bool smoothing)
+void Model::LoadFromOBJInternal(const string& modelName, bool smoothing)
 {
 	const string fileName = modelName + ".obj";
 	const string directoryPath = baseDirectory + modelName + "/";

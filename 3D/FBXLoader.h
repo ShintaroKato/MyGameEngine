@@ -6,6 +6,7 @@
 #include <d3dx12.h>
 
 #include <string>
+#include "FBXModel.h"
 
 class FBXLoader
 {
@@ -40,6 +41,35 @@ public:
 	/// <param name="modelName">モデル名</param>
 	void LoadModelFromFile(const string& modelName);
 
+	/// <summary>
+	/// 再帰的にノード構造を解析
+	/// </summary>
+	void ParseNode(FBXModel* model, FbxNode* fbxNode, Node* parent = nullptr);
+
+	/// <summary>
+	/// メッシュ読み取り
+	/// </summary>
+	void ParseMesh(FBXModel* fbxModel, FbxNode* fbxNode);
+
+	/// <summary>
+	/// 頂点座標読み取り
+	/// </summary>
+	void ParseVertex(FBXModel* fbxModel, FbxMesh* fbxMesh);
+
+	/// <summary>
+	/// 面情報読み取り
+	/// </summary>
+	void ParseMeshFace(FBXModel* fbxModel, FbxMesh* fbxMesh);
+
+	/// <summary>
+	/// マテリアル読み取り
+	/// </summary>
+	void ParseMaterial(FBXModel* fbxModel, FbxMesh* fbxMesh);
+
+	/// <summary>
+	/// テクスチャ読み込み
+	/// </summary>
+	void LoadTexture(FBXModel* fbxModel, const std::string& fullpath);
 
 private:
 	// privateなコンストラクタ（シングルトンパターン）

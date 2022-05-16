@@ -102,6 +102,9 @@
     <ClCompile Include="3D\FBXLoader.cpp">
       <Filter>ソース ファイル\3D</Filter>
     </ClCompile>
+    <ClCompile Include="3D\FBXModel.cpp">
+      <Filter>ソース ファイル\3D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\SpriteVS.hlsl">
@@ -181,6 +184,9 @@
       <Filter>ヘッダー ファイル\Audio</Filter>
     </ClInclude>
     <ClInclude Include="3D\FBXLoader.h">
+      <Filter>ヘッダー ファイル\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\FBXModel.h">
       <Filter>ヘッダー ファイル\3D</Filter>
     </ClInclude>
   </ItemGroup>

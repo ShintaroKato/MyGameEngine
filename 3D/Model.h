@@ -45,7 +45,7 @@ public: //静的メンバ関数
 	static void StaticInitialize(ID3D12Device* device);
 
 	//.objから3Dモデル読み込み
-	static Model* LoadObj(const std::string modelName, bool smoothing = false);
+	static Model* LoadObj(const std::string& modelName, bool smoothing = false);
 
 	/// <summary>
 	/// デスクリプタヒープの初期化
@@ -76,7 +76,7 @@ private: //非公開のメンバ変数
 private: //非公開のメンバ変数
 
 	//.objから3Dモデル読み込み（非公開）
-	void LoadFromOBJInternal(const std::string modelName, bool smoothing);
+	void LoadFromOBJInternal(const std::string& modelName, bool smoothing);
 
 	/// <summary>
 	/// テクスチャ読み込み
