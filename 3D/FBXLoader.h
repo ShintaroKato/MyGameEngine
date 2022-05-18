@@ -59,12 +59,12 @@ public:
 	/// <summary>
 	/// 面情報読み取り
 	/// </summary>
-	void ParseMeshFace(FBXModel* fbxModel, FbxMesh* fbxMesh);
+	void ParseFace(FBXModel* fbxModel, FbxMesh* fbxMesh);
 
 	/// <summary>
 	/// マテリアル読み取り
 	/// </summary>
-	void ParseMaterial(FBXModel* fbxModel, FbxMesh* fbxMesh);
+	void ParseMaterial(FBXModel* fbxModel, FbxNode* fbxNode);
 
 	/// <summary>
 	/// テクスチャ読み込み

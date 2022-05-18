@@ -22,6 +22,18 @@ class FBXModel
 public:
 	friend class FBXLoader;
 
+public:
+	struct VertexPosNormalUv
+	{
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT3 normal;
+		DirectX::XMFLOAT2 uv;
+	};
+
+	Node* meshNode = nullptr;
+	std::vector<VertexPosNormalUv> vertices;
+	std::vector<unsigned short> indices;
+
 private:
 	// ƒ‚ƒfƒ‹–¼
 	std::string name;

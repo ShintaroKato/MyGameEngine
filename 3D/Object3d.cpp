@@ -34,8 +34,6 @@ bool Object3d::StaticInitialize(ID3D12Device* device, int window_width, int wind
 	// nullptrチェック
 	assert(device);
 
-	Object3d::device = device;
-
 	Model::StaticInitialize(device);
 
 	// カメラ初期化
@@ -57,13 +55,13 @@ bool Object3d::StaticInitialize(ID3D12Device* device, int window_width, int wind
 	return true;
 }
 
-void Object3d::PreDraw(ID3D12GraphicsCommandList* cmdList)
+void Object3d::PreDraw(ID3D12GraphicsCommandList* cmdlist)
 {
 	// PreDrawとPostDrawがペアで呼ばれていなければエラー
 	assert(Object3d::cmdList == nullptr);
 
 	// コマンドリストをセット
-	Object3d::cmdList = cmdList;
+	Object3d::cmdList = cmdlist;
 
 	// パイプラインステートの設定
 	cmdList->SetPipelineState(pipelinestate.Get());

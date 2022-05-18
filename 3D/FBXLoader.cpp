@@ -92,13 +92,23 @@ void FBXLoader::ParseNode(FBXModel* fbxModel, FbxNode* fbxNode, Node* parent)
 	node_.transform *= matRotation;
 	node_.transform *= matTranslation;
 
-
 	node_.globalTransform = node_.transform;
 
 	if (parent)
 	{
 		node_.parent = parent;
 		node_.globalTransform *= parent->globalTransform;
+	}
+
+	FbxNodeAttribute* fbxNodeAttr = fbxNode->GetNodeAttribute();
+
+	if (fbxNodeAttr)
+	{
+		if (fbxNodeAttr->GetAttributeType() == FbxNodeAttribute::eMesh)
+		{
+			fbxModel->meshNode = &node_;
+			ParseMesh(fbxModel, fbxNode);
+		}
 	}
 
 	for (int i = 0; i < fbxNode->GetChildCount(); i++)
@@ -109,17 +119,24 @@ void FBXLoader::ParseNode(FBXModel* fbxModel, FbxNode* fbxNode, Node* parent)
 
 void FBXLoader::ParseMesh(FBXModel* fbxModel, FbxNode* fbxNode)
 {
+	FbxMesh* fbxMesh = fbxNode->GetMesh();
+
+	ParseVertex(fbxModel, fbxMesh);
+	ParseFace(fbxModel, fbxMesh);
+	ParseMaterial(fbxModel, fbxNode);
+
 }
 
 void FBXLoader::ParseVertex(FBXModel* fbxModel, FbxMesh* fbxMesh)
 {
+
 }
 
-void FBXLoader::ParseMeshFace(FBXModel* fbxModel, FbxMesh* fbxMesh)
+void FBXLoader::ParseFace(FBXModel* fbxModel, FbxMesh* fbxMesh)
 {
 }
 
-void FBXLoader::ParseMaterial(FBXModel* fbxModel, FbxMesh* fbxMesh)
+void FBXLoader::ParseMaterial(FBXModel* fbxModel, FbxNode* fbxNode)
 {
 }
 
