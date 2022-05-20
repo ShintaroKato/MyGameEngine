@@ -118,6 +118,54 @@ void Sprite::Draw()
 	cmdList->DrawInstanced(4, 1, 0, 0);
 }
 
+void Sprite::SetRotation(float rotation)
+{
+	this->rotation = rotation;
+
+	// 頂点バッファへデータ転送
+	TransferVertexBuffer();
+}
+
+void Sprite::SetPosition(const XMFLOAT2& position)
+{
+	this->position = position;
+
+	// 頂点バッファへデータ転送
+	TransferVertexBuffer();
+}
+
+void Sprite::SetSize(const XMFLOAT2& size)
+{
+	this->size = size;
+
+	// 頂点バッファへデータ転送
+	TransferVertexBuffer();
+}
+
+void Sprite::SetAnchorPoint(const XMFLOAT2& anchorpoint)
+{
+	this->anchorpoint = anchorpoint;
+
+	// 頂点バッファへデータ転送
+	TransferVertexBuffer();
+}
+
+void Sprite::SetIsFlipX(bool isFlipX)
+{
+	this->isFlipX = isFlipX;
+
+	// 頂点バッファへデータ転送
+	TransferVertexBuffer();
+}
+
+void Sprite::SetIsFlipY(bool isFlipY)
+{
+	this->isFlipY = isFlipY;
+
+	// 頂点バッファへデータ転送
+	TransferVertexBuffer();
+}
+
 void Sprite::SetTextureRect(XMFLOAT2 texLeftTop, XMFLOAT2 texSize)
 {
 	this->texLeftTop = texLeftTop;

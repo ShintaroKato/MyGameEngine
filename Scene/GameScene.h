@@ -60,9 +60,9 @@ private: // ƒƒ“ƒo•Ï”
 	/// </summary>
 	Sprite* spriteBG = nullptr;
 
-	//Model* modelSphere = nullptr;
+	Model* modelSphere = nullptr;
 
-	//Object3d* objSphere = nullptr;
+	Object3d* objSphere = nullptr;
 
 	FBXLoader* fbxCube = nullptr;
 };

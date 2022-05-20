@@ -43,6 +43,8 @@ void TitleScene::Update()
 	{
 		SceneManager::SceneChange();
 	}
+
+	spriteBG->Update();
 }
 
 void TitleScene::Draw()
