@@ -101,6 +101,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 
 		// シーン更新
+		input->Update();
 		sceneManager->Update();
 		// シーン描画
 		sceneManager->Draw();

@@ -33,6 +33,7 @@ void SceneManager::Update()
 	case GAME_MAIN:
 		gameScene->Update();
 		break;
+
 	default:
 		break;
 	}
@@ -49,6 +50,7 @@ void SceneManager::Draw()
 	case GAME_MAIN:
 		gameScene->Draw();
 		break;
+
 	default:
 		break;
 	}
@@ -57,6 +59,7 @@ void SceneManager::Draw()
 void SceneManager::SceneChange()
 {
 	scene++;
+
 	if (scene >= NONE)
 	{
 		scene = TITLE;
@@ -67,5 +70,7 @@ void SceneManager::SceneChange()
 
 void SceneManager::SceneChangeTitle()
 {
-	currentScene = TITLE;
+	scene = TITLE;
+
+	currentScene = static_cast<SceneNum>(scene);
 }

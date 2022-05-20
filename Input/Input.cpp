@@ -13,17 +13,17 @@ Input* Input::GetInstance()
 
 void Input::Initialize(WinApp* winApp)
 {
-	this->winApp = winApp;
+	this->winApp_ = winApp;
 
 	HRESULT result;
 
 	result = DirectInput8Create(
-		winApp->GetHInstance(), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&dinput, nullptr);
+		winApp_->GetHInstance(), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&dinput, nullptr);
 
 	result = dinput->CreateDevice(GUID_SysKeyboard, &devkeyboard, NULL);
 	result = devkeyboard->SetDataFormat(&c_dfDIKeyboard); // •W€Œ`Ž®
 	result = devkeyboard->SetCooperativeLevel(
-		winApp->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+		winApp_->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 }
 
 void Input::Update()

@@ -23,8 +23,9 @@ void GameScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Inp
 	// テキスト
 	text->GetInstance()->Initialize(spriteCommon, 0);
 	// スプライト
-	spriteBG = Sprite::Create(spriteCommon, 1, { 0,0 });
-	spriteBG->SetSize({ WinApp::window_width,WinApp::window_height });
+	spriteBG = Sprite::Create(spriteCommon, 1,
+		{ WinApp::window_width / 2,WinApp::window_height / 2 });
+	//spriteBG->SetSize({ WinApp::window_width,WinApp::window_height });
 	spriteBG->Update();
 
 	//// obj.からモデルデータ読み込み
