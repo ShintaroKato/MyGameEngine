@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <DirectXMath.h>
+#include <DirectXTex.h>
 #include <vector>
 
 // ノード
@@ -39,4 +40,12 @@ private:
 	std::string name;
 	// ノード配列
 	std::vector<Node> node;
+	// アンビエント係数
+	DirectX::XMFLOAT3 ambient = { 1,1,1 };
+	// ディフューズ係数
+	DirectX::XMFLOAT3 diffuse = { 1,1,1 };
+	// テクスチャメタデータ
+	DirectX::TexMetadata metadata = {};
+	// スクラッチイメージ
+	DirectX::ScratchImage scratchImg = {};
 };

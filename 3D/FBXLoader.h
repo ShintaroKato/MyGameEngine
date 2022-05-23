@@ -16,7 +16,8 @@ private:// エイリアス
 public:
 	// モデル格納ルートパス
 	static const string baseDirectory;
-
+	// テクスチャがない場合の標準テクスチャファイル名
+	static const string defaultTextureFileName;
 public:
 	/// <summary>
 	/// シングルトンインスタンスの取得
@@ -70,6 +71,11 @@ public:
 	/// テクスチャ読み込み
 	/// </summary>
 	void LoadTexture(FBXModel* fbxModel, const std::string& fullpath);
+
+	/// <summary>
+	/// ディレクトリを含んだファイルパスからファイル名を抽出
+	/// </summary>
+	std::string ExtractFileName(const std::string& path);
 
 private:
 	// privateなコンストラクタ（シングルトンパターン）
