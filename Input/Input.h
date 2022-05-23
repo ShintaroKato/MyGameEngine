@@ -18,7 +18,7 @@ private:
 	ComPtr<IDirectInputDevice8> devkeyboard = nullptr;
 	ComPtr<IDirectInput8> dinput = nullptr;
 
-	WinApp* winApp = nullptr;
+	WinApp* winApp_ = nullptr;
 
 public:
 	static Input* Input::GetInstance();

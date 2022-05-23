@@ -23,7 +23,7 @@ void TitleScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 	// テキスト
 	text->GetInstance()->Initialize(spriteCommon, 0);
 	// スプライト
-	spriteBG = Sprite::Create(spriteCommon, 1, { 0,0 });
+	spriteBG = Sprite::Create(spriteCommon, 1, { 0,0 }, { 0,0 });
 	spriteBG->Update();
 
 	// obj.からモデルデータ読み込み
@@ -39,12 +39,12 @@ void TitleScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 
 void TitleScene::Update()
 {
-	Input* input = Input::GetInstance();
-
-	//if (input->PushKey(DIK_SPACE))
+	if (input->PushKey(DIK_SPACE))
 	{
 		SceneManager::SceneChange();
 	}
+
+	spriteBG->Update();
 }
 
 void TitleScene::Draw()

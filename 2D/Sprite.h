@@ -55,37 +55,37 @@ public:
 	/// 角度の設定
 	/// </summary>
 	/// <param name="rotation">角度</param>
-	void SetRotation(float rotation) { this->rotation = rotation; }
+	void SetRotation(float rotation);
 
 	/// <summary>
 	/// 座標の設定
 	/// </summary>
 	/// <param name="position">座標</param>
-	void SetPosition(const XMFLOAT2& position) { this->position = position; }
+	void SetPosition(const XMFLOAT2& position);
 
 	/// <summary>
 	/// サイズの設定
 	/// </summary>
 	/// <param name="size">サイズ</param>
-	void SetSize(const XMFLOAT2& size) { this->size = size; }
+	void SetSize(const XMFLOAT2& size);
 
 	/// <summary>
 	/// アンカーポイントの設定
 	/// </summary>
 	/// <param name="anchorpoint">アンカーポイント</param>
-	void SetAnchorPoint(const XMFLOAT2& anchorpoint) { this->anchorpoint = anchorpoint; }
+	void SetAnchorPoint(const XMFLOAT2& anchorpoint);
 
 	/// <summary>
 	/// 左右反転の設定
 	/// </summary>
 	/// <param name="isFlipX">左右反転</param>
-	void SetIsFlipX(bool isFlipX) { this->isFlipX = isFlipX; }
+	void SetIsFlipX(bool isFlipX);
 
 	/// <summary>
 	/// 上下反転の設定
 	/// </summary>
 	/// <param name="isFlipX">上下反転</param>
-	void SetIsFlipY(bool isFlipY) { this->isFlipY = isFlipY; }
+	void SetIsFlipY(bool isFlipY);
 
 	/// <summary>
 	/// テクスチャ範囲設定
