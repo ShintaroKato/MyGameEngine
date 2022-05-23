@@ -7,11 +7,12 @@
 #include "Object3d.h"
 #include "Audio.h"
 #include "FbxLoader.h"
+#include "SceneManager.h"
 
 /// <summary>
 /// ゲームシーン
 /// </summary>
-class GameScene
+class GameScene : public SceneManager
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -36,17 +37,17 @@ public: // メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio);
+	void Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio) override;
 
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
-	void Update();
+	void Update() override;
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw() override;
 
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;

@@ -23,7 +23,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Inp
 	// テキスト
 	text->GetInstance()->Initialize(spriteCommon, 0);
 	// スプライト
-	spriteBG = Sprite::Create(spriteCommon, 1, { 0,0 });
+	spriteBG = Sprite::Create(spriteCommon, 1, { 0,0 }, { 0,0 });
 	spriteBG->SetSize({ WinApp::window_width,WinApp::window_height });
 	spriteBG->Update();
 

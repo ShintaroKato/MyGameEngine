@@ -29,6 +29,9 @@
 #include "Audio.h"
 #include "FBXLoader.h"
 
+#include "TitleScene.h"
+#include "GameScene.h"
+
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
@@ -78,7 +81,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// スプライト共通データ生成
 	SpriteCommon* spriteCommon = nullptr;
 	spriteCommon = new SpriteCommon();
-	spriteCommon->Initialize(dxCommon->GetDev(), dxCommon->GetCmdList(), winApp->window_width, winApp->window_width);
+	spriteCommon->Initialize(dxCommon->GetDev(), dxCommon->GetCmdList(), winApp->window_width, winApp->window_height);
 
 	// 3Dオブジェクト静的初期化
 	Object3d::StaticInitialize(dxCommon->GetDev(), WinApp::window_width, WinApp::window_height);
@@ -87,9 +90,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	FBXLoader::GetInstance()->Initialize(dxCommon->GetDev());
 
 	// シーン初期化
-	SceneManager* sceneManager = nullptr;
-	sceneManager = new SceneManager();
-	sceneManager->Initialize(dxCommon, spriteCommon, input, audio);
+	TitleScene* title = new TitleScene();
+	GameScene* game = new GameScene();
+	
+	SceneManager* sceneManager[] =
+	{
+		title,
+		game,
+	};
+
+	for (int i = 0; i < _countof(sceneManager); i++)
+	{
+		sceneManager[i]->Initialize(dxCommon, spriteCommon, input, audio);
+	}
+
 
 #pragma endregion 描画初期化処理
 
@@ -101,12 +115,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 
 		// シーン更新
-		sceneManager->Update();
+		sceneManager[SceneManager::GetScene()]->Update();
+
 		// シーン描画
-		sceneManager->Draw();
+		sceneManager[SceneManager::GetScene()]->Draw();
 	}
 
 	FBXLoader::GetInstance()->Finalize();
+	delete title;
+	delete game;
 	delete sceneManager;
 
 #pragma region WindowsAPI後始末

@@ -6,8 +6,6 @@
 #include "Text.h"
 #include "Object3d.h"
 #include "Audio.h"
-#include "TitleScene.h"
-#include "GameScene.h"
 
 enum SceneNum
 {
@@ -29,17 +27,17 @@ public:
 	/// <summary>
 	/// èâä˙âª
 	/// </summary>
-	void Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input, Audio* audio);
+	virtual void Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input, Audio* audio);
 
 	/// <summary>
 	/// çXêV
 	/// </summary>
-	void Update();
+	virtual void Update();
 
 	/// <summary>
 	/// ï`âÊ
 	/// </summary>
-	void Draw();
+	virtual void Draw();
 
 public:
 	/// <summary>
@@ -52,9 +50,9 @@ public:
 	/// </summary>
 	static void SceneChangeTitle();
 
+	static SceneNum GetScene() { return currentScene; }
+
 private:
-	TitleScene* titleScene = nullptr;
-	GameScene* gameScene = nullptr;
 
 	DirectXCommon* dxCommon_ = nullptr;
 	SpriteCommon* spriteCommon_ = nullptr;
