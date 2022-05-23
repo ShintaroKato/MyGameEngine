@@ -14,46 +14,16 @@ void SceneManager::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommo
 	this->spriteCommon_ = spriteCommon;
 	this->input_ = input;
 	this->audio_ = audio;
-
-	titleScene = new TitleScene();
-	titleScene->Initialize(dxCommon_, spriteCommon_, input_, audio_);
-
-	gameScene = new GameScene();
-	gameScene->Initialize(dxCommon_, spriteCommon_, input_, audio_);
 }
 
 void SceneManager::Update()
 {
-	switch (currentScene)
-	{
-	case TITLE:
-		titleScene->Update();
-		break;
 
-	case GAME_MAIN:
-		gameScene->Update();
-		break;
-
-	default:
-		break;
-	}
 }
 
 void SceneManager::Draw()
 {
-	switch (currentScene)
-	{
-	case TITLE:
-		titleScene->Draw();
-		break;
 
-	case GAME_MAIN:
-		gameScene->Draw();
-		break;
-
-	default:
-		break;
-	}
 }
 
 void SceneManager::SceneChange()
