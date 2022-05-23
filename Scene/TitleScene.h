@@ -6,12 +6,11 @@
 #include "Text.h"
 #include "Object3d.h"
 #include "Audio.h"
-#include "SceneManager.h"
 
 /// <summary>
 /// ゲームシーン
 /// </summary>
-class TitleScene : public SceneManager
+class TitleScene
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -36,17 +35,17 @@ public: // メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio) override;
+	void Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio);
 
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
-	void Update() override;
+	void Update();
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw() override;
+	void Draw();
 
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;

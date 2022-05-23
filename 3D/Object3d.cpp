@@ -29,12 +29,10 @@ XMFLOAT3 Object3d::up = { 0, 1, 0 };
 D3D12_VERTEX_BUFFER_VIEW Object3d::vbView{};
 D3D12_INDEX_BUFFER_VIEW Object3d::ibView{};
 
-bool Object3d::StaticInitialize(ID3D12Device* dev, int window_width, int window_height)
+bool Object3d::StaticInitialize(ID3D12Device* device, int window_width, int window_height)
 {
 	// nullptrチェック
-	assert(dev);
-
-	device = dev;
+	assert(device);
 
 	Model::StaticInitialize(device);
 
