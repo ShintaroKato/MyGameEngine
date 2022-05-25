@@ -1,5 +1,4 @@
 #include "GameScene.h"
-#include "SceneManager.h"
 
 GameScene::GameScene()
 {
