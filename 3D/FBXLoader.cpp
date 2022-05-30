@@ -60,6 +60,8 @@ void FBXLoader::LoadModelFromFile(const string& modelName)
 	ParseNode(fbxModel, fbxScene->GetRootNode());
 
 	fbxScene->Destroy();
+
+	fbxModel->CreateBuffers(device);
 }
 
 void FBXLoader::ParseNode(FBXModel* fbxModel, FbxNode* fbxNode, Node* parent)

@@ -74,4 +74,24 @@ private:
 	// 頂点バッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vbView = {};
 	// インデックスバッファビュー
+	D3D12_INDEX_BUFFER_VIEW ibView = {};
+	// SRV用デスクリプタヒープ
+	ComPtr<ID3D12DescriptorHeap> descHeapSRV;
+
+public:
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	void Draw(ID3D12GraphicsCommandList* cmdList);
+
+	/// <summary>
+	/// バッファ生成
+	/// </summary>
+	void CreateBuffers(ID3D12Device* device);
+
+	/// <summary>
+	/// モデルの変換行列を取得
+	/// </summary>
+	const XMMATRIX& GetModelTransform() { return meshNode->globalTransform; }
 };
