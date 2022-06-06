@@ -44,12 +44,12 @@ void FBXModel::CreateBuffers(ID3D12Device* device)
 		nullptr,
 		IID_PPV_ARGS(&indexBuff));
 
-	VertexPosNormalUv* vertMap = nullptr;
-	result = indexBuff->Map(0, nullptr, (void**)&vertMap);
+	unsigned short* indexMap = nullptr;
+	result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 
 	if (SUCCEEDED(result))
 	{
-		std::copy(indices.begin(), indices.end(), vertMap);
+		std::copy(indices.begin(), indices.end(), indexMap);
 		indexBuff->Unmap(0, nullptr);
 	}
 

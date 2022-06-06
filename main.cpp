@@ -20,12 +20,13 @@
 
 
 #include "WinApp.h"
-#include "Input.h"
 #include "DirectXCommon.h"
-#include "Object3d.h"
+#include "Audio.h"
+#include "Input.h"
 #include "SpriteCommon.h"
 #include "Sprite.h"
-#include "Audio.h"
+#include "Camera.h"
+#include "Object3d.h"
 #include "FBXLoader.h"
 #include "SceneManager.h"
 #include "TitleScene.h"
@@ -83,7 +84,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	spriteCommon->Initialize(dxCommon->GetDev(), dxCommon->GetCmdList(), winApp->window_width, winApp->window_height);
 
 	// 3Dオブジェクト静的初期化
-	Object3d::StaticInitialize(dxCommon->GetDev(), WinApp::window_width, WinApp::window_height);
+	Object3d::StaticInitialize(dxCommon->GetDev());
 
 	// FBX初期化
 	FBXLoader::GetInstance()->Initialize(dxCommon->GetDev());

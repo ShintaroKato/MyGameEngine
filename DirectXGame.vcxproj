@@ -160,6 +160,7 @@
     <ClCompile Include="Audio\Audio.cpp" />
     <ClCompile Include="Base\DirectXCommon.cpp" />
     <ClCompile Include="Base\WinApp.cpp" />
+    <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Scene\GameScene.cpp" />
@@ -228,6 +229,7 @@
     <ClInclude Include="Base\DirectXCommon.h" />
     <ClInclude Include="Base\PipelineSet.h" />
     <ClInclude Include="Base\WinApp.h" />
+    <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Scene\GameScene.h" />
     <ClInclude Include="Scene\SceneManager.h" />

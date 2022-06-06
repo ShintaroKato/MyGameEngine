@@ -15,12 +15,18 @@ void GameScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Inp
 	this->spriteCommon = sprCommon;
 	this->input = input;
 
+	// カメラ生成
+	camera = new Camera();
+	camera->Initialize(WinApp::window_width, WinApp::window_height);
+
 	// スプライト共通テクスチャ読み込み
 	spriteCommon->LoadTexture(0, L"Resources/debugfont.png");
 	spriteCommon->LoadTexture(1, L"Resources/background.png");
 
 	// テキスト
-	text->GetInstance()->Initialize(spriteCommon, 0);
+	text = Text::GetInstance();
+	text->Initialize(spriteCommon, 0);
+
 	// スプライト
 	spriteBG = Sprite::Create(spriteCommon, 1, { 0,0 }, {0,0});
 	spriteBG->Update();
