@@ -1,6 +1,8 @@
 cbuffer cbuff0 : register(b0)
 {
-	matrix mat; // ３Ｄ変換行列
+	matrix viewProjection;
+	matrix world;
+	float3 camPos;
 };
 
 cbuffer cbuff0 : register(b1)
@@ -11,10 +13,17 @@ cbuffer cbuff0 : register(b1)
 	float m_alpha : packoffset(c2.w);	// アルファ
 }
 
+struct VSInput
+{
+	float4 pos : POSITION;
+	float3 normal : NORMAL;
+	float2 uv : TEXCOORD;
+};
+
 // 頂点シェーダーからピクセルシェーダーへのやり取りに使用する構造体
 struct VSOutput
 {
 	float4 svpos : SV_POSITION; // システム用頂点座標
-	float3 normal :NORMAL; // 法線ベクトル
-	float2 uv  :TEXCOORD; // uv値
+	float3 normal : NORMAL; // 法線ベクトル
+	float2 uv  : TEXCOORD; // uv値
 };

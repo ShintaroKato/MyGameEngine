@@ -1,12 +1,6 @@
 #pragma once
 #include "DirectXCommon.h"
 #include <DirectXMath.h>
-#include "Input.h"
-#include "Sprite.h"
-#include "Text.h"
-#include "Object3d.h"
-#include "Audio.h"
-#include "FbxLoader.h"
 #include "SceneManager.h"
 
 /// <summary>
@@ -33,6 +27,11 @@ public: // メンバ関数
 	/// コンストクラタ
 	/// </summary>
 	GameScene();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~GameScene();
 
 	/// <summary>
 	/// 初期化
@@ -67,5 +66,6 @@ private: // メンバ変数
 
 	Object3d* objSphere = nullptr;
 
-	FBXLoader* fbxCube = nullptr;
+	FBXModel* fbxModelCube = nullptr;
+	FBXObject* fbxCube = nullptr;
 };

@@ -29,8 +29,9 @@ public: // サブクラス
 	// 定数バッファ用データ構造体B0
 	struct ConstBufferDataB0
 	{
-		XMMATRIX mat;	// ３Ｄ変換行列
-		XMFLOAT3 camPos;// カメラの位置
+		XMMATRIX viewProjection;	// ビュープロジェクション行列
+		XMMATRIX world;				// ワールド行列
+		XMFLOAT3 camPos;			// カメラの位置
 	};
 
 private: // 定数
@@ -84,6 +85,12 @@ private:// 静的メンバ関数
 	/// </summary>
 	/// <returns>成否</returns>
 	static bool InitializeGraphicsPipeline();
+
+	/// <summary>
+	///	シェーダファイルの読み込みとコンパイル
+	/// </summary>
+	/// <param name="filename">ファイル名</param>
+	static void LoadShader(ComPtr<ID3DBlob> blob, ComPtr<ID3DBlob> errorBlob, const LPCWSTR& filename);
 
 public: // メンバ関数
 	bool Initialize();

@@ -15,7 +15,7 @@ public: // ’è”‚ÌéŒ¾
 public: // ƒƒ“ƒoŠÖ”
 	Text();
 
-	Text* GetInstance();
+	static Text* GetInstance();
 
 	void Initialize(SpriteCommon* sprCommon, UINT texnumber);
 

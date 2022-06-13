@@ -1,4 +1,4 @@
-#include "Obj.hlsli"
+#include "FBX.hlsli"
 
 VSOutput main(VSInput input)
 {

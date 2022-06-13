@@ -1,11 +1,12 @@
 #pragma once
 #include "DirectXCommon.h"
 #include <DirectXMath.h>
+#include "Audio.h"
 #include "Input.h"
 #include "Sprite.h"
 #include "Text.h"
 #include "Object3d.h"
-#include "Audio.h"
+#include "FBXObject.h"
 
 enum SceneNum
 {
@@ -50,6 +51,9 @@ public:
 	/// </summary>
 	static void SceneChangeTitle();
 
+	/// <summary>
+	/// ƒV[ƒ“‚Ì”Ô†‚ğæ“¾
+	/// </summary>
 	static SceneNum GetScene() { return currentScene; }
 
 private:

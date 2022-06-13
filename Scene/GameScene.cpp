@@ -4,6 +4,12 @@ GameScene::GameScene()
 {
 }
 
+GameScene::~GameScene()
+{
+	delete fbxCube;
+	delete fbxModelCube;
+}
+
 void GameScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
 {
 	// nullptrチェック
@@ -41,7 +47,9 @@ void GameScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Inp
 	objSphere->SetPosition({ 0,0,30 });
 	objSphere->Update();
 
-	fbxCube->GetInstance()->LoadModelFromFile("cube");
+	fbxModelCube = FBXLoader::GetInstance()->LoadModelFromFile("cube");
+	fbxCube = FBXObject::Create();
+	fbxCube->SetModel(fbxModelCube);
 }
 
 void GameScene::Update()
@@ -50,6 +58,8 @@ void GameScene::Update()
 	{
 		SceneManager::SceneChangeTitle();
 	}
+
+	fbxCube->Update();
 
 	spriteBG->Update();
 }
@@ -75,9 +85,11 @@ void GameScene::Draw()
 	// 3Dオブジェクト描画前処理
 	Object3d::PreDraw(dxCommon->GetCmdList());
 
-	objSphere->Draw();
+	//objSphere->Draw();
 
 	Object3d::PostDraw();
+
+	fbxCube->Draw(dxCommon->GetCmdList());
 
 #pragma endregion
 

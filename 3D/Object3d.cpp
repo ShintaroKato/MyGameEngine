@@ -29,10 +29,10 @@ bool Object3d::StaticInitialize(ID3D12Device* device)
 
 	Object3d::device = device;
 
-	Model::StaticInitialize(device);
-
 	// パイプライン初期化
 	InitializeGraphicsPipeline();
+
+	Model::StaticInitialize(device);
 
 	return true;
 }
@@ -83,7 +83,7 @@ Object3d* Object3d::Create()
 bool Object3d::InitializeGraphicsPipeline()
 {
 	HRESULT result = S_FALSE;
-	ComPtr<ID3DBlob> vsBlob; // 頂点シェーダオブジェクト
+	ComPtr<ID3DBlob> vsBlob;	// 頂点シェーダオブジェクト
 	ComPtr<ID3DBlob> psBlob;	// ピクセルシェーダオブジェクト
 	ComPtr<ID3DBlob> errorBlob; // エラーオブジェクト
 
@@ -221,14 +221,14 @@ bool Object3d::InitializeGraphicsPipeline()
 		return result;
 	}
 
-	gpipeline.pRootSignature = pipelineSet->rootsignature.Get();
-
 	// グラフィックスパイプラインの生成
 	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelineSet->pipelinestate));
 
 	if (FAILED(result)) {
 		return result;
 	}
+
+	gpipeline.pRootSignature = pipelineSet->rootsignature.Get();
 
 	return true;
 }
@@ -276,10 +276,14 @@ void Object3d::Update()
 		matWorld *= parent->matWorld;
 	}
 
+	const XMMATRIX& matViewProjection =
+		camera->GetProjectionMatrix();
+
 	// 定数バッファへデータ転送
 	ConstBufferDataB0* constMap = nullptr;
 	result = constBuffB0->Map(0, nullptr, (void**)&constMap);
-	constMap->mat = matWorld * camera->GetViewMatrix() * camera->GetProjectionMatrix();	// 行列の合成
+	constMap->viewProjection = matViewProjection;
+	constMap->world = matWorld * camera->GetViewMatrix() * camera->GetProjectionMatrix();	// 行列の合成
 	constMap->camPos = camera->GetEye();
 	constBuffB0->Unmap(0, nullptr);
 }
