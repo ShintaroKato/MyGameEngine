@@ -9,7 +9,7 @@
 #include "Mesh.h"
 
 //3Dモデル
-class Model
+class ModelOBJ
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -45,7 +45,7 @@ public: //静的メンバ関数
 	static void StaticInitialize(ID3D12Device* device);
 
 	//.objから3Dモデル読み込み
-	static Model* LoadObj(const std::string& modelName, bool smoothing = false);
+	static ModelOBJ* LoadObj(const std::string& modelName, bool smoothing = false);
 
 	/// <summary>
 	/// デスクリプタヒープの初期化
@@ -53,7 +53,7 @@ public: //静的メンバ関数
 	/// <returns>成否</returns>
 	void InitializeDescriptorHeap();
 
-	static void SetDevice(ID3D12Device* device) { Model::device = device; }
+	static void SetDevice(ID3D12Device* device) { ModelOBJ::device = device; }
 
 	//メッシュコンテナを取得
 	inline const std::vector<Mesh*>& GetMesh() { return meshes; }

@@ -1,4 +1,4 @@
-#include "Model.h"
+#include "ModelOBJ.h"
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
 #include <fstream>
@@ -13,22 +13,22 @@ using namespace Microsoft::WRL;
 using namespace std;
 
 //静的メンバ変数の実体
-ID3D12Device* Model::device = nullptr;
-UINT Model::descriptorHandleIncrementSize = 0;
-const std::string Model::baseDirectory = "Resources/";
+ID3D12Device* ModelOBJ::device = nullptr;
+UINT ModelOBJ::descriptorHandleIncrementSize = 0;
+const std::string ModelOBJ::baseDirectory = "Resources/";
 
-void Model::StaticInitialize(ID3D12Device* device)
+void ModelOBJ::StaticInitialize(ID3D12Device* device)
 {
-	Model::SetDevice(device);
+	ModelOBJ::SetDevice(device);
 
 	// メッシュの静的初期化
 	Mesh::StaticInitialize(device);
 }
 
-Model* Model::LoadObj(const string& modelName, bool smoothing)
+ModelOBJ* ModelOBJ::LoadObj(const string& modelName, bool smoothing)
 {
-	//新たなModel型のインスタンスのメモリを確保
-	Model* model = new Model();
+	//新たなModelOBJ型のインスタンスのメモリを確保
+	ModelOBJ* model = new ModelOBJ();
 
 	model->name = modelName;
 
@@ -68,7 +68,7 @@ Model* Model::LoadObj(const string& modelName, bool smoothing)
 	return model;
 }
 
-void Model::InitializeDescriptorHeap()
+void ModelOBJ::InitializeDescriptorHeap()
 {
 	HRESULT result = S_FALSE;
 
@@ -92,7 +92,7 @@ void Model::InitializeDescriptorHeap()
 
 }
 
-void Model::LoadFromOBJInternal(const string& modelName, bool smoothing)
+void ModelOBJ::LoadFromOBJInternal(const string& modelName, bool smoothing)
 {
 	const string fileName = modelName + ".obj";
 	const string directoryPath = baseDirectory + modelName + "/";
@@ -266,7 +266,7 @@ void Model::LoadFromOBJInternal(const string& modelName, bool smoothing)
 	file.close();
 }
 
-bool Model::LoadTexture()
+bool ModelOBJ::LoadTexture()
 {
 	HRESULT result = S_FALSE;
 
@@ -297,7 +297,7 @@ bool Model::LoadTexture()
 	return true;
 }
 
-void Model::LoadMaterial(const std::string& directoryPath, const std::string& filename)
+void ModelOBJ::LoadMaterial(const std::string& directoryPath, const std::string& filename)
 {
 	// ファイルストリーム
 	std::ifstream file;
@@ -385,13 +385,13 @@ void Model::LoadMaterial(const std::string& directoryPath, const std::string& fi
 	}
 }
 
-void Model::AddMaterial(Material* material)
+void ModelOBJ::AddMaterial(Material* material)
 {
 	// コンテナに登録
 	materials.emplace(material->name, material);
 }
 
-void Model::Draw(ID3D12GraphicsCommandList* cmdList, UINT rootParamIndexMaterial)
+void ModelOBJ::Draw(ID3D12GraphicsCommandList* cmdList, UINT rootParamIndexMaterial)
 {
 	// デスクリプタヒープの配列
 	if (descHeap) {
