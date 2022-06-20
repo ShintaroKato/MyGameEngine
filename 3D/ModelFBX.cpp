@@ -1,6 +1,6 @@
-#include "FBXModel.h"
+#include "ModelFBX.h"
 
-void FBXModel::Draw(ID3D12GraphicsCommandList* cmdList)
+void ModelFBX::Draw(ID3D12GraphicsCommandList* cmdList)
 {
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
 	cmdList->IASetIndexBuffer(&ibView);
@@ -12,7 +12,7 @@ void FBXModel::Draw(ID3D12GraphicsCommandList* cmdList)
 	cmdList->DrawIndexedInstanced((UINT)indices.size(), 1, 0, 0, 0);
 }
 
-void FBXModel::CreateBuffers(ID3D12Device* device)
+void ModelFBX::CreateBuffers(ID3D12Device* device)
 {
 	HRESULT result;
 

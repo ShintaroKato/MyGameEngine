@@ -13,7 +13,7 @@
 /// <summary>
 /// 3Dオブジェクト
 /// </summary>
-class FBXObject
+class ObjectFBX
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -29,7 +29,7 @@ public: // サブクラス
 	// 定数バッファ用データ構造体B0
 	struct ConstBufferDataB0
 	{
-		XMMATRIX viewProjection;	// ビュープロジェクション行列
+		XMMATRIX viewProj;	// ビュープロジェクション行列
 		XMMATRIX world;				// ワールド行列
 		XMFLOAT3 camPos;			// カメラの位置
 	};
@@ -55,13 +55,13 @@ public: // 静的メンバ関数
 	/// 3Dオブジェクト生成
 	/// </summary>
 	/// <returns></returns>
-	static FBXObject* Create();
+	static ObjectFBX* Create();
 
 private: // 静的メンバ変数
 	// デバイス
 	static ID3D12Device* device;
 	// パイプラインセット
-	static PipelineSet* pipelineSet;
+	static PipelineSet pipelineSet;
 	// カメラ
 	static Camera* camera;
 
@@ -106,7 +106,7 @@ public: // メンバ関数
 	/// <summary>
 	/// モデルの設定
 	/// </summary>
-	void SetModel(FBXModel* model) { this->model = model; }
+	void SetModel(ModelFBX* model) { this->model = model; }
 
 	/// <summary>
 	/// カメラの設定
@@ -114,9 +114,15 @@ public: // メンバ関数
 	/// <param name="camera"></param>
 	void SetCamera(Camera* camera) { this->camera = camera; }
 
+	/// <summary>
+	/// デバイスの設定
+	/// </summary>
+	/// <param name="device"></param>
+	static void SetDevice(ID3D12Device* device) { ObjectFBX::device = device; }
+
 private: // メンバ変数
 	// モデル
-	FBXModel* model = nullptr;
+	ModelFBX* model = nullptr;
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffB0;
 	// 色
@@ -130,5 +136,5 @@ private: // メンバ変数
 	// ローカルワールド変換行列
 	XMMATRIX matWorld{};
 	// 親オブジェクト
-	FBXObject* parent = nullptr;
+	ObjectFBX* parent = nullptr;
 };

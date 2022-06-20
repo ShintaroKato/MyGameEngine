@@ -1,6 +1,6 @@
 cbuffer cbuff0 : register(b0)
 {
-	matrix viewProjection;
+	matrix viewProj;
 	matrix world;
 	float3 camPos;
 };

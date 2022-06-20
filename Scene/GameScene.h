@@ -62,10 +62,10 @@ private: // ÉÅÉìÉoïœêî
 
 	Sprite* spriteBG = nullptr;
 
-	Model* modelSphere = nullptr;
+	ModelOBJ* modelSphere = nullptr;
 
 	Object3d* objSphere = nullptr;
 
-	FBXModel* fbxModelCube = nullptr;
-	FBXObject* fbxCube = nullptr;
+	ModelFBX* fbxModelCube = nullptr;
+	ObjectFBX* fbxCube = nullptr;
 };

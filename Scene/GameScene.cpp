@@ -25,6 +25,9 @@ void GameScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Inp
 	camera = new Camera();
 	camera->Initialize(WinApp::window_width, WinApp::window_height);
 
+	//Object3d::SetCamera(camera);
+	//Object3d::SetDevice(dxCommon->GetDev());
+
 	// スプライト共通テクスチャ読み込み
 	spriteCommon->LoadTexture(0, L"Resources/debugfont.png");
 	spriteCommon->LoadTexture(1, L"Resources/background.png");
@@ -37,18 +40,19 @@ void GameScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Inp
 	spriteBG = Sprite::Create(spriteCommon, 1, { 0,0 }, {0,0});
 	spriteBG->Update();
 
-	// obj.からモデルデータ読み込み
-	modelSphere = Model::LoadObj("sphere", true);
-	// 3Dオブジェクト生成
-	objSphere = Object3d::Create();
-	// オブジェクトにモデルを紐づける
-	objSphere->SetModel(modelSphere);
+	//// obj.からモデルデータ読み込み
+	//modelSphere = Model::LoadObj("sphere", true);
+	//// 3Dオブジェクト生成
+	//objSphere = Object3d::Create();
+	//objSphere->SetCamera(camera);
+	//// オブジェクトにモデルを紐づける
+	//objSphere->SetModel(modelSphere);
 
-	objSphere->SetPosition({ 0,0,30 });
-	objSphere->Update();
+	//objSphere->SetPosition({ 0,0,30 });
+	//objSphere->Update();
 
 	fbxModelCube = FBXLoader::GetInstance()->LoadModelFromFile("cube");
-	fbxCube = FBXObject::Create();
+	fbxCube = ObjectFBX::Create();
 	fbxCube->SetModel(fbxModelCube);
 }
 
@@ -83,11 +87,11 @@ void GameScene::Draw()
 #pragma region 3Dオブジェクト
 
 	// 3Dオブジェクト描画前処理
-	Object3d::PreDraw(dxCommon->GetCmdList());
+	//Object3d::PreDraw(dxCommon->GetCmdList());
 
 	//objSphere->Draw();
 
-	Object3d::PostDraw();
+	//Object3d::PostDraw();
 
 	fbxCube->Draw(dxCommon->GetCmdList());
 

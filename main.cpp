@@ -83,11 +83,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	spriteCommon = new SpriteCommon();
 	spriteCommon->Initialize(dxCommon->GetDev(), dxCommon->GetCmdList(), winApp->window_width, winApp->window_height);
 
-	// 3Dオブジェクト静的初期化
+	//// 3Dオブジェクト静的初期化
 	Object3d::StaticInitialize(dxCommon->GetDev());
 
 	// FBX初期化
 	FBXLoader::GetInstance()->Initialize(dxCommon->GetDev());
+	ObjectFBX::StaticInitialize(dxCommon->GetDev());
 
 	// シーン初期化
 	TitleScene* title = new TitleScene();

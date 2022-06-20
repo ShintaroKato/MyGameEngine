@@ -19,7 +19,7 @@ using namespace std;
 //const float Object3d::prizmHeight = 8.0f;			// 柱の高さ
 ID3D12Device* Object3d::device = nullptr;
 ID3D12GraphicsCommandList* Object3d::cmdList = nullptr;
-PipelineSet* Object3d::pipelineSet;
+PipelineSet Object3d::pipelineSet;
 Camera* Object3d::camera = nullptr;
 
 bool Object3d::StaticInitialize(ID3D12Device* device)
@@ -32,7 +32,7 @@ bool Object3d::StaticInitialize(ID3D12Device* device)
 	// パイプライン初期化
 	InitializeGraphicsPipeline();
 
-	Model::StaticInitialize(device);
+	ModelOBJ::StaticInitialize(device);
 
 	return true;
 }
@@ -46,9 +46,9 @@ void Object3d::PreDraw(ID3D12GraphicsCommandList* cmdlist)
 	Object3d::cmdList = cmdlist;
 
 	// パイプラインステートの設定
-	cmdList->SetPipelineState(pipelineSet->pipelinestate.Get());
+	cmdList->SetPipelineState(pipelineSet.pipelinestate.Get());
 	// ルートシグネチャの設定
-	cmdList->SetGraphicsRootSignature(pipelineSet->rootsignature.Get());
+	cmdList->SetGraphicsRootSignature(pipelineSet.rootsignature.Get());
 	// プリミティブ形状を設定
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
@@ -200,7 +200,7 @@ bool Object3d::InitializeGraphicsPipeline()
 	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0 レジスタ
 
 	// ルートパラメータ
-	CD3DX12_ROOT_PARAMETER rootparams[3];
+	CD3DX12_ROOT_PARAMETER rootparams[3]{};
 	rootparams[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
 	rootparams[1].InitAsConstantBufferView(1, 0, D3D12_SHADER_VISIBILITY_ALL);
 	rootparams[2].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
@@ -216,19 +216,19 @@ bool Object3d::InitializeGraphicsPipeline()
 	// バージョン自動判定のシリアライズ
 	result = D3DX12SerializeVersionedRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootSigBlob, &errorBlob);
 	// ルートシグネチャの生成
-	result = device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&pipelineSet->rootsignature));
+	result = device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&pipelineSet.rootsignature));
 	if (FAILED(result)) {
 		return result;
 	}
+
+	gpipeline.pRootSignature = pipelineSet.rootsignature.Get();
 
 	// グラフィックスパイプラインの生成
-	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelineSet->pipelinestate));
+	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelineSet.pipelinestate));
 
 	if (FAILED(result)) {
 		return result;
 	}
-
-	gpipeline.pRootSignature = pipelineSet->rootsignature.Get();
 
 	return true;
 }

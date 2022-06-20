@@ -7,7 +7,7 @@
 #include <d3dx12.h>
 #include <string>
 #include "PipelineSet.h"
-#include "Model.h"
+#include "ModelOBJ.h"
 #include "Camera.h"
 
 /// <summary>
@@ -74,7 +74,7 @@ private: // 静的メンバ変数
 	// コマンドリスト
 	static ID3D12GraphicsCommandList* cmdList;
 	// パイプラインセット
-	static PipelineSet* pipelineSet;
+	static PipelineSet pipelineSet;
 	// カメラ
 	static Camera* camera;
 
@@ -86,11 +86,18 @@ private:// 静的メンバ関数
 	/// <returns>成否</returns>
 	static bool InitializeGraphicsPipeline();
 
+public:
 	/// <summary>
-	///	シェーダファイルの読み込みとコンパイル
+	/// カメラの設定
 	/// </summary>
-	/// <param name="filename">ファイル名</param>
-	static void LoadShader(ComPtr<ID3DBlob> blob, ComPtr<ID3DBlob> errorBlob, const LPCWSTR& filename);
+	/// <param name="camera"></param>
+	static void SetCamera(Camera* camera) { Object3d::camera = camera; }
+
+	/// <summary>
+	/// デバイスの設定
+	/// </summary>
+	/// <param name="device"></param>
+	static void SetDevice(ID3D12Device* device) { Object3d::device = device; }
 
 public: // メンバ関数
 	bool Initialize();
@@ -119,17 +126,11 @@ public: // メンバ関数
 	/// <summary>
 	/// モデルの設定
 	/// </summary>
-	void SetModel(Model* model) { this->model = model; }
-
-	/// <summary>
-	/// カメラの設定
-	/// </summary>
-	/// <param name="camera"></param>
-	void SetCamera(Camera* camera) { this->camera = camera; }
+	void SetModelOBJ(ModelOBJ* model) { this->model = model; }
 
 private: // メンバ変数
 	// モデル
-	Model* model = nullptr;
+	ModelOBJ* model = nullptr;
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffB0;
 	// 色

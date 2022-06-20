@@ -1,12 +1,16 @@
 #pragma once
 
+#pragma warning (push)
+#pragma warning (disable:26495)
+//#pragma warning (disable:26812)
 #include "fbxsdk.h"
+#pragma warning (pop)
 
 #include <d3d12.h>
 #include <d3dx12.h>
 
 #include <string>
-#include "FBXModel.h"
+#include "ModelFBX.h"
 
 class FBXLoader
 {
@@ -40,37 +44,37 @@ public:
 	/// ファイルからFBXモデル読み込み
 	/// </summary>
 	/// <param name="modelName">モデル名</param>
-	FBXModel* LoadModelFromFile(const string& modelName);
+	ModelFBX* LoadModelFromFile(const string& modelName);
 
 	/// <summary>
 	/// 再帰的にノード構造を解析
 	/// </summary>
-	void ParseNode(FBXModel* model, FbxNode* fbxNode, Node* parent = nullptr);
+	void ParseNode(ModelFBX* model, FbxNode* fbxNode, Node* parent = nullptr);
 
 	/// <summary>
 	/// メッシュ読み取り
 	/// </summary>
-	void ParseMesh(FBXModel* fbxModel, FbxNode* fbxNode);
+	void ParseMesh(ModelFBX* fbxModel, FbxNode* fbxNode);
 
 	/// <summary>
 	/// 頂点座標読み取り
 	/// </summary>
-	void ParseVertex(FBXModel* fbxModel, FbxMesh* fbxMesh);
+	void ParseVertex(ModelFBX* fbxModel, FbxMesh* fbxMesh);
 
 	/// <summary>
 	/// 面情報読み取り
 	/// </summary>
-	void ParseFace(FBXModel* fbxModel, FbxMesh* fbxMesh);
+	void ParseFace(ModelFBX* fbxModel, FbxMesh* fbxMesh);
 
 	/// <summary>
 	/// マテリアル読み取り
 	/// </summary>
-	void ParseMaterial(FBXModel* fbxModel, FbxNode* fbxNode);
+	void ParseMaterial(ModelFBX* fbxModel, FbxNode* fbxNode);
 
 	/// <summary>
 	/// テクスチャ読み込み
 	/// </summary>
-	void LoadTexture(FBXModel* fbxModel, const std::string& fullpath);
+	void LoadTexture(ModelFBX* fbxModel, const std::string& fullpath);
 
 	/// <summary>
 	/// ディレクトリを含んだファイルパスからファイル名を抽出

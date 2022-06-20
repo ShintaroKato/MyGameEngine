@@ -60,7 +60,7 @@ private: // ƒƒ“ƒo•Ï”
 	/// </summary>
 	Sprite* spriteBG = nullptr;
 
-	Model* modelSphere = nullptr;
+	ModelOBJ* modelSphere = nullptr;
 
 	Object3d* objSphere = nullptr;
 };

@@ -22,7 +22,7 @@ struct Node
 	Node* parent = nullptr;
 };
 
-class FBXModel
+class ModelFBX
 {
 private:
 	template <class T>using ComPtr = Microsoft::WRL::ComPtr<T>;

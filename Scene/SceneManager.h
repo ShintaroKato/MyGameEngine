@@ -6,7 +6,7 @@
 #include "Sprite.h"
 #include "Text.h"
 #include "Object3d.h"
-#include "FBXObject.h"
+#include "ObjectFBX.h"
 
 enum SceneNum
 {

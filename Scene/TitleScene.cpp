@@ -25,15 +25,15 @@ void TitleScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 	spriteBG = Sprite::Create(spriteCommon, 1, { 0,0 }, { 0,0 });
 	spriteBG->Update();
 
-	// obj.からモデルデータ読み込み
-	modelSphere = Model::LoadObj("sphere");
-	// 3Dオブジェクト生成
-	objSphere = Object3d::Create();
-	// オブジェクトにモデルを紐づける
-	objSphere->SetModel(modelSphere);
+	//// obj.からモデルデータ読み込み
+	//modelSphere = Model::LoadObj("sphere");
+	//// 3Dオブジェクト生成
+	//objSphere = Object3d::Create();
+	//// オブジェクトにモデルを紐づける
+	//objSphere->SetModel(modelSphere);
 
-	objSphere->SetPosition({ 0,0,30 });
-	objSphere->Update();
+	//objSphere->SetPosition({ 0,0,30 });
+	//objSphere->Update();
 }
 
 void TitleScene::Update()
@@ -65,11 +65,11 @@ void TitleScene::Draw()
 #pragma region 3Dオブジェクト
 
 	// 3Dオブジェクト描画前処理
-	Object3d::PreDraw(dxCommon->GetCmdList());
+	//Object3d::PreDraw(dxCommon->GetCmdList());
 
 	//objSphere->Draw();
 
-	Object3d::PostDraw();
+	//Object3d::PostDraw();
 
 #pragma endregion
 

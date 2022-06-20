@@ -152,11 +152,11 @@
     <ClCompile Include="2D\SpriteCommon.cpp" />
     <ClCompile Include="2D\Text.cpp" />
     <ClCompile Include="3D\FBXLoader.cpp" />
-    <ClCompile Include="3D\FBXModel.cpp" />
-    <ClCompile Include="3D\FBXObject.cpp" />
+    <ClCompile Include="3D\ModelFBX.cpp" />
+    <ClCompile Include="3D\ObjectFBX.cpp" />
     <ClCompile Include="3D\Material.cpp" />
     <ClCompile Include="3D\Mesh.cpp" />
-    <ClCompile Include="3D\Model.cpp" />
+    <ClCompile Include="3D\ModelOBJ.cpp" />
     <ClCompile Include="3D\Object3d.cpp" />
     <ClCompile Include="Audio\Audio.cpp" />
     <ClCompile Include="Base\DirectXCommon.cpp" />
@@ -191,12 +191,16 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Resources\shaders\FBXVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Resources\shaders\ObjPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -234,11 +238,11 @@
     <ClInclude Include="2D\SpriteCommon.h" />
     <ClInclude Include="2D\Text.h" />
     <ClInclude Include="3D\FBXLoader.h" />
-    <ClInclude Include="3D\FBXModel.h" />
-    <ClInclude Include="3D\FBXObject.h" />
+    <ClInclude Include="3D\ModelFBX.h" />
+    <ClInclude Include="3D\ObjectFBX.h" />
     <ClInclude Include="3D\Material.h" />
     <ClInclude Include="3D\Mesh.h" />
-    <ClInclude Include="3D\Model.h" />
+    <ClInclude Include="3D\ModelOBJ.h" />
     <ClInclude Include="3D\Object3d.h" />
     <ClInclude Include="Audio\Audio.h" />
     <ClInclude Include="Base\DirectXCommon.h" />

@@ -1,4 +1,5 @@
 #include "FBXLoader.h"
+#include "ObjectFBX.h"
 #include <cassert>
 
 using namespace DirectX;
@@ -24,6 +25,8 @@ void FBXLoader::Initialize(ID3D12Device* device)
 	fbxManager->SetIOSettings(ios);
 
 	fbxImporter = FbxImporter::Create(fbxManager, "");
+
+	ObjectFBX::SetDevice(device);
 }
 
 void FBXLoader::Finalize()
@@ -32,7 +35,7 @@ void FBXLoader::Finalize()
 	fbxManager->Destroy();
 }
 
-FBXModel* FBXLoader::LoadModelFromFile(const string& modelName)
+ModelFBX* FBXLoader::LoadModelFromFile(const string& modelName)
 {
 	const string directoryPath = baseDirectory + modelName + "/";
 
@@ -51,7 +54,7 @@ FBXModel* FBXLoader::LoadModelFromFile(const string& modelName)
 	fbxImporter->Import(fbxScene);
 	fbxImporter->Import(fbxScene);
 
-	FBXModel* fbxModel = new FBXModel();
+	ModelFBX* fbxModel = new ModelFBX();
 	fbxModel->name = modelName;
 
 	int nodeCount = fbxScene->GetNodeCount();
@@ -66,7 +69,7 @@ FBXModel* FBXLoader::LoadModelFromFile(const string& modelName)
 	return fbxModel;
 }
 
-void FBXLoader::ParseNode(FBXModel* fbxModel, FbxNode* fbxNode, Node* parent)
+void FBXLoader::ParseNode(ModelFBX* fbxModel, FbxNode* fbxNode, Node* parent)
 {
 	string name = fbxNode->GetName();
 
@@ -122,7 +125,7 @@ void FBXLoader::ParseNode(FBXModel* fbxModel, FbxNode* fbxNode, Node* parent)
 	}
 }
 
-void FBXLoader::ParseMesh(FBXModel* fbxModel, FbxNode* fbxNode)
+void FBXLoader::ParseMesh(ModelFBX* fbxModel, FbxNode* fbxNode)
 {
 	FbxMesh* fbxMesh = fbxNode->GetMesh();
 
@@ -132,21 +135,21 @@ void FBXLoader::ParseMesh(FBXModel* fbxModel, FbxNode* fbxNode)
 
 }
 
-void FBXLoader::ParseVertex(FBXModel* fbxModel, FbxMesh* fbxMesh)
+void FBXLoader::ParseVertex(ModelFBX* fbxModel, FbxMesh* fbxMesh)
 {
 	auto& vertices = fbxModel->vertices;
 
 	const int controlPointCount =
 		fbxMesh->GetControlPointsCount();
 
-	FBXModel::VertexPosNormalUv vert{};
+	ModelFBX::VertexPosNormalUv vert{};
 	fbxModel->vertices.resize(controlPointCount, vert);
 
 	FbxVector4* pCoord = fbxMesh->GetControlPoints();
 
 	for (int i = 0; i < controlPointCount; i++)
 	{
-		FBXModel::VertexPosNormalUv& vertex = vertices[i];
+		ModelFBX::VertexPosNormalUv& vertex = vertices[i];
 
 		vertex.pos.x = (float)pCoord[i][0];
 		vertex.pos.y = (float)pCoord[i][1];
@@ -154,7 +157,7 @@ void FBXLoader::ParseVertex(FBXModel* fbxModel, FbxMesh* fbxMesh)
 	}
 }
 
-void FBXLoader::ParseFace(FBXModel* fbxModel, FbxMesh* fbxMesh)
+void FBXLoader::ParseFace(ModelFBX* fbxModel, FbxMesh* fbxMesh)
 {
 	auto& vertices = fbxModel->vertices;
 	auto& indices = fbxModel->indices;
@@ -177,7 +180,7 @@ void FBXLoader::ParseFace(FBXModel* fbxModel, FbxMesh* fbxMesh)
 			int index = fbxMesh->GetPolygonVertex(i, j);
 			assert(index >= 0);
 
-			FBXModel::VertexPosNormalUv& vertex = vertices[index];
+			ModelFBX::VertexPosNormalUv& vertex = vertices[index];
 			FbxVector4 normal;
 
 			if (fbxMesh->GetPolygonVertexNormal(i, j, normal))
@@ -217,7 +220,7 @@ void FBXLoader::ParseFace(FBXModel* fbxModel, FbxMesh* fbxMesh)
 	}
 }
 
-void FBXLoader::ParseMaterial(FBXModel* fbxModel, FbxNode* fbxNode)
+void FBXLoader::ParseMaterial(ModelFBX* fbxModel, FbxNode* fbxNode)
 {
 	const int materialCount = fbxNode->GetMaterialCount();
 	if (materialCount > 0)
@@ -268,7 +271,7 @@ void FBXLoader::ParseMaterial(FBXModel* fbxModel, FbxNode* fbxNode)
 	}
 }
 
-void FBXLoader::LoadTexture(FBXModel* fbxModel, const std::string& fullpath)
+void FBXLoader::LoadTexture(ModelFBX* fbxModel, const std::string& fullpath)
 {
 	HRESULT result = S_FALSE;
 

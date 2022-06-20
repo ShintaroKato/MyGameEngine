@@ -1,4 +1,4 @@
-#include "FBXObject.h"
+#include "ObjectFBX.h"
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
 #include <fstream>
@@ -15,18 +15,18 @@ using namespace std;
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-//const float FBXObject::radius = 5.0f;				// 底面の半径
-//const float FBXObject::prizmHeight = 8.0f;			// 柱の高さ
-ID3D12Device* FBXObject::device = nullptr;
-PipelineSet* FBXObject::pipelineSet;
-Camera* FBXObject::camera = nullptr;
+//const float ObjectFBX::radius = 5.0f;				// 底面の半径
+//const float ObjectFBX::prizmHeight = 8.0f;			// 柱の高さ
+ID3D12Device* ObjectFBX::device = nullptr;
+PipelineSet ObjectFBX::pipelineSet;
+Camera* ObjectFBX::camera = nullptr;
 
-bool FBXObject::StaticInitialize(ID3D12Device* device)
+bool ObjectFBX::StaticInitialize(ID3D12Device* device)
 {
 	// nullptrチェック
 	assert(device);
 
-	FBXObject::device = device;
+	ObjectFBX::device = device;
 
 	// パイプライン初期化
 	InitializeGraphicsPipeline();
@@ -34,10 +34,10 @@ bool FBXObject::StaticInitialize(ID3D12Device* device)
 	return true;
 }
 
-FBXObject* FBXObject::Create()
+ObjectFBX* ObjectFBX::Create()
 {
 	// 3Dオブジェクトのインスタンスを生成
-	FBXObject* fbxObject = new FBXObject();
+	ObjectFBX* fbxObject = new ObjectFBX();
 	if (fbxObject == nullptr) {
 		return nullptr;
 	}
@@ -55,7 +55,7 @@ FBXObject* FBXObject::Create()
 	return fbxObject;
 }
 
-bool FBXObject::InitializeGraphicsPipeline()
+bool ObjectFBX::InitializeGraphicsPipeline()
 {
 	HRESULT result = S_FALSE;
 	ComPtr<ID3DBlob> vsBlob;	// 頂点シェーダオブジェクト
@@ -191,15 +191,15 @@ bool FBXObject::InitializeGraphicsPipeline()
 	// バージョン自動判定のシリアライズ
 	result = D3DX12SerializeVersionedRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootSigBlob, &errorBlob);
 	// ルートシグネチャの生成
-	result = device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&pipelineSet->rootsignature));
+	result = device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&pipelineSet.rootsignature));
 	if (FAILED(result)) {
 		return result;
 	}
 
-	gpipeline.pRootSignature = pipelineSet->rootsignature.Get();
+	gpipeline.pRootSignature = pipelineSet.rootsignature.Get();
 
 	// グラフィックスパイプラインの生成
-	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelineSet->pipelinestate));
+	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelineSet.pipelinestate));
 
 	if (FAILED(result)) {
 		return result;
@@ -208,7 +208,7 @@ bool FBXObject::InitializeGraphicsPipeline()
 	return true;
 }
 
-void FBXObject::LoadShader(ComPtr<ID3DBlob> blob, ComPtr<ID3DBlob> errorBlob, const LPCWSTR& filename)
+void ObjectFBX::LoadShader(ComPtr<ID3DBlob> blob, ComPtr<ID3DBlob> errorBlob, const LPCWSTR& filename)
 {
 	HRESULT result;
 
@@ -235,7 +235,7 @@ void FBXObject::LoadShader(ComPtr<ID3DBlob> blob, ComPtr<ID3DBlob> errorBlob, co
 	}
 }
 
-bool FBXObject::Initialize()
+bool ObjectFBX::Initialize()
 {
 	// nullptrチェック
 	assert(device);
@@ -253,7 +253,7 @@ bool FBXObject::Initialize()
 	return true;
 }
 
-void FBXObject::Update()
+void ObjectFBX::Update()
 {
 	HRESULT result;
 	XMMATRIX matScale, matRot, matTrans;
@@ -286,13 +286,13 @@ void FBXObject::Update()
 	// 定数バッファへデータ転送
 	ConstBufferDataB0* constMap = nullptr;
 	result = constBuffB0->Map(0, nullptr, (void**)&constMap);
-	constMap->viewProjection = matViewProjection;
+	constMap->viewProj = matViewProjection;
 	constMap->world = modelTransform * matWorld;
 	constMap->camPos = camera->GetEye();
 	constBuffB0->Unmap(0, nullptr);
 }
 
-void FBXObject::Draw(ID3D12GraphicsCommandList* cmdList)
+void ObjectFBX::Draw(ID3D12GraphicsCommandList* cmdList)
 {
 	// nullptrチェック
 	assert(device);
@@ -300,8 +300,8 @@ void FBXObject::Draw(ID3D12GraphicsCommandList* cmdList)
 	// モデルがセットされていなければ描画をスキップ
 	if (model == nullptr) return;
 
-	cmdList->SetPipelineState(pipelineSet->pipelinestate.Get());
-	cmdList->SetGraphicsRootSignature(pipelineSet->rootsignature.Get());
+	cmdList->SetPipelineState(pipelineSet.pipelinestate.Get());
+	cmdList->SetGraphicsRootSignature(pipelineSet.rootsignature.Get());
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	cmdList->SetGraphicsRootConstantBufferView(0, constBuffB0->GetGPUVirtualAddress());
 
