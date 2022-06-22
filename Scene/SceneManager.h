@@ -30,6 +30,11 @@ public:
 	static void SceneChangeTitle();
 
 	/// <summary>
+	/// シーン名を直接渡して切り替える
+	/// </summary>
+	static void SetScene(SceneNum scene) { SceneManager::currentScene = scene; }
+
+	/// <summary>
 	/// シーンの番号を取得
 	/// </summary>
 	static SceneNum GetScene() { return currentScene; }

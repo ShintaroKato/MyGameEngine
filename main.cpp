@@ -26,11 +26,9 @@
 #include "SpriteCommon.h"
 #include "Sprite.h"
 #include "Camera.h"
-#include "Object3d.h"
+#include "ObjectOBJ.h"
 #include "FBXLoader.h"
 #include "SceneManager.h"
-#include "TitleScene.h"
-#include "GameScene.h"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -55,9 +53,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		debugController->EnableDebugLayer();
 	}
 #endif
-
-	HRESULT result;
-
 	//ポインター置き場
 	DirectXCommon* dxCommon = nullptr;
 	dxCommon = new DirectXCommon();
@@ -84,24 +79,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	spriteCommon->Initialize(dxCommon->GetDev(), dxCommon->GetCmdList(), winApp->window_width, winApp->window_height);
 
 	//// 3Dオブジェクト静的初期化
-	Object3d::StaticInitialize(dxCommon->GetDev());
+	ObjectOBJ::StaticInitialize(dxCommon->GetDev());
 
 	// FBX初期化
 	FBXLoader::GetInstance()->Initialize(dxCommon->GetDev());
 	ObjectFBX::StaticInitialize(dxCommon->GetDev());
 
 	// シーン初期化
-	TitleScene* title = new TitleScene();
-	GameScene* game = new GameScene();
+	SceneTitle* title = new SceneTitle();
+	SceneInGame* game = new SceneInGame();
 
-	SceneManager* sceneManager[] =
+	SceneBase* scene[] =
 	{
 		title,
 		game,
 	};
-	for (int i = 0; i < _countof(sceneManager); i++)
+	for (int i = 0; i < _countof(scene); i++)
 	{
-		sceneManager[i]->Initialize(dxCommon, spriteCommon, input, audio);
+		scene[i]->Initialize(dxCommon, spriteCommon, input, audio);
 	}
 
 #pragma endregion 描画初期化処理
@@ -116,13 +111,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		// シーン更新
 		input->Update();
 
-		sceneManager[SceneManager::GetScene()]->Update();
+		scene[SceneManager::GetScene()]->Update();
 		// シーン描画
-		sceneManager[SceneManager::GetScene()]->Draw();
+		scene[SceneManager::GetScene()]->Draw();
 	}
 
 	FBXLoader::GetInstance()->Finalize();
-	delete sceneManager;
+
+	int sceneCount = _countof(scene);
+
+	for (int i = 0; i < sceneCount; i++)
+	{
+		delete scene[i];
+	}
 
 #pragma region WindowsAPI後始末
 	winApp->Finalize();

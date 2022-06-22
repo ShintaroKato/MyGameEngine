@@ -157,16 +157,17 @@
     <ClCompile Include="3D\Material.cpp" />
     <ClCompile Include="3D\Mesh.cpp" />
     <ClCompile Include="3D\ModelOBJ.cpp" />
-    <ClCompile Include="3D\Object3d.cpp" />
+    <ClCompile Include="3D\ObjectOBJ.cpp" />
     <ClCompile Include="Audio\Audio.cpp" />
     <ClCompile Include="Base\DirectXCommon.cpp" />
     <ClCompile Include="Base\WinApp.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Scene\GameScene.cpp" />
+    <ClCompile Include="Scene\SceneInGame.cpp" />
+    <ClCompile Include="Scene\SceneBase.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
-    <ClCompile Include="Scene\TitleScene.cpp" />
+    <ClCompile Include="Scene\SceneTitle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="DirectXTex\DirectXTex_Desktop_2019_Win10.vcxproj">
@@ -243,16 +244,17 @@
     <ClInclude Include="3D\Material.h" />
     <ClInclude Include="3D\Mesh.h" />
     <ClInclude Include="3D\ModelOBJ.h" />
-    <ClInclude Include="3D\Object3d.h" />
+    <ClInclude Include="3D\ObjectOBJ.h" />
     <ClInclude Include="Audio\Audio.h" />
     <ClInclude Include="Base\DirectXCommon.h" />
     <ClInclude Include="Base\PipelineSet.h" />
     <ClInclude Include="Base\WinApp.h" />
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="Input\Input.h" />
-    <ClInclude Include="Scene\GameScene.h" />
+    <ClInclude Include="Scene\SceneBase.h" />
+    <ClInclude Include="Scene\SceneInGame.h" />
     <ClInclude Include="Scene\SceneManager.h" />
-    <ClInclude Include="Scene\TitleScene.h" />
+    <ClInclude Include="Scene\SceneTitle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

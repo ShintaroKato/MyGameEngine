@@ -5,9 +5,8 @@
 #include "Input.h"
 #include "Sprite.h"
 #include "Text.h"
-#include "Object3d.h"
+#include "ObjectOBJ.h"
 #include "ObjectFBX.h"
-//#include "SceneManager.h"
 
 class SceneBase
 {

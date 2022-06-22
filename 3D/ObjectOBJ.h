@@ -13,7 +13,7 @@
 /// <summary>
 /// 3Dオブジェクト
 /// </summary>
-class Object3d
+class ObjectOBJ
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -66,7 +66,7 @@ public: // 静的メンバ関数
 	/// 3Dオブジェクト生成
 	/// </summary>
 	/// <returns></returns>
-	static Object3d* Create();
+	static ObjectOBJ* Create();
 
 private: // 静的メンバ変数
 	// デバイス
@@ -91,13 +91,13 @@ public:
 	/// カメラの設定
 	/// </summary>
 	/// <param name="camera"></param>
-	static void SetCamera(Camera* camera) { Object3d::camera = camera; }
+	static void SetCamera(Camera* camera) { ObjectOBJ::camera = camera; }
 
 	/// <summary>
 	/// デバイスの設定
 	/// </summary>
 	/// <param name="device"></param>
-	static void SetDevice(ID3D12Device* device) { Object3d::device = device; }
+	static void SetDevice(ID3D12Device* device) { ObjectOBJ::device = device; }
 
 public: // メンバ関数
 	bool Initialize();
@@ -144,5 +144,5 @@ private: // メンバ変数
 	// ローカルワールド変換行列
 	XMMATRIX matWorld{};
 	// 親オブジェクト
-	Object3d* parent = nullptr;
+	ObjectOBJ* parent = nullptr;
 };

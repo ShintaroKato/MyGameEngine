@@ -17,17 +17,17 @@ using namespace std;
 /// </summary>
 //const float Object3d::radius = 5.0f;				// 底面の半径
 //const float Object3d::prizmHeight = 8.0f;			// 柱の高さ
-ID3D12Device* Object3d::device = nullptr;
-ID3D12GraphicsCommandList* Object3d::cmdList = nullptr;
-PipelineSet Object3d::pipelineSet;
-Camera* Object3d::camera = nullptr;
+ID3D12Device* ObjectOBJ::device = nullptr;
+ID3D12GraphicsCommandList* ObjectOBJ::cmdList = nullptr;
+PipelineSet ObjectOBJ::pipelineSet;
+Camera* ObjectOBJ::camera = nullptr;
 
-bool Object3d::StaticInitialize(ID3D12Device* device)
+bool ObjectOBJ::StaticInitialize(ID3D12Device* device)
 {
 	// nullptrチェック
 	assert(device);
 
-	Object3d::device = device;
+	ObjectOBJ::device = device;
 
 	// パイプライン初期化
 	InitializeGraphicsPipeline();
@@ -37,13 +37,13 @@ bool Object3d::StaticInitialize(ID3D12Device* device)
 	return true;
 }
 
-void Object3d::PreDraw(ID3D12GraphicsCommandList* cmdlist)
+void ObjectOBJ::PreDraw(ID3D12GraphicsCommandList* cmdlist)
 {
 	// PreDrawとPostDrawがペアで呼ばれていなければエラー
-	assert(Object3d::cmdList == nullptr);
+	assert(ObjectOBJ::cmdList == nullptr);
 
 	// コマンドリストをセット
-	Object3d::cmdList = cmdlist;
+	ObjectOBJ::cmdList = cmdlist;
 
 	// パイプラインステートの設定
 	cmdList->SetPipelineState(pipelineSet.pipelinestate.Get());
@@ -53,16 +53,16 @@ void Object3d::PreDraw(ID3D12GraphicsCommandList* cmdlist)
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void Object3d::PostDraw()
+void ObjectOBJ::PostDraw()
 {
 	// コマンドリストを解除
-	Object3d::cmdList = nullptr;
+	ObjectOBJ::cmdList = nullptr;
 }
 
-Object3d* Object3d::Create()
+ObjectOBJ* ObjectOBJ::Create()
 {
 	// 3Dオブジェクトのインスタンスを生成
-	Object3d* object3d = new Object3d();
+	ObjectOBJ* object3d = new ObjectOBJ();
 	if (object3d == nullptr) {
 		return nullptr;
 	}
@@ -80,7 +80,7 @@ Object3d* Object3d::Create()
 	return object3d;
 }
 
-bool Object3d::InitializeGraphicsPipeline()
+bool ObjectOBJ::InitializeGraphicsPipeline()
 {
 	HRESULT result = S_FALSE;
 	ComPtr<ID3DBlob> vsBlob;	// 頂点シェーダオブジェクト
@@ -233,7 +233,7 @@ bool Object3d::InitializeGraphicsPipeline()
 	return true;
 }
 
-bool Object3d::Initialize()
+bool ObjectOBJ::Initialize()
 {
 	// nullptrチェック
 	assert(device);
@@ -251,7 +251,7 @@ bool Object3d::Initialize()
 	return true;
 }
 
-void Object3d::Update()
+void ObjectOBJ::Update()
 {
 	HRESULT result;
 	XMMATRIX matScale, matRot, matTrans;
@@ -288,11 +288,11 @@ void Object3d::Update()
 	constBuffB0->Unmap(0, nullptr);
 }
 
-void Object3d::Draw()
+void ObjectOBJ::Draw()
 {
 	// nullptrチェック
 	assert(device);
-	assert(Object3d::cmdList);
+	assert(ObjectOBJ::cmdList);
 
 	// モデルがセットされていなければ描画をスキップ
 	if (model == nullptr) return;

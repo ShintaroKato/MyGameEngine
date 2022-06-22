@@ -56,5 +56,5 @@ private: // ƒƒ“ƒo•Ï”
 
 	ModelOBJ* modelSphere = nullptr;
 
-	Object3d* objSphere = nullptr;
+	ObjectOBJ* objSphere = nullptr;
 };

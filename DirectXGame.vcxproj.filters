@@ -63,7 +63,7 @@
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="3D\Object3d.cpp">
+    <ClCompile Include="3D\ObjectOBJ.cpp">
       <Filter>ソース ファイル\3D</Filter>
     </ClCompile>
     <ClCompile Include="3D\ModelOBJ.cpp">
@@ -90,7 +90,7 @@
     <ClCompile Include="3D\Mesh.cpp">
       <Filter>ソース ファイル\3D</Filter>
     </ClCompile>
-    <ClCompile Include="Scene\GameScene.cpp">
+    <ClCompile Include="Scene\SceneInGame.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Scene\SceneManager.cpp">
@@ -99,7 +99,7 @@
     <ClCompile Include="2D\Text.cpp">
       <Filter>ソース ファイル\2D</Filter>
     </ClCompile>
-    <ClCompile Include="Scene\TitleScene.cpp">
+    <ClCompile Include="Scene\SceneTitle.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Audio\Audio.cpp">
@@ -116,6 +116,9 @@
     </ClCompile>
     <ClCompile Include="3D\ObjectFBX.cpp">
       <Filter>ソース ファイル\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\SceneBase.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -171,7 +174,7 @@
     <ClInclude Include="3D\ModelOBJ.h">
       <Filter>ヘッダー ファイル\3D</Filter>
     </ClInclude>
-    <ClInclude Include="3D\Object3d.h">
+    <ClInclude Include="3D\ObjectOBJ.h">
       <Filter>ヘッダー ファイル\3D</Filter>
     </ClInclude>
     <ClInclude Include="2D\Sprite.h">
@@ -186,7 +189,7 @@
     <ClInclude Include="3D\Mesh.h">
       <Filter>ヘッダー ファイル\3D</Filter>
     </ClInclude>
-    <ClInclude Include="Scene\GameScene.h">
+    <ClInclude Include="Scene\SceneInGame.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Scene\SceneManager.h">
@@ -195,7 +198,7 @@
     <ClInclude Include="2D\Text.h">
       <Filter>ヘッダー ファイル\2D</Filter>
     </ClInclude>
-    <ClInclude Include="Scene\TitleScene.h">
+    <ClInclude Include="Scene\SceneTitle.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Audio\Audio.h">
@@ -215,6 +218,9 @@
     </ClInclude>
     <ClInclude Include="3D\ObjectFBX.h">
       <Filter>ヘッダー ファイル\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneBase.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
