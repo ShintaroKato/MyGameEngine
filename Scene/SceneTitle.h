@@ -1,12 +1,11 @@
 #pragma once
-#include "DirectXCommon.h"
-#include <DirectXMath.h>
+#include "SceneBase.h"
 #include "SceneManager.h"
 
 /// <summary>
 /// ゲームシーン
 /// </summary>
-class GameScene : public SceneManager
+class SceneTitle : public SceneBase
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -26,12 +25,7 @@ public: // メンバ関数
 	/// <summary>
 	/// コンストクラタ
 	/// </summary>
-	GameScene();
-
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
-	~GameScene();
+	SceneTitle();
 
 	/// <summary>
 	/// 初期化
@@ -58,14 +52,9 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-	Camera* camera = nullptr;
-
 	Sprite* spriteBG = nullptr;
 
 	ModelOBJ* modelSphere = nullptr;
 
 	Object3d* objSphere = nullptr;
-
-	ModelFBX* fbxModelCube = nullptr;
-	ObjectFBX* fbxCube = nullptr;
 };

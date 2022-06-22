@@ -3,29 +3,6 @@
 int SceneManager::scene = TITLE;
 SceneNum SceneManager::currentScene = TITLE;
 
-void SceneManager::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input, Audio* audio)
-{
-	// nullptrチェック
-	assert(dxCommon);
-	assert(spriteCommon);
-	assert(input);
-
-	this->dxCommon_ = dxCommon;
-	this->spriteCommon_ = spriteCommon;
-	this->input_ = input;
-	this->audio_ = audio;
-}
-
-void SceneManager::Update()
-{
-
-}
-
-void SceneManager::Draw()
-{
-
-}
-
 void SceneManager::SceneChange()
 {
 	scene++;

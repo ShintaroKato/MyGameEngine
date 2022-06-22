@@ -1,10 +1,16 @@
-#include "TitleScene.h"
+#include "SceneInGame.h"
 
-TitleScene::TitleScene()
+SceneInGame::SceneInGame()
 {
 }
 
-void TitleScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
+SceneInGame::~SceneInGame()
+{
+	delete fbxCube;
+	delete fbxModelCube;
+}
+
+void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
 {
 	// nullptrチェック
 	assert(dxCommon);
@@ -15,38 +21,54 @@ void TitleScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 	this->spriteCommon = sprCommon;
 	this->input = input;
 
+	// カメラ生成
+	camera = new Camera();
+	camera->Initialize(WinApp::window_width, WinApp::window_height);
+
+	//Object3d::SetCamera(camera);
+	//Object3d::SetDevice(dxCommon->GetDev());
+
 	// スプライト共通テクスチャ読み込み
 	spriteCommon->LoadTexture(0, L"Resources/debugfont.png");
 	spriteCommon->LoadTexture(1, L"Resources/background.png");
 
 	// テキスト
-	text->GetInstance()->Initialize(spriteCommon, 0);
+	text = Text::GetInstance();
+	text->Initialize(spriteCommon, 0);
+
 	// スプライト
-	spriteBG = Sprite::Create(spriteCommon, 1, { 0,0 }, { 0,0 });
+	spriteBG = Sprite::Create(spriteCommon, 1, { 0,0 }, {0,0});
 	spriteBG->Update();
 
 	//// obj.からモデルデータ読み込み
-	//modelSphere = Model::LoadObj("sphere");
+	//modelSphere = Model::LoadObj("sphere", true);
 	//// 3Dオブジェクト生成
 	//objSphere = Object3d::Create();
+	//objSphere->SetCamera(camera);
 	//// オブジェクトにモデルを紐づける
 	//objSphere->SetModel(modelSphere);
 
 	//objSphere->SetPosition({ 0,0,30 });
 	//objSphere->Update();
+
+	fbxModelCube = FBXLoader::GetInstance()->LoadModelFromFile("cube");
+	fbxCube = ObjectFBX::Create();
+	fbxCube->SetModel(fbxModelCube);
 }
 
-void TitleScene::Update()
+void SceneInGame::Update()
 {
-	if (input->PushKey(DIK_SPACE))
+	if (input->TriggerKey(DIK_SPACE))
 	{
-		SceneManager::SceneChange();
+		SceneManager::SceneChangeTitle();
 	}
+
+	fbxCube->Update();
 
 	spriteBG->Update();
 }
 
-void TitleScene::Draw()
+void SceneInGame::Draw()
 {
 	dxCommon->PreDraw();
 
@@ -71,6 +93,8 @@ void TitleScene::Draw()
 
 	//Object3d::PostDraw();
 
+	fbxCube->Draw(dxCommon->GetCmdList());
+
 #pragma endregion
 
 #pragma region 前景スプライト
@@ -79,7 +103,7 @@ void TitleScene::Draw()
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
 	// スプライト描画
-	spriteBG->Draw();
+	//spriteBG->Draw();
 
 	// テキスト描画
 	//text->DrawAll(dxCommon->GetCmdList());
