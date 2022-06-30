@@ -15,8 +15,6 @@ using namespace std;
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-//const float ObjectFBX::radius = 5.0f;				// 底面の半径
-//const float ObjectFBX::prizmHeight = 8.0f;			// 柱の高さ
 ID3D12Device* ObjectFBX::device = nullptr;
 PipelineSet ObjectFBX::pipelineSet;
 Camera* ObjectFBX::camera = nullptr;
@@ -48,9 +46,6 @@ ObjectFBX* ObjectFBX::Create()
 		assert(0);
 		return nullptr;
 	}
-
-	float scale_val = 20;
-	fbxObject->scale = { scale_val,scale_val,scale_val };
 
 	return fbxObject;
 }
@@ -208,33 +203,6 @@ bool ObjectFBX::InitializeGraphicsPipeline()
 	return true;
 }
 
-void ObjectFBX::LoadShader(ComPtr<ID3DBlob> blob, ComPtr<ID3DBlob> errorBlob, const LPCWSTR& filename)
-{
-	HRESULT result;
-
-	result = D3DCompileFromFile(
-		filename,	// シェーダファイル名
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-		"main", "vs_5_0",	// エントリーポイント名、シェーダーモデル指定
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
-		0,
-		&blob, &errorBlob);
-	if (FAILED(result)) {
-		// errorBlobからエラー内容をstring型にコピー
-		std::string errstr;
-		errstr.resize(errorBlob->GetBufferSize());
-
-		std::copy_n((char*)errorBlob->GetBufferPointer(),
-			errorBlob->GetBufferSize(),
-			errstr.begin());
-		errstr += "\n";
-		// エラー内容を出力ウィンドウに表示
-		OutputDebugStringA(errstr.c_str());
-		exit(1);
-	}
-}
-
 bool ObjectFBX::Initialize()
 {
 	// nullptrチェック
@@ -278,8 +246,7 @@ void ObjectFBX::Update()
 		matWorld *= parent->matWorld;
 	}
 
-	const XMMATRIX& matViewProjection =
-		camera->GetProjectionMatrix();
+	const XMMATRIX& matViewProjection = camera->GetViewMatrix() * camera->GetProjectionMatrix();
 
 	const XMMATRIX& modelTransform = model->GetModelTransform();
 

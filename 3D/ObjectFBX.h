@@ -34,13 +34,6 @@ public: // サブクラス
 		XMFLOAT3 camPos;			// カメラの位置
 	};
 
-private: // 定数
-	//static const int division = 50;					// 分割数
-	//static const float radius;				// 底面の半径
-	//static const float prizmHeight;			// 柱の高さ
-	//static const int planeCount = division * 2 + division * 2;		// 面の数
-	//static const int vertexCount = planeCount * 3;		// 頂点数
-
 public: // 静的メンバ関数
 	/// <summary>
 	/// 静的初期化
@@ -73,12 +66,6 @@ private:// 静的メンバ関数
 	/// <returns>成否</returns>
 	static bool InitializeGraphicsPipeline();
 
-	/// <summary>
-	///	シェーダファイルの読み込みとコンパイル
-	/// </summary>
-	/// <param name="filename">ファイル名</param>
-	static void LoadShader(ComPtr<ID3DBlob> blob, ComPtr<ID3DBlob> errorBlob, const LPCWSTR& filename);
-
 public: // メンバ関数
 	bool Initialize();
 	/// <summary>
@@ -104,6 +91,18 @@ public: // メンバ関数
 	void SetPosition(XMFLOAT3 position) { this->position = position; }
 
 	/// <summary>
+	/// 回転の設定
+	/// </summary>
+	/// <param name="rotation">回転</param>
+	void SetRotation(XMFLOAT3 rotation) { this->rotation = rotation; }
+
+	/// <summary>
+	/// スケールの設定
+	/// </summary>
+	/// <param name="scale">スケール</param>
+	void SetScale(XMFLOAT3 scale) { this->scale = scale; }
+
+	/// <summary>
 	/// モデルの設定
 	/// </summary>
 	void SetModel(ModelFBX* model) { this->model = model; }
@@ -112,7 +111,7 @@ public: // メンバ関数
 	/// カメラの設定
 	/// </summary>
 	/// <param name="camera"></param>
-	void SetCamera(Camera* camera) { this->camera = camera; }
+	static void SetCamera(Camera* camera) { ObjectFBX::camera = camera; }
 
 	/// <summary>
 	/// デバイスの設定

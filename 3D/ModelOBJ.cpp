@@ -144,10 +144,6 @@ void ModelOBJ::LoadFromOBJInternal(const string& modelName, bool smoothing)
 			line_stream >> position.y;
 			line_stream >> position.z;
 			positions.emplace_back(position);
-
-			//VertexPosNormalUv vertex{};
-			//vertex.pos = position;
-			//vertices.emplace_back(vertex);
 		}
 		// 先頭文字列がvtならテクスチャ
 		if (key == "vt")

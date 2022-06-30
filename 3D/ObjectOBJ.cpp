@@ -1,4 +1,4 @@
-﻿#include "Object3d.h"
+﻿#include "ObjectOBJ.h"
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
 #include <fstream>
@@ -15,8 +15,6 @@ using namespace std;
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-//const float Object3d::radius = 5.0f;				// 底面の半径
-//const float Object3d::prizmHeight = 8.0f;			// 柱の高さ
 ID3D12Device* ObjectOBJ::device = nullptr;
 ID3D12GraphicsCommandList* ObjectOBJ::cmdList = nullptr;
 PipelineSet ObjectOBJ::pipelineSet;
@@ -276,14 +274,13 @@ void ObjectOBJ::Update()
 		matWorld *= parent->matWorld;
 	}
 
-	const XMMATRIX& matViewProjection =
-		camera->GetProjectionMatrix();
+	const XMMATRIX& matViewProjection = camera->GetViewMatrix() * camera->GetProjectionMatrix();
 
 	// 定数バッファへデータ転送
 	ConstBufferDataB0* constMap = nullptr;
 	result = constBuffB0->Map(0, nullptr, (void**)&constMap);
-	constMap->viewProjection = matViewProjection;
-	constMap->world = matWorld * camera->GetViewMatrix() * camera->GetProjectionMatrix();	// 行列の合成
+	constMap->viewProj = matViewProjection;
+	constMap->world = matWorld;
 	constMap->camPos = camera->GetEye();
 	constBuffB0->Unmap(0, nullptr);
 }
