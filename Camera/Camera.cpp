@@ -7,32 +7,36 @@ XMMATRIX Camera::matProjection{};
 XMFLOAT3 Camera::eye = { 0, 5.0f, -50.0f };
 XMFLOAT3 Camera::target = { 0, 0, 0 };
 XMFLOAT3 Camera::up = { 0, 1, 0 };
+float Camera::aspect;
 
 void Camera::Initialize(const int& window_width, const int& window_height)
 {
-	// ビュー行列の生成
-	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&eye),
-		XMLoadFloat3(&target),
-		XMLoadFloat3(&up));
+	aspect = (float)window_width / window_height;
 
-	// 平行投影による射影行列の生成
-	//constMap->mat = XMMatrixOrthographicOffCenterLH(
-	//	0, window_width,
-	//	window_height, 0,
-	//	0, 1);
-	// 透視投影による射影行列の生成
-	matProjection = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(60.0f),
-		(float)window_width / window_height,
-		0.1f, 1000.0f
-	);
+	Update();
+}
+
+void Camera::Update()
+{
+	UpdateViewMatrix();
+
+	UpdateProjectionMatrix();
 }
 
 void Camera::UpdateViewMatrix()
 {
 	// ビュー行列の更新
 	matView = XMMatrixLookAtLH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up));
+}
+
+void Camera::UpdateProjectionMatrix()
+{
+	// 透視投影による射影行列の生成
+	matProjection = XMMatrixPerspectiveFovLH(
+		XMConvertToRadians(60.0f),
+		aspect,
+		0.1f, 1000.0f
+	);
 }
 
 void Camera::SetEye(XMFLOAT3 eye)

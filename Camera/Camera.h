@@ -28,9 +28,19 @@ public:
 	static void Initialize(const int& window_width, const int& window_height);
 
 	/// <summary>
+	/// 更新
+	/// </summary>
+	static void Update();
+
+	/// <summary>
 	/// ビュー行列を更新
 	/// </summary>
 	static void UpdateViewMatrix();
+
+	/// <summary>
+	/// 射影行列を更新
+	/// </summary>
+	static void UpdateProjectionMatrix();
 
 	/// <summary>
 	/// 視点座標の取得
@@ -84,4 +94,6 @@ private:
 	static XMMATRIX matView;
 	// 射影行列
 	static XMMATRIX matProjection;
+	// アスペクト比
+	static float aspect;
 };
