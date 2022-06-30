@@ -15,9 +15,9 @@ void SceneManager::SceneChange()
 	currentScene = static_cast<SceneNum>(scene);
 }
 
-void SceneManager::SceneChangeTitle()
+void SceneManager::SetScene(SceneNum scene)
 {
-	scene = TITLE;
+	SceneManager::currentScene = scene;
 
-	currentScene = static_cast<SceneNum>(scene);
+	SceneManager::scene = currentScene;
 }

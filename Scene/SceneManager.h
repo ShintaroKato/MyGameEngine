@@ -25,14 +25,9 @@ public:
 	static void SceneChange();
 
 	/// <summary>
-	/// タイトル画面に戻る
-	/// </summary>
-	static void SceneChangeTitle();
-
-	/// <summary>
 	/// シーン名を直接渡して切り替える
 	/// </summary>
-	static void SetScene(SceneNum scene) { SceneManager::currentScene = scene; }
+	static void SetScene(SceneNum scene);
 
 	/// <summary>
 	/// シーンの番号を取得
