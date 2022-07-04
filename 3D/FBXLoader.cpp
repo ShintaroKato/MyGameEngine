@@ -4,7 +4,7 @@
 
 using namespace DirectX;
 
-const std::string FBXLoader::baseDirectory = "Resources/";
+const std::string FBXLoader::baseDirectory = "Resources/3D/";
 const std::string FBXLoader::defaultTextureFileName = "white1x1.png";
 
 FBXLoader* FBXLoader::GetInstance()

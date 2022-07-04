@@ -1,6 +1,5 @@
 #include "SpriteCommon.h"
 #include <cassert>
-#include <d3dx12.h>
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
 
@@ -19,6 +18,7 @@ ComPtr<ID3D12DescriptorHeap> SpriteCommon::descHeap;
 ComPtr<ID3D12Resource> SpriteCommon::texBuff[spriteSRVCount];
 PipelineSet SpriteCommon::pipelineSet;
 XMMATRIX SpriteCommon::matProjection;
+const std::string SpriteCommon::baseDirectory = "Resources/2D/";
 
 void SpriteCommon::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmdList, int window_width, int window_height)
 {
@@ -181,7 +181,7 @@ void SpriteCommon::CreateGraphicsPipeline()
 }
 
 // スプライト共通テクスチャ読み込み
-void SpriteCommon::LoadTexture(UINT texnumber, const wchar_t* filename)
+void SpriteCommon::LoadTexture(UINT texnumber, const std::string& filename)
 {
 	// 異常な番号の指定を検出
 	assert(texnumber <= spriteSRVCount - 1);
@@ -192,10 +192,18 @@ void SpriteCommon::LoadTexture(UINT texnumber, const wchar_t* filename)
 	TexMetadata metadata{};
 	ScratchImage scratchImg{};
 
+	const std::string fullpath = baseDirectory + filename;
+
+	wchar_t wfilepath[128];
+	MultiByteToWideChar(CP_ACP, 0, fullpath.c_str(), -1, wfilepath, _countof(wfilepath));
+
 	result = LoadFromWICFile(
-		filename,
+		wfilepath,
 		WIC_FLAGS_NONE,
 		&metadata, scratchImg);
+	if (FAILED(result)) {
+		assert(0);
+	}
 
 	const Image* img = scratchImg.GetImage(0, 0, 0); // 生データ抽出
 

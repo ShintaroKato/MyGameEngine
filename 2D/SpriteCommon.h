@@ -1,6 +1,7 @@
 #pragma once
 
 #include <DirectXMath.h>
+#include <d3dx12.h>
 #include "PipelineSet.h"
 
 // スプライト共通部
@@ -36,12 +37,14 @@ private:
 	static PipelineSet pipelineSet;
 	// 射影行列
 	static XMMATRIX matProjection;
+	// パス
+	static const std::string baseDirectory;
 
 public:
 	void Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmdList, int window_width, int window_height);
 
 	// スプライト共通テクスチャ読み込み
-	void LoadTexture(UINT texnumber, const wchar_t* filename);
+	void LoadTexture(UINT texnumber, const std::string& filename);
 
 	void PreDraw(ID3D12GraphicsCommandList* cmdList);
 

@@ -32,8 +32,8 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	ObjectFBX::SetDevice(dxCommon->GetDev());
 
 	// スプライト共通テクスチャ読み込み
-	spriteCommon->LoadTexture(0, L"Resources/debugfont.png");
-	spriteCommon->LoadTexture(1, L"Resources/background.png");
+	spriteCommon->LoadTexture(0, "debugfont.png");
+	spriteCommon->LoadTexture(1, "background.png");
 
 	// テキスト
 	text = Text::GetInstance();
