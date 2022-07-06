@@ -30,6 +30,13 @@ public:
 	static FBXLoader* GetInstance();
 
 	/// <summary>
+	/// FBXの行列をXMMatrixに変換
+	/// </summary>
+	/// <param name="dst">書き込み先</param>
+	/// <param name="src">元となるFBX行列</param>
+	static void ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src);
+
+	/// <summary>
 	/// 初期化
 	/// </summary>
 	/// <param name="device">デバイス</param>
@@ -70,6 +77,11 @@ public:
 	/// マテリアル読み取り
 	/// </summary>
 	void ParseMaterial(ModelFBX* fbxModel, FbxNode* fbxNode);
+
+	/// <summary>
+	/// スキニング情報読み取り
+	/// </summary>
+	void ParseSkin(ModelFBX* model, FbxMesh* fbxMesh);
 
 	/// <summary>
 	/// テクスチャ読み込み
