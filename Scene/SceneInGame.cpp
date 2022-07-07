@@ -7,7 +7,6 @@ SceneInGame::SceneInGame()
 SceneInGame::~SceneInGame()
 {
 	delete fbxCube;
-	delete fbxModelCube;
 }
 
 void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
