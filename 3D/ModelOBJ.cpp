@@ -15,7 +15,7 @@ using namespace std;
 //Ã“Iƒƒ“ƒo•Ï”‚ÌÀ‘Ì
 ID3D12Device* ModelOBJ::device = nullptr;
 UINT ModelOBJ::descriptorHandleIncrementSize = 0;
-const std::string ModelOBJ::baseDirectory = "Resources/";
+const std::string ModelOBJ::baseDirectory = "Resources/3D/";
 
 void ModelOBJ::StaticInitialize(ID3D12Device* device)
 {

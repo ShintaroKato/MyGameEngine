@@ -16,8 +16,8 @@ void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 	this->input = input;
 
 	// スプライト共通テクスチャ読み込み
-	spriteCommon->LoadTexture(0, L"Resources/debugfont.png");
-	spriteCommon->LoadTexture(1, L"Resources/background.png");
+	spriteCommon->LoadTexture(0, "debugfont.png");
+	spriteCommon->LoadTexture(1, "background.png");
 
 	// テキスト
 	text->GetInstance()->Initialize(spriteCommon, 0);

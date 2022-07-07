@@ -1,5 +1,10 @@
 #include "ModelFBX.h"
 
+ModelFBX::~ModelFBX()
+{
+	fbxScene->Destroy();
+}
+
 void ModelFBX::Draw(ID3D12GraphicsCommandList* cmdList)
 {
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
@@ -16,7 +21,7 @@ void ModelFBX::CreateBuffers(ID3D12Device* device)
 	HRESULT result;
 
 	UINT sizeVB =
-		static_cast<UINT>(sizeof(VertexPosNormalUv) * vertices.size());
+		static_cast<UINT>(sizeof(VertexPosNormalUvSkin) * vertices.size());
 
 	result = device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
@@ -26,7 +31,7 @@ void ModelFBX::CreateBuffers(ID3D12Device* device)
 		nullptr,
 		IID_PPV_ARGS(&vertBuff));
 
-	VertexPosNormalUv* vertMap = nullptr;
+	VertexPosNormalUvSkin* vertMap = nullptr;
 	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
 
 	if (SUCCEEDED(result))
