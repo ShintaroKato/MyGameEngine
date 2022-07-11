@@ -25,6 +25,7 @@ struct Node
 
 class ModelFBX
 {
+public:
 	// ƒ{[ƒ“
 	struct Bone
 	{

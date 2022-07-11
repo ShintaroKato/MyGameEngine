@@ -132,6 +132,9 @@
     <ClCompile Include="GameObject\Enemy.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="2D\PostEffect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\SpriteVS.hlsl">
@@ -239,6 +242,9 @@
     </ClInclude>
     <ClInclude Include="GameObject\Enemy.h">
       <Filter>ヘッダー ファイル\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="2D\PostEffect.h">
+      <Filter>ヘッダー ファイル\2D</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -6,7 +6,7 @@ SceneInGame::SceneInGame()
 
 SceneInGame::~SceneInGame()
 {
-	delete fbxCube;
+	delete fbxAnimTest;
 }
 
 void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
@@ -53,17 +53,17 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	objSphere->SetCamera(camera);
 	objSphere->Update();
 
-	fbxModelCube = FBXLoader::GetInstance()->LoadModelFromFile("cube");
-	fbxCube = ObjectFBX::Create();
-	fbxCube->SetModel(fbxModelCube);
-	fbxCube->SetPosition({ 0,-10,10 });
-	fbxCube->SetRotation({ 0,0,0 });
+	fbxModelAnim = FBXLoader::GetInstance()->LoadModelFromFile("boneTest");
+	fbxAnimTest = ObjectFBX::Create();
+	fbxAnimTest->SetModel(fbxModelAnim);
+	fbxAnimTest->SetPosition({ 0,-10,-80 });
+	fbxAnimTest->SetRotation({ 0,0,0 });
 
-	fbxCube->Update();
+	fbxAnimTest->Update();
 
 	camera->SetTarget({0,0,0});
 	camera->SetEye({ 0,0,-100 });
-	camera->SetTarget(fbxCube->GetPosition());
+	camera->SetTarget(fbxAnimTest->GetPosition());
 	camera->Update();
 }
 
@@ -90,7 +90,7 @@ void SceneInGame::Update()
 		camera->CameraMoveVector({ 0,0,0 });
 	}
 
-	camera->SetTarget(objSphere->GetPosition());
+	camera->SetTarget(fbxAnimTest->GetPosition());
 
 	camera->Update();
 
@@ -98,8 +98,20 @@ void SceneInGame::Update()
 	{
 		SceneManager::SetScene(TITLE);
 	}
+	if (input->PushKey(DIK_P))
+	{
+		fbxAnimTest->AnimationPlay();
+	}
+	if (input->PushKey(DIK_S))
+	{
+		fbxAnimTest->AnimationStop();
+	}
+	if (input->PushKey(DIK_R))
+	{
+		fbxAnimTest->AnimationReset();
+	}
 
-	fbxCube->Update();
+	fbxAnimTest->Update();
 	objSphere->Update();
 
 	spriteBG->Update();
@@ -107,8 +119,6 @@ void SceneInGame::Update()
 
 void SceneInGame::Draw()
 {
-	dxCommon->PreDraw();
-
 #pragma region 背景スプライト
 
 	// スプライト描画前処理
@@ -130,7 +140,7 @@ void SceneInGame::Draw()
 
 	ObjectOBJ::PostDraw();
 
-	fbxCube->Draw(dxCommon->GetCmdList());
+	fbxAnimTest->Draw(dxCommon->GetCmdList());
 
 #pragma endregion
 
@@ -149,7 +159,5 @@ void SceneInGame::Draw()
 
 #pragma endregion
 
-
-	dxCommon->PostDraw();
 #pragma endregion グラフィックスコマンド
 }
