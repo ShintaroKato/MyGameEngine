@@ -105,18 +105,28 @@ bool ObjectFBX::InitializeGraphicsPipeline()
 
 	// 頂点レイアウト
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
-		{ // xy座標(1行で書いたほうが見やすい)
+		{ // xy座標
 			"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
 			D3D12_APPEND_ALIGNED_ELEMENT,
 			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 		},
-		{ // 法線ベクトル(1行で書いたほうが見やすい)
+		{ // 法線ベクトル
 			"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
 			D3D12_APPEND_ALIGNED_ELEMENT,
 			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 		},
-		{ // uv座標(1行で書いたほうが見やすい)
+		{ // uv座標
 			"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,
+			D3D12_APPEND_ALIGNED_ELEMENT,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+		},
+		{ // 影響を受けるボーン番号（４つ）
+			"BONEINDICES", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0,
+			D3D12_APPEND_ALIGNED_ELEMENT,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+		},
+		{ // ボーンのスキンウェイト（４つ）
+			"BONEWEIGHTS", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
 			D3D12_APPEND_ALIGNED_ELEMENT,
 			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 		},
@@ -131,8 +141,6 @@ bool ObjectFBX::InitializeGraphicsPipeline()
 	gpipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
 	// ラスタライザステート
 	gpipeline.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-	//gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-	//gpipeline.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
 	// デプスステンシルステート
 	gpipeline.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 
@@ -170,10 +178,10 @@ bool ObjectFBX::InitializeGraphicsPipeline()
 	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0 レジスタ
 
 	// ルートパラメータ
-	CD3DX12_ROOT_PARAMETER rootparams[3];
+	CD3DX12_ROOT_PARAMETER rootparams[3]{};
 	rootparams[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
-	rootparams[1].InitAsConstantBufferView(1, 0, D3D12_SHADER_VISIBILITY_ALL);
-	rootparams[2].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
+	rootparams[1].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
+	rootparams[2].InitAsConstantBufferView(3, 0, D3D12_SHADER_VISIBILITY_ALL);
 
 	// スタティックサンプラー
 	CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
@@ -188,7 +196,7 @@ bool ObjectFBX::InitializeGraphicsPipeline()
 	// ルートシグネチャの生成
 	result = device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&pipelineSet.rootsignature));
 	if (FAILED(result)) {
-		return result;
+		assert(0);
 	}
 
 	gpipeline.pRootSignature = pipelineSet.rootsignature.Get();
@@ -197,7 +205,7 @@ bool ObjectFBX::InitializeGraphicsPipeline()
 	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelineSet.pipelinestate));
 
 	if (FAILED(result)) {
-		return result;
+		assert(0);
 	}
 
 	return true;
@@ -217,6 +225,14 @@ bool ObjectFBX::Initialize()
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&constBuffB0));
+
+	result = device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 	// アップロード可能
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataSkin) + 0xff) & ~0xff),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&constBufferSkin));
 
 	return true;
 }
@@ -257,6 +273,27 @@ void ObjectFBX::Update()
 	constMap->world = modelTransform * matWorld;
 	constMap->camPos = camera->GetEye();
 	constBuffB0->Unmap(0, nullptr);
+
+	// ボーン配列
+	vector<ModelFBX::Bone>& bones = model->GetBones();
+
+	// 定数バッファへデータ転送
+	ConstBufferDataSkin* constMapSkin = nullptr;
+	result = constBufferSkin->Map(0, nullptr, (void**)&constMapSkin);
+
+	for (int i = 0; i < bones.size(); i++)
+	{
+		XMMATRIX matCurrentPose;
+
+		FbxAMatrix fbxCurrentPose =
+			bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(0);
+
+		FBXLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
+
+		constMapSkin->bones[i] = bones[i].invInitialPose * matCurrentPose;
+	}
+
+	constBufferSkin->Unmap(0, nullptr);
 }
 
 void ObjectFBX::Draw(ID3D12GraphicsCommandList* cmdList)
@@ -266,11 +303,13 @@ void ObjectFBX::Draw(ID3D12GraphicsCommandList* cmdList)
 
 	// モデルがセットされていなければ描画をスキップ
 	if (model == nullptr) return;
+	assert(pipelineSet.rootsignature.Get());
 
 	cmdList->SetPipelineState(pipelineSet.pipelinestate.Get());
 	cmdList->SetGraphicsRootSignature(pipelineSet.rootsignature.Get());
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	cmdList->SetGraphicsRootConstantBufferView(0, constBuffB0->GetGPUVirtualAddress());
+	cmdList->SetGraphicsRootConstantBufferView(2, constBufferSkin->GetGPUVirtualAddress());
 
 	// モデルを描画
 	model->Draw(cmdList);

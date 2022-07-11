@@ -216,7 +216,7 @@ bool ObjectOBJ::InitializeGraphicsPipeline()
 	// ルートシグネチャの生成
 	result = device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&pipelineSet.rootsignature));
 	if (FAILED(result)) {
-		return result;
+		assert(0);
 	}
 
 	gpipeline.pRootSignature = pipelineSet.rootsignature.Get();
@@ -225,7 +225,7 @@ bool ObjectOBJ::InitializeGraphicsPipeline()
 	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelineSet.pipelinestate));
 
 	if (FAILED(result)) {
-		return result;
+		assert(0);
 	}
 
 	return true;

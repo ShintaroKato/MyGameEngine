@@ -24,6 +24,10 @@ private: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
+public: // 定数
+	// ボーンの最大数
+	static const int MAX_BONES = 32;
+
 public: // サブクラス
 
 	// 定数バッファ用データ構造体B0
@@ -32,6 +36,12 @@ public: // サブクラス
 		XMMATRIX viewProj;	// ビュープロジェクション行列
 		XMMATRIX world;				// ワールド行列
 		XMFLOAT3 camPos;			// カメラの位置
+	};
+
+	// 定数バッファ用データ構造体(スキニング)
+	struct ConstBufferDataSkin
+	{
+		XMMATRIX bones[MAX_BONES];
 	};
 
 public: // 静的メンバ関数
@@ -124,6 +134,8 @@ private: // メンバ変数
 	ModelFBX* model = nullptr;
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffB0;
+	// 定数バッファ(スキン)
+	ComPtr<ID3D12Resource> constBufferSkin;
 	// 色
 	XMFLOAT4 color = { 1,1,1,1 };
 	// ローカルスケール

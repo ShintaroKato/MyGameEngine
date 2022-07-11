@@ -7,7 +7,6 @@ SceneInGame::SceneInGame()
 SceneInGame::~SceneInGame()
 {
 	delete fbxCube;
-	delete fbxModelCube;
 }
 
 void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
@@ -54,7 +53,7 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	objSphere->SetCamera(camera);
 	objSphere->Update();
 
-	fbxModelCube = FBXLoader::GetInstance()->LoadModelFromFile("cube");
+	fbxModelCube = FBXLoader::GetInstance()->LoadModelFromFile("boneTest");
 	fbxCube = ObjectFBX::Create();
 	fbxCube->SetModel(fbxModelCube);
 	fbxCube->SetPosition({ 0,-10,10 });
