@@ -234,6 +234,16 @@ bool ObjectFBX::Initialize()
 		nullptr,
 		IID_PPV_ARGS(&constBufferSkin));
 
+	ConstBufferDataSkin* constMapSkin = nullptr;
+	result = constBufferSkin->Map(0, nullptr, (void**)&constMapSkin);
+	for (int i = 0; i < MAX_BONES; i++)
+	{
+		constMapSkin->bones[i] = XMMatrixIdentity();
+	}
+	constBufferSkin->Unmap(0, nullptr);
+
+	frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
+
 	return true;
 }
 
@@ -283,17 +293,29 @@ void ObjectFBX::Update()
 
 	for (int i = 0; i < bones.size(); i++)
 	{
+		// 今の姿勢行列
 		XMMATRIX matCurrentPose;
-
+		// 今の姿勢行列を取得
 		FbxAMatrix fbxCurrentPose =
-			bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(0);
-
+			bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
+		// XMMATRIXに変換
 		FBXLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
-
+		// 合成してスキニング行列に
 		constMapSkin->bones[i] = bones[i].invInitialPose * matCurrentPose;
 	}
 
 	constBufferSkin->Unmap(0, nullptr);
+
+	// アニメーション
+	if (isPlay)
+	{
+		currentTime += frameTime;
+		// 最後まで再生したら先頭へ
+		if (currentTime > endTime)
+		{
+			currentTime = startTime;
+		}
+	}
 }
 
 void ObjectFBX::Draw(ID3D12GraphicsCommandList* cmdList)
@@ -313,4 +335,47 @@ void ObjectFBX::Draw(ID3D12GraphicsCommandList* cmdList)
 
 	// モデルを描画
 	model->Draw(cmdList);
+}
+
+void ObjectFBX::SetAnimationNumber(int number)
+{
+	FbxScene* fbxScene = model->GetFbxScene();
+	// 0番のアニメーション取得
+	FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(number);
+	// アニメーションなしの場合関数を終了
+	if (animStack == nullptr) return;
+	// アニメーションの名前取得
+	const char* animStackName = animStack->GetName();
+	// アニメーションの時間情報
+	takeInfo = fbxScene->GetTakeInfo(animStackName);
+	// 開始時間取得
+	startTime = takeInfo->mLocalTimeSpan.GetStart();
+	// 終了時間取得
+	endTime = takeInfo->mLocalTimeSpan.GetStop();
+	// 開始時間に合わせる
+	currentTime = startTime;
+}
+
+void ObjectFBX::AnimationPlay()
+{
+	// 再生中状態にする
+	isPlay = true;
+}
+
+void ObjectFBX::AnimationStop()
+{
+	// 非再生状態にする
+	isPlay = false;
+}
+
+void ObjectFBX::AnimationReset()
+{
+	// 開始時間取得
+	startTime = takeInfo->mLocalTimeSpan.GetStart();
+	// 終了時間取得
+	endTime = takeInfo->mLocalTimeSpan.GetStop();
+	// 開始時間に合わせる
+	currentTime = startTime;
+	// 非再生状態にする
+	isPlay = false;
 }

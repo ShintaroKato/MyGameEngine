@@ -29,6 +29,7 @@
 #include "ObjectOBJ.h"
 #include "FBXLoader.h"
 #include "SceneManager.h"
+#include "PostEffect.h"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -78,6 +79,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	spriteCommon = new SpriteCommon();
 	spriteCommon->Initialize(dxCommon->GetDev(), dxCommon->GetCmdList(), winApp->window_width, winApp->window_height);
 
+	PostEffect* postEffect = nullptr;
+	UINT postEffectNum = 100;
+	spriteCommon->LoadTexture(postEffectNum, "white1x1.png");
+	postEffect = PostEffect::Create(spriteCommon, 100, { 0,0 });
+
 	//// 3Dオブジェクト静的初期化
 	ObjectOBJ::StaticInitialize(dxCommon->GetDev());
 
@@ -108,13 +114,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			break;
 		}
 
-		// シーン更新
+		// 更新
 		input->Update();
 
+		// シーン更新
 		scene[SceneManager::GetScene()]->Update();
+
+		//描画開始
+		dxCommon->PreDraw();
+
+		// ポストエフェクト
+		spriteCommon->PreDraw(dxCommon->GetCmdList());
+		postEffect->Draw();
+		spriteCommon->PostDraw();
 		// シーン描画
-		scene[SceneManager::GetScene()]->Draw();
+		//scene[SceneManager::GetScene()]->Draw();
+
+		//描画終了
+		dxCommon->PostDraw();
 	}
+
+	delete postEffect;
 
 	FBXLoader::GetInstance()->Finalize();
 

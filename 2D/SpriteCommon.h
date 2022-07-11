@@ -60,6 +60,8 @@ public:
 
 	void SetGraphicsRootDescriptorTable(UINT rootParamIndex, UINT texNumber);
 
+	PipelineSet GetPipelineSet() { return pipelineSet; }
+
 private:
 	// スプライト用パイプライン生成
 	void CreateGraphicsPipeline();

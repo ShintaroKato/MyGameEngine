@@ -64,6 +64,6 @@ private: // ƒƒ“ƒo•Ï”
 	ModelOBJ* modelSphere = nullptr;
 	ObjectOBJ* objSphere = nullptr;
 
-	ModelFBX* fbxModelCube = nullptr;
-	ObjectFBX* fbxCube = nullptr;
+	ModelFBX* fbxModelAnim = nullptr;
+	ObjectFBX* fbxAnimTest = nullptr;
 };

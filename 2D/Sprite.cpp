@@ -103,7 +103,7 @@ void Sprite::Draw()
 		return;
 	}
 
-	ID3D12GraphicsCommandList* cmdList = spriteCommon->GetCommandList();
+	cmdList = spriteCommon->GetCommandList();
 
 	// 頂点バッファをセット
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
