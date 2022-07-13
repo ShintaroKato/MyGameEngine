@@ -97,7 +97,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw(ID3D12GraphicsCommandList* cmdList);
+	virtual void Draw(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// 座標の取得
@@ -126,7 +126,7 @@ public: // メンバ関数
 	/// <summary>
 	/// モデルの設定
 	/// </summary>
-	void SetModel(ModelFBX* model) { this->model = model; }
+	void SetModelFBX(ModelFBX* model) { this->model = model; }
 
 	/// <summary>
 	/// アニメーションセット

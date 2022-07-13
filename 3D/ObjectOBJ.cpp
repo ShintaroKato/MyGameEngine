@@ -251,6 +251,8 @@ bool ObjectOBJ::Initialize()
 
 void ObjectOBJ::Update()
 {
+	if (model == nullptr) return;
+
 	HRESULT result;
 	XMMATRIX matScale, matRot, matTrans;
 

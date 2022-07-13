@@ -93,16 +93,16 @@ public:
 	static void SetDevice(ID3D12Device* device) { ObjectOBJ::device = device; }
 
 public: // メンバ関数
-	bool Initialize();
+	virtual bool Initialize();
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
-	void Update();
+	virtual void Update();
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	virtual void Draw();
 
 	/// <summary>
 	/// 座標の取得

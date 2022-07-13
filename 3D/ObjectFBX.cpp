@@ -249,6 +249,8 @@ bool ObjectFBX::Initialize()
 
 void ObjectFBX::Update()
 {
+	if (model == nullptr) return;
+
 	HRESULT result;
 	XMMATRIX matScale, matRot, matTrans;
 
@@ -339,6 +341,8 @@ void ObjectFBX::Draw(ID3D12GraphicsCommandList* cmdList)
 
 void ObjectFBX::SetAnimationNumber(int number)
 {
+	if (model == nullptr) return;
+
 	FbxScene* fbxScene = model->GetFbxScene();
 	// 0番のアニメーション取得
 	FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(number);
@@ -358,18 +362,24 @@ void ObjectFBX::SetAnimationNumber(int number)
 
 void ObjectFBX::AnimationPlay()
 {
+	if (model == nullptr) return;
+
 	// 再生中状態にする
 	isPlay = true;
 }
 
 void ObjectFBX::AnimationStop()
 {
+	if (model == nullptr) return;
+
 	// 非再生状態にする
 	isPlay = false;
 }
 
 void ObjectFBX::AnimationReset()
 {
+	if (model == nullptr) return;
+
 	// 開始時間取得
 	startTime = takeInfo->mLocalTimeSpan.GetStart();
 	// 終了時間取得
