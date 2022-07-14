@@ -96,6 +96,15 @@ bool Input::TriggerMouse(MouseButton button)
 	return false;
 }
 
+bool Input::ReleaseMouse(MouseButton button)
+{
+	if (mouseStatePre.rgbButtons[button] && !mouseState.rgbButtons[button]) {
+		return true;
+	}
+
+	return false;
+}
+
 XMFLOAT2 Input::GetMousePos2()
 {
 	POINT p;
@@ -104,14 +113,61 @@ XMFLOAT2 Input::GetMousePos2()
 
 	ScreenToClient(winApp_->GetHwnd(), &p);
 
-	return XMFLOAT2({ p.x,p.y });
+	return XMFLOAT2({ (float)p.x,(float)p.y });
 }
 
-XMFLOAT3 Input::GetMousePos3(XMMATRIX viewProjectionMat)
+XMVECTOR Input::CursorPoint3D(XMMATRIX viewMat, XMMATRIX prjMat)
 {
-	XMFLOAT2 p = GetMousePos2();
+	XMFLOAT2 cursor = GetMousePos2();
+	XMVECTOR point{};
 
-	XMMATRIX invVPMat = XMMatrixInverse(&XMVECTOR({1,1,1}), viewProjectionMat);
+	point = CalcScreenToXZ(cursor, viewMat, prjMat);
 
-	return XMFLOAT3();
+	return point;
+}
+
+XMVECTOR Input::CalcScreenToWorld(XMFLOAT2 scrPos, float projZ, // 射影空間でのZ値（0～1）
+	XMMATRIX view, XMMATRIX prj)
+{
+	XMVECTOR vec{};
+
+	// 各行列の逆行列を算出
+	XMMATRIX invView = XMMatrixInverse(nullptr, view);
+	XMMATRIX invPrj = XMMatrixInverse(nullptr, prj);
+	XMMATRIX VP = XMMatrixIdentity();
+	VP.r[0].m128_f32[0] = WinApp::window_width / 2.0f;
+	VP.r[1].m128_f32[1] = -WinApp::window_height / 2.0f;
+	VP.r[3].m128_f32[0] = WinApp::window_width / 2.0f;
+	VP.r[3].m128_f32[1] = WinApp::window_height / 2.0f;
+	XMMATRIX invViewport = XMMatrixInverse(nullptr, VP);
+
+	// 逆変換
+	XMMATRIX tmp = invViewport * invPrj * invView;
+	vec = XMVector3TransformCoord(XMVECTOR({ scrPos.x, scrPos.y, projZ }), tmp);
+
+	return vec;
+}
+
+XMVECTOR Input::CalcScreenToXZ(XMFLOAT2 scrPos, XMMATRIX view, XMMATRIX prj)
+{
+	XMVECTOR nearPos;
+	XMVECTOR farPos;
+	XMVECTOR ray;
+	nearPos = CalcScreenToWorld(scrPos, 0.0f, view, prj);
+	farPos = CalcScreenToWorld(scrPos, 1.0f, view, prj);
+	ray = farPos - nearPos;
+	ray = XMVector3Normalize(ray);
+
+	// XZ平面と交差していない場合は遠くのXY平面との交点を出力
+	if (ray.m128_f32[1] <= 0)
+	{
+		// 床交点
+		XMVECTOR Lray = XMVector3Dot(ray, XMVECTOR({ 0, 1, 0 }));
+		XMVECTOR LP0 = XMVector3Dot(XMVECTOR({0,0,0}) - nearPos, XMVECTOR({ 0, 1, 0 }));
+		return nearPos + (LP0 / Lray) * ray;
+	}
+	else
+	{
+		return farPos;
+	}
 }
