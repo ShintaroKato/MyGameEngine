@@ -72,7 +72,7 @@ ObjectOBJ* ObjectOBJ::Create()
 		return nullptr;
 	}
 
-	float scale_val = 20;
+	float scale_val = 1;
 	object3d->scale = { scale_val,scale_val,scale_val };
 
 	return object3d;

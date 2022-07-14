@@ -150,12 +150,25 @@ public: // メンバ関数
 	void AnimationReset();
 
 private: // メンバ変数
-	// モデル
-	ModelFBX* model = nullptr;
+
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffB0;
 	// 定数バッファ(スキン)
 	ComPtr<ID3D12Resource> constBufferSkin;
+	// アニメーション時間情報
+	FbxTakeInfo* takeInfo = nullptr;
+	// 1フレームの時間
+	FbxTime frameTime;
+	// アニメーション開始時間
+	FbxTime startTime;
+	// アニメーション終了時間
+	FbxTime endTime;
+	// 現在時間
+	FbxTime currentTime;
+
+protected: // メンバ変数
+	// モデル
+	ModelFBX* model = nullptr;
 	// 色
 	XMFLOAT4 color = { 1,1,1,1 };
 	// ローカルスケール
@@ -168,16 +181,9 @@ private: // メンバ変数
 	XMMATRIX matWorld{};
 	// 親オブジェクト
 	ObjectFBX* parent = nullptr;
-	// アニメーション時間情報
-	FbxTakeInfo* takeInfo = nullptr;
-	// 1フレームの時間
-	FbxTime frameTime;
-	// アニメーション開始時間
-	FbxTime startTime;
-	// アニメーション終了時間
-	FbxTime endTime;
-	// 現在時間
-	FbxTime currentTime;
 	// アニメーション再生中
 	bool isPlay = false;
+
+protected:
+	Camera* GetCamera() { return ObjectFBX::camera; }
 };

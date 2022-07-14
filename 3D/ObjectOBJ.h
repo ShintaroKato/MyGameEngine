@@ -140,10 +140,12 @@ public: // メンバ関数
 	void SetModelOBJ(ModelOBJ* model) { this->model = model; }
 
 private: // メンバ変数
-	// モデル
-	ModelOBJ* model = nullptr;
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffB0;
+
+protected: // メンバ変数
+	// モデル
+	ModelOBJ* model = nullptr;
 	// 色
 	XMFLOAT4 color = { 1,1,1,1 };
 	// ローカルスケール
@@ -156,4 +158,7 @@ private: // メンバ変数
 	XMMATRIX matWorld{};
 	// 親オブジェクト
 	ObjectOBJ* parent = nullptr;
+
+protected:
+	Camera* GetCamera() { return ObjectOBJ::camera; }
 };
