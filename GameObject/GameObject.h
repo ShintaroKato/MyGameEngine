@@ -1,4 +1,5 @@
 #pragma once
+#include "Input.h"
 #include "ObjectFBX.h"
 #include "ObjectOBJ.h"
 
@@ -40,14 +41,14 @@ public:
 	void Move();
 
 	/// <summary>
-	/// 攻撃
-	/// </summary>
-	void Attack();
-
-	/// <summary>
 	/// 敵との当たり判定
 	/// </summary>
 	bool Hit();
+
+	/// <summary>
+	/// オブジェクトを掴む
+	/// </summary>
+	void Grab();
 
 	//BaseCollider* GetCollider() { return collider; }
 
@@ -59,6 +60,7 @@ public:
 
 private:
 
-	// HP
-	bool alliveFlag = true;
+	XMFLOAT3 pos{};
+	// 掴まれているか否か
+	bool isGrabbed = false;
 };
