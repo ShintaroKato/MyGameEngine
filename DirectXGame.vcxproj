@@ -78,13 +78,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)GameObject\;$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib\DirectXTex\lib\Release;$(ProjectDir)lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(ProjectDir)lib\DirectXTex\lib\Release;$(ProjectDir)lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)GameObject\;$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -155,6 +155,7 @@
     <ClCompile Include="2D\SpriteCommon.cpp" />
     <ClCompile Include="2D\Text.cpp" />
     <ClCompile Include="3D\FBXLoader.cpp" />
+    <ClCompile Include="GameObject\GameObject.cpp" />
     <ClCompile Include="3D\ModelFBX.cpp" />
     <ClCompile Include="3D\ObjectFBX.cpp" />
     <ClCompile Include="3D\Material.cpp" />
@@ -245,6 +246,7 @@
     <ClInclude Include="2D\SpriteCommon.h" />
     <ClInclude Include="2D\Text.h" />
     <ClInclude Include="3D\FBXLoader.h" />
+    <ClInclude Include="GameObject\GameObject.h" />
     <ClInclude Include="3D\ModelFBX.h" />
     <ClInclude Include="3D\ObjectFBX.h" />
     <ClInclude Include="3D\Material.h" />

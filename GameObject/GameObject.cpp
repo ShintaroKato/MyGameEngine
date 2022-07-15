@@ -117,12 +117,10 @@ void GameObject::Grab()
 		if ((pos.x < ObjectOBJ::position.x - deadZone || pos.x > ObjectOBJ::position.x + deadZone) &&
 			(pos.x < ObjectFBX::position.x - deadZone || pos.x > ObjectFBX::position.x + deadZone)) return;
 
-		if ((pos.y < ObjectOBJ::position.y || pos.y > ObjectOBJ::position.y + deadZone * 2) &&
-			(pos.y < ObjectFBX::position.y || pos.y > ObjectFBX::position.y + deadZone * 2)) return;
-
 		if ((pos.z < ObjectOBJ::position.z - deadZone || pos.z > ObjectOBJ::position.z + deadZone) &&
 			(pos.z < ObjectFBX::position.z - deadZone || pos.z > ObjectFBX::position.z + deadZone)) return;
 
+		// ’Í‚ñ‚Å‚¢‚éó‘Ô‚É‚·‚é
 		isGrabbed = true;
 	}
 	// ’Í‚Ü‚ê‚Ä‚¢‚é‚Ìˆ—

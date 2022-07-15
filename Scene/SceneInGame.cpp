@@ -6,7 +6,7 @@ SceneInGame::SceneInGame()
 
 SceneInGame::~SceneInGame()
 {
-	delete fbxAnimTest;
+	delete player;
 }
 
 void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
@@ -24,7 +24,7 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	camera = new Camera();
 	camera->Initialize(WinApp::window_width, WinApp::window_height);
 
-	//ObjectOBJ::SetCamera(camera);
+	ObjectOBJ::SetCamera(camera);
 	ObjectOBJ::SetDevice(dxCommon->GetDev());
 
 	ObjectFBX::SetCamera(camera);
@@ -42,77 +42,76 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	spriteBG = Sprite::Create(spriteCommon, 1, { 0,0 }, {0,0});
 	spriteBG->Update();
 
-	// obj.からモデルデータ読み込み
-	modelSphere = ModelOBJ::LoadObj("sphere", true);
-	// 3Dオブジェクト生成
-	objSphere = ObjectOBJ::Create();
-	// オブジェクトにモデルを紐づける
-	objSphere->SetModelOBJ(modelSphere);
+	// .objからモデルデータ読み込み
+	modelSkydome = ModelOBJ::LoadObj("skydome", true);
+	modelGround = ModelOBJ::LoadObj("ground", true);
+	modelCubeRed = ModelOBJ::LoadObj("cube64Red", true);
+	modelCubeGreen = ModelOBJ::LoadObj("cube64Green", true);
+	modelCubeBlue = ModelOBJ::LoadObj("cube64Blue", true);
 
-	objSphere->SetPosition({ 0,0,10});
-	objSphere->SetCamera(camera);
-	objSphere->Update();
-
+	// .fbxからモデルデータ読み込み
 	fbxModelAnim = FBXLoader::GetInstance()->LoadModelFromFile("boneTest");
-	fbxAnimTest = ObjectFBX::Create();
-	fbxAnimTest->SetModel(fbxModelAnim);
-	fbxAnimTest->SetPosition({ 0,-10,-80 });
-	fbxAnimTest->SetRotation({ 0,0,0 });
 
-	fbxAnimTest->Update();
+	// 3Dオブジェクト生成
+	objSkydome = ObjectOBJ::Create();
+	objGround = ObjectOBJ::Create();
+	// オブジェクトにモデルを紐づける
+	objSkydome->SetModelOBJ(modelSkydome);
+	objGround->SetModelOBJ(modelGround);
+
+	for (int i = 0; i < CUBE_RED_MAX; i++)
+	{
+		objCubeRed[i] = GameObject::Create(modelCubeRed);
+		objCubeGreen[i] = GameObject::Create(modelCubeGreen);
+		objCubeBlue[i] = GameObject::Create(modelCubeBlue);
+
+		objCubeRed[i]->ObjectOBJ::SetScale({ 2,2,2 });
+		objCubeGreen[i]->ObjectOBJ::SetScale({ 2,2,2 });
+		objCubeBlue[i]->ObjectOBJ::SetScale({ 2,2,2 });
+
+		objCubeRed[i]->ObjectOBJ::SetPosition({ 25,0,50 });
+		objCubeGreen[i]->ObjectOBJ::SetPosition({ -25,0,50 });
+		objCubeBlue[i]->ObjectOBJ::SetPosition({ 0,0,-25 });
+	}
+
+	objSkydome->SetScale({ 5,5,5 });
+	objSkydome->Update();
+
+	objGround->SetScale({ 5,5,5 });
+	objGround->Update();
+
+	player = Player::Create(fbxModelAnim);
+	player->ObjectFBX::SetScale({ 2,2,2 });
+	player->SetAnimationNumber(0);
+	player->AnimationReset();
+	player->Update();
 
 	camera->SetTarget({0,0,0});
-	camera->SetEye({ 0,0,-100 });
-	camera->SetTarget(fbxAnimTest->GetPosition());
+	camera->SetEye({ 0,50,-100 });
+	camera->SetTarget(player->ObjectFBX::GetPosition());
 	camera->Update();
 }
 
 void SceneInGame::Update()
 {
-	if (input->PushKey(DIK_UP))
-	{
-		camera->CameraMoveVector({ 0,1,0 });
-	}
-	else if (input->PushKey(DIK_DOWN))
-	{
-		camera->CameraMoveVector({ 0,-1,0 });
-	}
-	else if (input->PushKey(DIK_RIGHT))
-	{
-		camera->CameraMoveVector({ 1,0,0 });
-	}
-	else if (input->PushKey(DIK_LEFT))
-	{
-		camera->CameraMoveVector({ -1,0,0 });
-	}
-	else
-	{
-		camera->CameraMoveVector({ 0,0,0 });
-	}
-
-	camera->SetTarget(fbxAnimTest->GetPosition());
+	camera->SetTarget({ 0,0,0 });
 
 	camera->Update();
+
+	objCubeRed[0]->Update();
+	objCubeGreen[0]->Update();
+	objCubeBlue[0]->Update();
 
 	if (input->TriggerKey(DIK_SPACE))
 	{
 		SceneManager::SetScene(TITLE);
 	}
-	if (input->PushKey(DIK_P))
-	{
-		fbxAnimTest->AnimationPlay();
-	}
-	if (input->PushKey(DIK_S))
-	{
-		fbxAnimTest->AnimationStop();
-	}
-	if (input->PushKey(DIK_R))
-	{
-		fbxAnimTest->AnimationReset();
-	}
 
-	fbxAnimTest->Update();
-	objSphere->Update();
+	// obj更新
+	objSkydome->Update();
+	objGround->Update();
+	// fbx更新
+	player->Update();
 
 	spriteBG->Update();
 }
@@ -134,13 +133,23 @@ void SceneInGame::Draw()
 #pragma region 3Dオブジェクト
 
 	// 3Dオブジェクト描画前処理
+
+	// OBJモデル
 	ObjectOBJ::PreDraw(dxCommon->GetCmdList());
 
 	//objSphere->Draw();
+	objSkydome->Draw();
+	//objPlayer->Draw();
+	objGround->Draw();
+
+	objCubeRed[0]->ObjectOBJ::Draw();
+	objCubeGreen[0]->ObjectOBJ::Draw();
+	objCubeBlue[0]->ObjectOBJ::Draw();
 
 	ObjectOBJ::PostDraw();
 
-	fbxAnimTest->Draw(dxCommon->GetCmdList());
+	// FBXモデル
+	//player->ObjectFBX::Draw(dxCommon->GetCmdList());
 
 #pragma endregion
 

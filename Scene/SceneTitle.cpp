@@ -48,8 +48,6 @@ void SceneTitle::Update()
 
 void SceneTitle::Draw()
 {
-	dxCommon->PreDraw();
-
 #pragma region 背景スプライト
 
 	// スプライト描画前処理
@@ -88,7 +86,5 @@ void SceneTitle::Draw()
 
 #pragma endregion
 
-
-	dxCommon->PostDraw();
 #pragma endregion グラフィックスコマンド
 }

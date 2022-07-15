@@ -60,7 +60,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	dxCommon->Initialize(winApp);
 
 	Input* input = nullptr;
-	input = new Input();
+	input = Input::GetInstance();
 	input->Initialize(winApp);
 
 	Audio* audio = nullptr;
@@ -124,11 +124,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		dxCommon->PreDraw();
 
 		// ポストエフェクト
-		spriteCommon->PreDraw(dxCommon->GetCmdList());
-		postEffect->Draw();
-		spriteCommon->PostDraw();
+		//spriteCommon->PreDraw(dxCommon->GetCmdList());
+		//postEffect->Draw();
+		//spriteCommon->PostDraw();
+
 		// シーン描画
-		//scene[SceneManager::GetScene()]->Draw();
+		scene[SceneManager::GetScene()]->Draw();
 
 		//描画終了
 		dxCommon->PostDraw();
