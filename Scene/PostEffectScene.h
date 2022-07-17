@@ -35,7 +35,7 @@ public: // ƒƒ“ƒoŠÖ”
 	/// <summary>
 	/// ‰Šú‰»
 	/// </summary>
-	void Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)override;
+	void Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input, Audio* audio)override;
 
 	/// <summary>
 	/// –ˆƒtƒŒ[ƒ€ˆ—

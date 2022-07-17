@@ -30,6 +30,7 @@
 #include "FBXLoader.h"
 #include "SceneManager.h"
 #include "PostEffect.h"
+#include "PostEffectScene.h"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -79,10 +80,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	spriteCommon = new SpriteCommon();
 	spriteCommon->Initialize(dxCommon->GetDev(), dxCommon->GetCmdList(), winApp->window_width, winApp->window_height);
 
+	// ポストエフェクト初期化
 	PostEffect* postEffect = nullptr;
 	UINT postEffectNum = 100;
-	spriteCommon->LoadTexture(postEffectNum, "white1x1.png");
-	postEffect = PostEffect::Create(spriteCommon, 100, { 0,0 });
+	postEffect = PostEffect::Create();
 
 	//// 3Dオブジェクト静的初期化
 	ObjectOBJ::StaticInitialize(dxCommon->GetDev());
@@ -105,6 +106,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		scene[i]->Initialize(dxCommon, spriteCommon, input, audio);
 	}
 
+	// ポストエフェクト用シーン初期化
+	PostEffectScene* postEffectScene = new PostEffectScene();
+	postEffectScene->Initialize(dxCommon, spriteCommon, input, audio);
+
 #pragma endregion 描画初期化処理
 
 	while (true)  // ゲームループ
@@ -119,17 +124,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		// シーン更新
 		scene[SceneManager::GetScene()]->Update();
+		postEffectScene->Update();
+
+		// レンダーテクスチャへの描画
+		postEffect->PreDrawScene(dxCommon->GetCmdList());
+		postEffectScene->Draw();
+		postEffect->PostDrawScene(dxCommon->GetCmdList());
 
 		//描画開始
 		dxCommon->PreDraw();
+		// シーン描画
+		scene[SceneManager::GetScene()]->Draw();
 
 		// ポストエフェクト
-		spriteCommon->PreDraw(dxCommon->GetCmdList());
 		postEffect->Draw();
-		spriteCommon->PostDraw();
-		// シーン描画
-		//scene[SceneManager::GetScene()]->Draw();
-
 		//描画終了
 		dxCommon->PostDraw();
 	}

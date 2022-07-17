@@ -11,24 +11,7 @@ SceneInGame::~SceneInGame()
 
 void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
 {
-	// nullptrチェック
-	assert(dxCommon);
-	assert(sprCommon);
-	assert(input);
-
-	this->dxCommon = dxCommon;
-	this->spriteCommon = sprCommon;
-	this->input = input;
-
-	// カメラ生成
-	camera = new Camera();
-	camera->Initialize(WinApp::window_width, WinApp::window_height);
-
-	//ObjectOBJ::SetCamera(camera);
-	ObjectOBJ::SetDevice(dxCommon->GetDev());
-
-	ObjectFBX::SetCamera(camera);
-	ObjectFBX::SetDevice(dxCommon->GetDev());
+	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
 
 	// スプライト共通テクスチャ読み込み
 	spriteCommon->LoadTexture(0, "debugfont.png");
@@ -58,7 +41,7 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	fbxAnimTest->SetModel(fbxModelAnim);
 	fbxAnimTest->SetPosition({ 0,-10,-80 });
 	fbxAnimTest->SetRotation({ 0,0,0 });
-
+	fbxAnimTest->SetAnimationNumber(0);
 	fbxAnimTest->Update();
 
 	camera->SetTarget({0,0,0});

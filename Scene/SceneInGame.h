@@ -48,16 +48,11 @@ public: // メンバ関数
 	void Draw()override;
 
 private: // メンバ変数
-	DirectXCommon* dxCommon = nullptr;
-	SpriteCommon* spriteCommon = nullptr;
-	Input* input = nullptr;
-	Audio* audio = nullptr;
-	Text* text;
-
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-	Camera* camera = nullptr;
+
+	Text* text;
 
 	Sprite* spriteBG = nullptr;
 

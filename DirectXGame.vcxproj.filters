@@ -123,6 +123,9 @@
     <ClCompile Include="2D\PostEffect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\PostEffectScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\SpriteVS.hlsl">
@@ -149,6 +152,8 @@
     <FxCompile Include="Resources\shaders\FBXVS.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\shaders\PostEffectPS.hlsl" />
+    <FxCompile Include="Resources\shaders\PostEffectVS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">
@@ -163,6 +168,7 @@
     <None Include="Resources\shaders\FBX.hlsli">
       <Filter>シェーダーファイル</Filter>
     </None>
+    <None Include="Resources\shaders\PostEffect.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Input\Input.h">
@@ -227,6 +233,9 @@
     </ClInclude>
     <ClInclude Include="2D\PostEffect.h">
       <Filter>ヘッダー ファイル\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\PostEffectScene.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

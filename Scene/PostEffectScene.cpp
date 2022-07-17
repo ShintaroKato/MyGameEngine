@@ -9,9 +9,9 @@ PostEffectScene::~PostEffectScene()
 	delete fbxAnimTest;
 }
 
-void PostEffectScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
+void PostEffectScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input, Audio* audio)
 {
-	SceneBase::Initialize();
+	SceneBase::Initialize(dxCommon, spriteCommon, input, audio);
 	// ƒJƒƒ‰¶¬
 	camera = new Camera();
 	camera->Initialize(WinApp::window_width, WinApp::window_height);
@@ -61,35 +61,31 @@ void PostEffectScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommo
 
 void PostEffectScene::Update()
 {
-	if (input->PushKey(DIK_UP))
-	{
-		camera->CameraMoveVector({ 0,1,0 });
-	}
-	else if (input->PushKey(DIK_DOWN))
-	{
-		camera->CameraMoveVector({ 0,-1,0 });
-	}
-	else if (input->PushKey(DIK_RIGHT))
-	{
-		camera->CameraMoveVector({ 1,0,0 });
-	}
-	else if (input->PushKey(DIK_LEFT))
-	{
-		camera->CameraMoveVector({ -1,0,0 });
-	}
-	else
-	{
-		camera->CameraMoveVector({ 0,0,0 });
-	}
+	//if (input->PushKey(DIK_UP))
+	//{
+	//	camera->CameraMoveVector({ 0,1,0 });
+	//}
+	//else if (input->PushKey(DIK_DOWN))
+	//{
+	//	camera->CameraMoveVector({ 0,-1,0 });
+	//}
+	//else if (input->PushKey(DIK_RIGHT))
+	//{
+	//	camera->CameraMoveVector({ 1,0,0 });
+	//}
+	//else if (input->PushKey(DIK_LEFT))
+	//{
+	//	camera->CameraMoveVector({ -1,0,0 });
+	//}
+	//else
+	//{
+	//	camera->CameraMoveVector({ 0,0,0 });
+	//}
 
 	camera->SetTarget(fbxAnimTest->GetPosition());
 
 	camera->Update();
 
-	if (input->TriggerKey(DIK_SPACE))
-	{
-		SceneManager::SetScene(TITLE);
-	}
 	if (input->PushKey(DIK_P))
 	{
 		fbxAnimTest->AnimationPlay();
