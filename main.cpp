@@ -31,6 +31,7 @@
 #include "SceneManager.h"
 #include "PostEffect.h"
 #include "PostEffectScene.h"
+#include "RenderTexture.h"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -90,7 +91,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	postEffect1->SetTexSize({ 0.7f, 0.7f });
 	postEffect2->SetTexSize({ 0.9f, 0.9f });
 
-	//// 3Dオブジェクト静的初期化
+	RenderTexture* renderTex = nullptr;
+	renderTex = RenderTexture::Create();
+	renderTex->SetTexSize({ 0.5f,0.5f });
+
+	// 3Dオブジェクト静的初期化
 	ObjectOBJ::StaticInitialize(dxCommon->GetDev());
 
 	// FBX初期化
@@ -132,12 +137,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		postEffectScene->Update();
 
 		// レンダーテクスチャへの描画
-		postEffect1->PreDrawScene(dxCommon->GetCmdList());
+		renderTex->PreDrawScene(dxCommon->GetCmdList());
 		postEffectScene->Draw();
-		postEffect1->PostDrawScene(dxCommon->GetCmdList());
+		renderTex->PostDrawScene(dxCommon->GetCmdList());
 
 		postEffect2->PreDrawScene(dxCommon->GetCmdList());
-		postEffect1->Draw();
+		renderTex->Draw();
 		postEffect2->PostDrawScene(dxCommon->GetCmdList());
 
 		//描画開始
