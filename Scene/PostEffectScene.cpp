@@ -54,7 +54,7 @@ void PostEffectScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCo
 	fbxAnimTest->Update();
 
 	camera->SetTarget({ 0,0,0 });
-	camera->SetEye({ 0,0,-100 });
+	camera->SetEye({ 0,0,-90 });
 	camera->SetTarget(fbxAnimTest->GetPosition());
 	camera->Update();
 }

@@ -30,25 +30,15 @@ void PostEffect::Initialize()
 	// 頂点バッファ生成
 	CreateVertexBuffer();
 
-	// 頂点データ
-	VertexPosUv vertices[4] = {
-		//					   u     v
-		{{-1.0f,-1.0f,0.0f}, {0.0f, 1.0f}}, // 左下
-		{{-1.0f,+1.0f,0.0f}, {0.0f, 0.0f}}, // 左上
-		{{+1.0f,-1.0f,0.0f}, {1.0f, 1.0f}}, // 右下
-		{{+1.0f,+1.0f,0.0f}, {1.0f, 0.0f}}, // 右上
-	};
+	// パイプライン生成
+	CreateGraphicsPipelineState();
 
-	// 頂点バッファデータ転送
-	VertexPosUv* vertMap = nullptr;
-	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	memcpy(vertMap, vertices, sizeof(vertices));
-	vertBuff->Unmap(0, nullptr);
+	this->TransferVertexBuffer();
 
 	// 頂点バッファビューの作成
 	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
-	vbView.SizeInBytes = sizeof(vertices);
-	vbView.StrideInBytes = sizeof(vertices[0]);
+	vbView.SizeInBytes = sizeof(VertexPosUv) * 4;
+	vbView.StrideInBytes = sizeof(VertexPosUv);
 
 	// 定数バッファの生成
 	result = this->spriteCommon->GetDevice()->CreateCommittedResource(
@@ -159,9 +149,6 @@ void PostEffect::Initialize()
 	spriteCommon->GetDevice()->CreateDepthStencilView(depthBuff.Get(),
 		&dsvDesc, descHeapDSV->GetCPUDescriptorHandleForHeapStart());
 
-	// パイプライン生成
-	CreateGraphicsPipelineState();
-
 }
 
 void PostEffect::Draw()
@@ -174,9 +161,9 @@ void PostEffect::Draw()
 	constBuff->Unmap(0, nullptr);
 
 	// パイプラインステートの設定
-	cmdList->SetPipelineState(spriteCommon->GetPipelineSet().pipelinestate.Get());
+	cmdList->SetPipelineState(pipelineSet.pipelinestate.Get());
 	// ルートシグネチャの設定
-	cmdList->SetGraphicsRootSignature(spriteCommon->GetPipelineSet().rootsignature.Get());
+	cmdList->SetGraphicsRootSignature(pipelineSet.rootsignature.Get());
 	// プリミティブ形状を設定
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
@@ -236,7 +223,6 @@ void PostEffect::PostDrawScene(ID3D12GraphicsCommandList* cmdList)
 
 void PostEffect::CreateGraphicsPipelineState()
 {
-
 	HRESULT result;
 
 	ComPtr<ID3DBlob> vsBlob = nullptr; // 頂点シェーダオブジェクト
@@ -308,6 +294,12 @@ void PostEffect::CreateGraphicsPipelineState()
 	gpipeline.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;              // 背面カリングをしない
 
+	// デプスステンシルステートの設定
+	gpipeline.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
+	gpipeline.DepthStencilState.DepthEnable = false;    // 深度テストをしない
+	gpipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;       // 常に上書きルール
+	gpipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT; // 深度値フォーマット
+
 		// レンダーターゲットのブレンド設定
 	D3D12_RENDER_TARGET_BLEND_DESC& blenddesc = gpipeline.BlendState.RenderTarget[0];
 	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL; // 標準設定
@@ -318,12 +310,6 @@ void PostEffect::CreateGraphicsPipelineState()
 	blenddesc.BlendOp = D3D12_BLEND_OP_ADD;             // 加算
 	blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;         // ソースのアルファ値
 	blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;    // 1.0f-ソースのアルファ値
-
-	// デプスステンシルステートの設定
-	gpipeline.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
-	gpipeline.DepthStencilState.DepthEnable = false;    // 深度テストをしない
-	//gpipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;       // 常に上書きルール
-	gpipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT; // 深度値フォーマット
 
 	gpipeline.InputLayout.pInputElementDescs = inputLayout;
 	gpipeline.InputLayout.NumElements = _countof(inputLayout);
@@ -340,8 +326,8 @@ void PostEffect::CreateGraphicsPipelineState()
 
 	// ルートパラメータの設定
 	CD3DX12_ROOT_PARAMETER rootparams[2];
-	rootparams[0].InitAsConstantBufferView(0); // 定数バッファビューとして初期化(b0レジスタ)
-	rootparams[1].InitAsDescriptorTable(1, &descRangeSRV);
+	rootparams[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL); // 定数バッファビューとして初期化(b0レジスタ)
+	rootparams[1].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
 
 	// スタティックサンプラー
 	CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
@@ -354,10 +340,37 @@ void PostEffect::CreateGraphicsPipelineState()
 	// バージョン自動判定でのシリアライズ
 	result = D3DX12SerializeVersionedRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootSigBlob, &errorBlob);
 	// ルートシグネチャの生成
-	result = spriteCommon->GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&spriteCommon->GetPipelineSet().rootsignature));
+	result = spriteCommon->GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&pipelineSet.rootsignature));
 
 	// パイプラインにルートシグネチャをセット
-	gpipeline.pRootSignature = spriteCommon->GetPipelineSet().rootsignature.Get();
+	gpipeline.pRootSignature = pipelineSet.rootsignature.Get();
 
-	result = spriteCommon->GetDevice()->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&spriteCommon->GetPipelineSet().pipelinestate));
+	result = spriteCommon->GetDevice()->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelineSet.pipelinestate));
+}
+
+void PostEffect::TransferVertexBuffer()
+{
+	HRESULT result;
+
+	// 頂点データ
+	VertexPosUv vertices[4] = {
+		//							u     v
+		{{-size.x,-size.y,0.0f}, {0.0f, 1.0f}}, // 左下
+		{{-size.x,+size.y,0.0f}, {0.0f, 0.0f}}, // 左上
+		{{+size.x,-size.y,0.0f}, {1.0f, 1.0f}}, // 右下
+		{{+size.x,+size.y,0.0f}, {1.0f, 0.0f}}, // 右上
+	};
+
+	// 頂点バッファデータ転送
+	VertexPosUv* vertMap = nullptr;
+	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+	memcpy(vertMap, vertices, sizeof(vertices));
+	vertBuff->Unmap(0, nullptr);
+}
+
+void PostEffect::SetTexSize(XMFLOAT2 size)
+{
+	this->size = size;
+
+	this->TransferVertexBuffer();
 }

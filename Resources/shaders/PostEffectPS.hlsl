@@ -7,5 +7,17 @@ float4 main(VSOutput input) : SV_TARGET
 {
     float4 texcolor = tex.Sample(smp, input.uv);
 
-    return float4(texcolor.rgb, 1);
+    // UVÇ∏ÇÁÇµ
+    texcolor = tex.Sample(smp, input.uv * float2(2,2) + float2(0.5f,0.5f) );
+
+    // í èÌ
+    //texcolor = float4(texcolor.rgb, 1);
+
+    // RGBÇQî{
+    //texcolor = float4(texcolor.rgb * 2.0f, 1);
+
+    // êFîΩì]
+    texcolor = float4(float3(1,1,1) - texcolor.rgb, 1);
+
+    return texcolor;
 }

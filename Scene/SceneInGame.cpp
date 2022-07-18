@@ -44,7 +44,7 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	fbxAnimTest->SetAnimationNumber(0);
 	fbxAnimTest->Update();
 
-	camera->SetTarget({0,0,0});
+	camera->SetTarget({ 0,0,0 });
 	camera->SetEye({ 0,0,-100 });
 	camera->SetTarget(fbxAnimTest->GetPosition());
 	camera->Update();

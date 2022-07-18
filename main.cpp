@@ -81,9 +81,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	spriteCommon->Initialize(dxCommon->GetDev(), dxCommon->GetCmdList(), winApp->window_width, winApp->window_height);
 
 	// ポストエフェクト初期化
-	PostEffect* postEffect = nullptr;
-	UINT postEffectNum = 100;
-	postEffect = PostEffect::Create();
+	PostEffect* postEffect1 = nullptr;
+	postEffect1 = PostEffect::Create();
+
+	PostEffect* postEffect2 = nullptr;
+	postEffect2 = PostEffect::Create();
+
+	postEffect1->SetTexSize({ 0.7f, 0.7f });
+	postEffect2->SetTexSize({ 0.9f, 0.9f });
 
 	//// 3Dオブジェクト静的初期化
 	ObjectOBJ::StaticInitialize(dxCommon->GetDev());
@@ -127,9 +132,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		postEffectScene->Update();
 
 		// レンダーテクスチャへの描画
-		postEffect->PreDrawScene(dxCommon->GetCmdList());
+		postEffect1->PreDrawScene(dxCommon->GetCmdList());
 		postEffectScene->Draw();
-		postEffect->PostDrawScene(dxCommon->GetCmdList());
+		postEffect1->PostDrawScene(dxCommon->GetCmdList());
+
+		postEffect2->PreDrawScene(dxCommon->GetCmdList());
+		postEffect1->Draw();
+		postEffect2->PostDrawScene(dxCommon->GetCmdList());
 
 		//描画開始
 		dxCommon->PreDraw();
@@ -137,12 +146,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		scene[SceneManager::GetScene()]->Draw();
 
 		// ポストエフェクト
-		postEffect->Draw();
+		postEffect2->Draw();
 		//描画終了
 		dxCommon->PostDraw();
 	}
 
-	delete postEffect;
+	delete postEffect1;
+	delete postEffect2;
 
 	FBXLoader::GetInstance()->Finalize();
 

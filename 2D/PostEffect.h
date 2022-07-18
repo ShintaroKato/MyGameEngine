@@ -18,6 +18,10 @@ public:
 
 	void CreateGraphicsPipelineState();
 
+	void TransferVertexBuffer();
+
+	void SetTexSize(XMFLOAT2 size);
+
 private:
 	static const float clearColor[4];
 
@@ -32,4 +36,9 @@ private:
 	ComPtr<ID3D12DescriptorHeap> descHeapRTV;
 	// デスクリプタヒープ(DSV用)
 	ComPtr<ID3D12DescriptorHeap> descHeapDSV;
+	// パイプラインセット
+	PipelineSet pipelineSet;
+
+public:
+	XMFLOAT2 size = { 0.5f,0.5f };
 };
