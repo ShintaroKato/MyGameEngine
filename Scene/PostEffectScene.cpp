@@ -41,7 +41,7 @@ void PostEffectScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCo
 	// オブジェクトにモデルを紐づける
 	objSphere->SetModelOBJ(modelSphere);
 
-	objSphere->SetPosition({ 0,0,10 });
+	objSphere->SetPosition({ 0,-50,0 });
 	objSphere->SetCamera(camera);
 	objSphere->Update();
 
@@ -61,28 +61,7 @@ void PostEffectScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCo
 
 void PostEffectScene::Update()
 {
-	//if (input->PushKey(DIK_UP))
-	//{
-	//	camera->CameraMoveVector({ 0,1,0 });
-	//}
-	//else if (input->PushKey(DIK_DOWN))
-	//{
-	//	camera->CameraMoveVector({ 0,-1,0 });
-	//}
-	//else if (input->PushKey(DIK_RIGHT))
-	//{
-	//	camera->CameraMoveVector({ 1,0,0 });
-	//}
-	//else if (input->PushKey(DIK_LEFT))
-	//{
-	//	camera->CameraMoveVector({ -1,0,0 });
-	//}
-	//else
-	//{
-	//	camera->CameraMoveVector({ 0,0,0 });
-	//}
-
-	camera->SetTarget(fbxAnimTest->GetPosition());
+	camera->SetTarget(objSphere->GetPosition());
 
 	camera->Update();
 
@@ -97,6 +76,32 @@ void PostEffectScene::Update()
 	if (input->PushKey(DIK_R))
 	{
 		fbxAnimTest->AnimationReset();
+	}
+
+
+	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) ||
+		input->PushKey(DIK_A) || input->PushKey(DIK_D))
+	{
+		XMFLOAT3 rot = objSphere->GetRotation();
+
+		if (input->PushKey(DIK_W))
+		{
+			rot.x++;
+		}
+		else if (input->PushKey(DIK_S))
+		{
+			rot.x--;
+		}
+		else if (input->PushKey(DIK_D))
+		{
+			rot.y++;
+		}
+		else if (input->PushKey(DIK_A))
+		{
+			rot.y--;
+		}
+
+		objSphere->SetRotation(rot);
 	}
 
 	fbxAnimTest->Update();
@@ -124,11 +129,11 @@ void PostEffectScene::Draw()
 	// 3Dオブジェクト描画前処理
 	ObjectOBJ::PreDraw(dxCommon->GetCmdList());
 
-	//objSphere->Draw();
+	objSphere->Draw();
 
 	ObjectOBJ::PostDraw();
 
-	fbxAnimTest->Draw(dxCommon->GetCmdList());
+	//fbxAnimTest->Draw(dxCommon->GetCmdList());
 
 #pragma endregion
 

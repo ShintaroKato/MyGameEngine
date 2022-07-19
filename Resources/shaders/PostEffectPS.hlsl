@@ -8,16 +8,42 @@ float4 main(VSOutput input) : SV_TARGET
     float4 texcolor = tex.Sample(smp, input.uv);
 
     // UVÇ∏ÇÁÇµ
-    //texcolor = tex.Sample(smp, input.uv * float2(2,2) + float2(0.5f,0.5f) );
+    if (mode == 4)
+    {
+        texcolor = tex.Sample(smp, input.uv * float2(2, 2) + float2(0.5f, 0.5f));
+    }
+    if (mode == 0)
+    {
+        // í èÌ
+        texcolor = float4(texcolor.rgb, alpha);
+    }
+    if (mode == 1)
+    {
+        // RGBÇQî{
+        texcolor = float4(texcolor.rgb * 2.0f, alpha);
+    }
+    if (mode == 2)
+    {
+        // êFîΩì]
+        texcolor = float4(float3(1, 1, 1) - texcolor.rgb, alpha);
+    }
+    if (mode == 3)
+    {
+        // Ç⁄Ç©Çµ
+        float4 color = float4(0,0,0,0);
+        float count = 0;
 
-    // í èÌ
-    //texcolor = float4(texcolor.rgb, 1);
+        for (float y = -10; y < 10; y++)
+        {
+            for (float x = -10; x < 10; x++)
+            {
+                color += tex.Sample(smp, input.uv + float2(x, y) * 0.001f);
+                count++;
+            }
+        }
 
-    // RGBÇQî{
-    texcolor = float4(texcolor.rgb * 2.0f, 1);
-
-    // êFîΩì]
-    //texcolor = float4(float3(1,1,1) - texcolor.rgb, 1);
+        texcolor.rgb = color.rgb / count;
+    }
 
     return texcolor;
 }

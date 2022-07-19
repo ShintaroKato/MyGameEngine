@@ -103,12 +103,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	ObjectFBX::StaticInitialize(dxCommon->GetDev());
 
 	// シーン初期化
-	SceneTitle* title = new SceneTitle();
 	SceneInGame* game = new SceneInGame();
 
 	SceneBase* scene[] =
 	{
-		title,
 		game,
 	};
 	for (int i = 0; i < _countof(scene); i++)
@@ -132,17 +130,84 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		// 更新
 		input->Update();
 
+		if (input->PushKey(DIK_J) && postEffect1->alpha < 1)
+		{
+			postEffect1->alpha += 0.01;
+			postEffect2->alpha += 0.01;
+		}
+		if (input->PushKey(DIK_K) && postEffect1->alpha > 0)
+		{
+			postEffect1->alpha -= 0.01;
+			postEffect2->alpha -= 0.01;
+		}
+
+		if (input->PushKey(DIK_LSHIFT))
+		{
+			if (input->TriggerKey(DIK_1))
+			{
+				postEffect2->mode = 0;
+			}
+			if (input->TriggerKey(DIK_2))
+			{
+				postEffect2->mode = 1;
+			}
+			if (input->TriggerKey(DIK_3))
+			{
+				postEffect2->mode = 2;
+			}
+			if (input->TriggerKey(DIK_4))
+			{
+				postEffect2->mode = 3;
+			}
+			if (input->TriggerKey(DIK_5))
+			{
+				postEffect2->mode = 4;
+			}
+		}
+		else
+		{
+			if (input->TriggerKey(DIK_1))
+			{
+				postEffect1->mode = 0;
+			}
+			if (input->TriggerKey(DIK_2))
+			{
+				postEffect1->mode = 1;
+			}
+			if (input->TriggerKey(DIK_3))
+			{
+				postEffect1->mode = 2;
+			}
+			if (input->TriggerKey(DIK_4))
+			{
+				postEffect1->mode = 3;
+			}
+			if (input->TriggerKey(DIK_5))
+			{
+				postEffect1->mode = 4;
+			}
+		}
+
+		if (input->TriggerKey(DIK_9))
+		{
+			postEffect1->SwitchDraw();
+		}
+		if (input->TriggerKey(DIK_0))
+		{
+			postEffect2->SwitchDraw();
+		}
+
 		// シーン更新
 		scene[SceneManager::GetScene()]->Update();
 		postEffectScene->Update();
 
 		// レンダーテクスチャへの描画
-		renderTex->PreDrawScene(dxCommon->GetCmdList());
+		postEffect1->PreDrawScene(dxCommon->GetCmdList());
 		postEffectScene->Draw();
-		renderTex->PostDrawScene(dxCommon->GetCmdList());
+		postEffect1->PostDrawScene(dxCommon->GetCmdList());
 
 		postEffect2->PreDrawScene(dxCommon->GetCmdList());
-		renderTex->Draw();
+		postEffect1->Draw();
 		postEffect2->PostDrawScene(dxCommon->GetCmdList());
 
 		//描画開始

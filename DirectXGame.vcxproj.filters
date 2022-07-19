@@ -159,6 +159,7 @@
     <FxCompile Include="Resources\shaders\PostEffectVS.hlsl" />
     <FxCompile Include="Resources\shaders\RenderTexturePS.hlsl" />
     <FxCompile Include="Resources\shaders\RenderTextureVS.hlsl" />
+    <FxCompile Include="Resources\shaders\PhongPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">

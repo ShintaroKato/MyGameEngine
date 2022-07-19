@@ -1,4 +1,5 @@
 #include "SceneInGame.h"
+#include "PostEffect.h"
 
 SceneInGame::SceneInGame()
 {
@@ -52,21 +53,25 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 
 void SceneInGame::Update()
 {
-	if (input->PushKey(DIK_UP))
+	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) ||
+		input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
 	{
-		camera->CameraMoveVector({ 0,1,0 });
-	}
-	else if (input->PushKey(DIK_DOWN))
-	{
-		camera->CameraMoveVector({ 0,-1,0 });
-	}
-	else if (input->PushKey(DIK_RIGHT))
-	{
-		camera->CameraMoveVector({ 1,0,0 });
-	}
-	else if (input->PushKey(DIK_LEFT))
-	{
-		camera->CameraMoveVector({ -1,0,0 });
+		if (input->PushKey(DIK_UP))
+		{
+			camera->CameraMoveVector({ 0,1,0 });
+		}
+		else if (input->PushKey(DIK_DOWN))
+		{
+			camera->CameraMoveVector({ 0,-1,0 });
+		}
+		if (input->PushKey(DIK_LEFT))
+		{
+			camera->CameraMoveVector({ 1,0,0 });
+		}
+		else if (input->PushKey(DIK_RIGHT))
+		{
+			camera->CameraMoveVector({ -1,0,0 });
+		}
 	}
 	else
 	{
@@ -77,15 +82,40 @@ void SceneInGame::Update()
 
 	camera->Update();
 
+	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) ||
+		input->PushKey(DIK_A) || input->PushKey(DIK_D))
+	{
+		XMFLOAT3 rot = fbxAnimTest->GetRotation();
+
+		if (input->PushKey(DIK_W))
+		{
+			rot.x++;
+		}
+		else if (input->PushKey(DIK_S))
+		{
+			rot.x--;
+		}
+		else if (input->PushKey(DIK_D))
+		{
+			rot.y++;
+		}
+		else if (input->PushKey(DIK_A))
+		{
+			rot.y--;
+		}
+
+		fbxAnimTest->SetRotation(rot);
+	}
+
 	if (input->TriggerKey(DIK_SPACE))
 	{
-		SceneManager::SetScene(TITLE);
+		
 	}
-	if (input->PushKey(DIK_P))
+	if (input->PushKey(DIK_Y))
 	{
 		fbxAnimTest->AnimationPlay();
 	}
-	if (input->PushKey(DIK_S))
+	if (input->PushKey(DIK_T))
 	{
 		fbxAnimTest->AnimationStop();
 	}

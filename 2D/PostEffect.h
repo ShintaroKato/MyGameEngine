@@ -4,6 +4,16 @@
 class PostEffect : public Sprite
 {
 public:
+	// 定数バッファ用データ構造体
+	struct ConstBufferData
+	{
+		XMFLOAT4 color; // 色 (RGBA)
+		XMMATRIX mat;   // ３Ｄ変換行列
+		UINT mode;     // 表示切り替え
+		float alpha;     // 透明度
+	};
+
+public:
 	PostEffect();
 
 	static PostEffect* Create();
@@ -21,6 +31,8 @@ public:
 	void TransferVertexBuffer();
 
 	void SetTexSize(XMFLOAT2 size);
+
+	void SwitchDraw();
 
 private:
 	static const float clearColor[4];
@@ -40,5 +52,11 @@ private:
 	PipelineSet pipelineSet;
 
 public:
+
+	bool isDraw = true;
+
 	XMFLOAT2 size = { 0.5f,0.5f };
+
+	UINT mode = 2;
+	float alpha = 1.0f;
 };

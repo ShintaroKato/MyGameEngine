@@ -153,11 +153,15 @@ void PostEffect::Initialize()
 
 void PostEffect::Draw()
 {
+	if (!isDraw) return;
+
 	// 定数バッファへの転送
 	ConstBufferData* constMap = nullptr;
 	HRESULT result = constBuff->Map(0, nullptr, (void**)&constMap);
 	constMap->mat = XMMatrixIdentity();
 	constMap->color = color;
+	constMap->mode = mode;
+	constMap->alpha = alpha;
 	constBuff->Unmap(0, nullptr);
 
 	// パイプラインステートの設定
@@ -373,4 +377,16 @@ void PostEffect::SetTexSize(XMFLOAT2 size)
 	this->size = size;
 
 	this->TransferVertexBuffer();
+}
+
+void PostEffect::SwitchDraw()
+{
+	if (isDraw)
+	{
+		isDraw = false;
+	}
+	else
+	{
+		isDraw = true;
+	}
 }
