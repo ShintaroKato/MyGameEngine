@@ -30,6 +30,8 @@
 #include "FBXLoader.h"
 #include "SceneManager.h"
 #include "PostEffect.h"
+#include "PostEffectScene.h"
+#include "RenderTexture.h"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -92,12 +94,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	ObjectFBX::StaticInitialize(dxCommon->GetDev());
 
 	// シーン初期化
-	SceneTitle* title = new SceneTitle();
 	SceneInGame* game = new SceneInGame();
 
 	SceneBase* scene[] =
 	{
-		title,
 		game,
 	};
 	for (int i = 0; i < _countof(scene); i++)
@@ -122,6 +122,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		//描画開始
 		dxCommon->PreDraw();
+		// シーン描画
+		scene[SceneManager::GetScene()]->Draw();
 
 		// ポストエフェクト
 		//spriteCommon->PreDraw(dxCommon->GetCmdList());
@@ -135,7 +137,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		dxCommon->PostDraw();
 	}
 
-	delete postEffect;
+	delete postEffect1;
+	delete postEffect2;
 
 	FBXLoader::GetInstance()->Finalize();
 

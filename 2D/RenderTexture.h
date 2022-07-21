@@ -1,22 +1,12 @@
 #pragma once
 #include "Sprite.h"
 
-class PostEffect : public Sprite
+class RenderTexture : public Sprite
 {
 public:
-	// 定数バッファ用データ構造体
-	struct ConstBufferData
-	{
-		XMFLOAT4 color; // 色 (RGBA)
-		XMMATRIX mat;   // ３Ｄ変換行列
-		UINT mode;     // 表示切り替え
-		float alpha;     // 透明度
-	};
+	RenderTexture();
 
-public:
-	PostEffect();
-
-	static PostEffect* Create();
+	static RenderTexture* Create();
 
 	void Initialize();
 
@@ -32,14 +22,12 @@ public:
 
 	void SetTexSize(XMFLOAT2 size);
 
-	void SwitchDraw();
-
 private:
 	static const float clearColor[4];
 
 private:
 	// テクスチャバッファ
-	ComPtr<ID3D12Resource> texBuff;
+	ComPtr<ID3D12Resource> texBuff[2];
 	// 深度バッファ
 	ComPtr<ID3D12Resource> depthBuff;
 	// デスクリプタヒープ(SRV用)
@@ -52,11 +40,5 @@ private:
 	PipelineSet pipelineSet;
 
 public:
-
-	bool isDraw = true;
-
 	XMFLOAT2 size = { 0.5f,0.5f };
-
-	UINT mode = 2;
-	float alpha = 1.0f;
 };

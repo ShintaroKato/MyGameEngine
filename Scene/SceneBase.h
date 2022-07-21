@@ -26,10 +26,12 @@ public:
 	/// </summary>
 	virtual void Draw() {};
 
-private:
+protected:
 
-	DirectXCommon* dxCommon_ = nullptr;
-	SpriteCommon* spriteCommon_ = nullptr;
-	Input* input_ = nullptr;
-	Audio* audio_ = nullptr;
+	DirectXCommon* dxCommon = nullptr;
+	SpriteCommon* spriteCommon = nullptr;
+	Input* input = nullptr;
+	Audio* audio = nullptr;
+
+	Camera* camera = nullptr;
 };

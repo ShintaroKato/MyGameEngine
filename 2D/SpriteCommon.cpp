@@ -132,7 +132,7 @@ void SpriteCommon::CreateGraphicsPipeline()
 	blenddesc.BlendEnable = true;                   // ブレンドを有効にする
 	blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;    // 加算
 	blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE;      // ソースの値を100% 使う
-	blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO;    // デストの値を   0% 使う
+	blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO;    // デストの値を  0% 使う
 	blenddesc.BlendOp = D3D12_BLEND_OP_ADD;             // 加算
 	blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;         // ソースのアルファ値
 	blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;    // 1.0f-ソースのアルファ値

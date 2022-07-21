@@ -96,6 +96,10 @@ public:
 
 protected: // メンバ関数
 	/// <summary>
+	/// 頂点バッファ生成
+	/// </summary>
+	void CreateVertexBuffer();
+	/// <summary>
 	/// 頂点データ転送
 	/// </summary>
 	void TransferVertexBuffer();

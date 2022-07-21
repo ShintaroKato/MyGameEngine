@@ -6,14 +6,7 @@ SceneTitle::SceneTitle()
 
 void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
 {
-	// nullptrチェック
-	assert(dxCommon);
-	assert(sprCommon);
-	assert(input);
-
-	this->dxCommon = dxCommon;
-	this->spriteCommon = sprCommon;
-	this->input = input;
+	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
 
 	// スプライト共通テクスチャ読み込み
 	spriteCommon->LoadTexture(0, "debugfont.png");
@@ -38,7 +31,7 @@ void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 
 void SceneTitle::Update()
 {
-	if (input->PushKey(DIK_SPACE))
+	if (input->TriggerKey(DIK_SPACE))
 	{
 		SceneManager::SceneChange();
 	}
@@ -54,7 +47,7 @@ void SceneTitle::Draw()
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
 	// スプライト描画
-	spriteBG->Draw();
+	//spriteBG->Draw();
 
 	spriteCommon->PostDraw();
 
@@ -77,7 +70,7 @@ void SceneTitle::Draw()
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
 	// スプライト描画
-	spriteBG->Draw();
+	//spriteBG->Draw();
 
 	// テキスト描画
 	//text->DrawAll(dxCommon->GetCmdList());
