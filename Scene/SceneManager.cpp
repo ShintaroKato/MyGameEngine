@@ -2,6 +2,7 @@
 
 int SceneManager::scene = TITLE;
 SceneNum SceneManager::currentScene = TITLE;
+bool SceneManager::isLoaded = false;
 
 void SceneManager::SceneChange()
 {
@@ -20,4 +21,6 @@ void SceneManager::SetScene(SceneNum scene)
 	SceneManager::currentScene = scene;
 
 	SceneManager::scene = currentScene;
+
+	isLoaded = false;
 }

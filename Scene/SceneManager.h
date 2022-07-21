@@ -1,13 +1,13 @@
 #pragma once
 #include "SceneTitle.h"
+#include "SceneStageEdit.h"
 #include "SceneInGame.h"
 
 enum SceneNum
 {
 	TITLE,
-	GAME_MAIN,
-	GAME_OVER,
-	GAME_CLEAR,
+	EDIT,
+	GAME,
 	NONE
 };
 
@@ -17,6 +17,7 @@ private:
 
 	static int scene;
 	static SceneNum currentScene;
+	static bool isLoaded;
 
 public:
 	/// <summary>
@@ -33,4 +34,14 @@ public:
 	/// ƒV[ƒ“‚Ì”Ô†‚ğæ“¾
 	/// </summary>
 	static SceneNum GetScene() { return currentScene; }
+
+	/// <summary>
+	/// ‰Šú‰»Ï‚İ‚Å‚ ‚é‚©‚Ì”»’è‚ğæ“¾
+	/// </summary>
+	static bool GetInitFlag() { return isLoaded; }
+
+	/// <summary>
+	/// ‰Šú‰»Ï‚İ‚É•ÏX
+	/// </summary>
+	static void ChangeLoaded() { isLoaded = true; }
 };

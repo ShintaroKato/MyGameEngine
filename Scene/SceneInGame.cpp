@@ -12,7 +12,6 @@ SceneInGame::~SceneInGame()
 
 void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
 {
-<<<<<<< HEAD
 	// nullptrチェック
 	assert(dxCommon);
 	assert(sprCommon);
@@ -31,9 +30,8 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 
 	ObjectFBX::SetCamera(camera);
 	ObjectFBX::SetDevice(dxCommon->GetDev());
-=======
 	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
->>>>>>> CG4_Test
+
 
 	// スプライト共通テクスチャ読み込み
 	spriteCommon->LoadTexture(0, "debugfont.png");
@@ -74,7 +72,6 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 		objCubeGreen[i]->ObjectOBJ::SetScale({ 2,2,2 });
 		objCubeBlue[i]->ObjectOBJ::SetScale({ 2,2,2 });
 
-<<<<<<< HEAD
 		objCubeRed[i]->ObjectOBJ::SetPosition({ 25,0,50 });
 		objCubeGreen[i]->ObjectOBJ::SetPosition({ -25,0,50 });
 		objCubeBlue[i]->ObjectOBJ::SetPosition({ 0,0,-25 });
@@ -87,33 +84,18 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	objGround->Update();
 
 	player = Player::Create(fbxModelAnim);
-	player->ObjectFBX::SetScale({ 2,2,2 });
-	player->SetAnimationNumber(0);
-	player->AnimationReset();
+	player->SetPosition({ 0, 0, 0 });
+	player->SetScale({ 2,2,2 });
 	player->Update();
 
 	camera->SetTarget({0,0,0});
 	camera->SetEye({ 0,50,-100 });
-	camera->SetTarget(player->ObjectFBX::GetPosition());
-=======
-	fbxModelAnim = FBXLoader::GetInstance()->LoadModelFromFile("boneTest");
-	fbxAnimTest = ObjectFBX::Create();
-	fbxAnimTest->SetModel(fbxModelAnim);
-	fbxAnimTest->SetPosition({ 0,-10,-80 });
-	fbxAnimTest->SetRotation({ 0,0,0 });
-	fbxAnimTest->SetAnimationNumber(0);
-	fbxAnimTest->Update();
-
-	camera->SetTarget({ 0,0,0 });
-	camera->SetEye({ 0,0,-100 });
-	camera->SetTarget(fbxAnimTest->GetPosition());
->>>>>>> CG4_Test
+	camera->SetTarget(player->GetPosition());
 	camera->Update();
 }
 
 void SceneInGame::Update()
 {
-<<<<<<< HEAD
 	camera->SetTarget({ 0,0,0 });
 
 	camera->Update();
@@ -121,7 +103,7 @@ void SceneInGame::Update()
 	objCubeRed[0]->Update();
 	objCubeGreen[0]->Update();
 	objCubeBlue[0]->Update();
-=======
+
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) ||
 		input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
 	{
@@ -147,55 +129,14 @@ void SceneInGame::Update()
 		camera->CameraMoveVector({ 0,0,0 });
 	}
 
-	camera->SetTarget(fbxAnimTest->GetPosition());
+	camera->SetTarget(player->GetPosition());
 
 	camera->Update();
 
-	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) ||
-		input->PushKey(DIK_A) || input->PushKey(DIK_D))
-	{
-		XMFLOAT3 rot = fbxAnimTest->GetRotation();
-
-		if (input->PushKey(DIK_W))
-		{
-			rot.x++;
-		}
-		else if (input->PushKey(DIK_S))
-		{
-			rot.x--;
-		}
-		else if (input->PushKey(DIK_D))
-		{
-			rot.y++;
-		}
-		else if (input->PushKey(DIK_A))
-		{
-			rot.y--;
-		}
-
-		fbxAnimTest->SetRotation(rot);
-	}
->>>>>>> CG4_Test
-
 	if (input->TriggerKey(DIK_SPACE))
 	{
-		
+		SceneManager::SceneChange();
 	}
-<<<<<<< HEAD
-=======
-	if (input->PushKey(DIK_Y))
-	{
-		fbxAnimTest->AnimationPlay();
-	}
-	if (input->PushKey(DIK_T))
-	{
-		fbxAnimTest->AnimationStop();
-	}
-	if (input->PushKey(DIK_R))
-	{
-		fbxAnimTest->AnimationReset();
-	}
->>>>>>> CG4_Test
 
 	// obj更新
 	objSkydome->Update();
@@ -239,7 +180,7 @@ void SceneInGame::Draw()
 	ObjectOBJ::PostDraw();
 
 	// FBXモデル
-	//player->ObjectFBX::Draw(dxCommon->GetCmdList());
+	player->ObjectFBX::Draw(dxCommon->GetCmdList());
 
 #pragma endregion
 

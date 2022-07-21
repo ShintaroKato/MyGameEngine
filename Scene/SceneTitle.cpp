@@ -31,9 +31,13 @@ void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 
 void SceneTitle::Update()
 {
-	if (input->TriggerKey(DIK_SPACE))
+	if (input->TriggerKey(DIK_1))
 	{
-		SceneManager::SceneChange();
+		SceneManager::SetScene(EDIT);
+	}
+	if (input->TriggerKey(DIK_2))
+	{
+		SceneManager::SetScene(GAME);
 	}
 
 	spriteBG->Update();
@@ -47,7 +51,7 @@ void SceneTitle::Draw()
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
 	// スプライト描画
-	//spriteBG->Draw();
+	spriteBG->Draw();
 
 	spriteCommon->PostDraw();
 
