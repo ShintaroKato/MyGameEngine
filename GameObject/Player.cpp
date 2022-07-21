@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "Input.h"
 
-Player* Player::Create(ModelFBX* fbx)
+Player* Player::Create(ModelFBX* fbx, int animationNumber)
 {
 	// 3Dオブジェクトのインスタンスを生成
 	Player* instance = new Player();
@@ -21,6 +21,8 @@ Player* Player::Create(ModelFBX* fbx)
 	if (fbx)
 	{
 		instance->SetModelFBX(fbx);
+		instance->SetAnimationNumber(animationNumber);
+		instance->AnimationReset();
 	}
 
 	return instance;
@@ -107,4 +109,52 @@ void Player::Attack()
 bool Player::Hit()
 {
 	return false;
+}
+
+XMFLOAT3 Player::GetPosition()
+{
+	if (ObjectOBJ::model)
+	{
+		return ObjectOBJ::position;
+	}
+	if (ObjectFBX::model)
+	{
+		return ObjectFBX::position;
+	}
+}
+
+void Player::SetPosition(XMFLOAT3 pos)
+{
+	if (ObjectOBJ::model)
+	{
+		ObjectOBJ::position = pos;
+	}
+	if (ObjectFBX::model)
+	{
+		ObjectFBX::position = pos;
+	}
+}
+
+void Player::SetRotation(XMFLOAT3 rot)
+{
+	if (ObjectOBJ::model)
+	{
+		ObjectOBJ::rotation = rot;
+	}
+	if (ObjectFBX::model)
+	{
+		ObjectFBX::rotation = rot;
+	}
+}
+
+void Player::SetScale(XMFLOAT3 scale)
+{
+	if (ObjectOBJ::model)
+	{
+		ObjectOBJ::scale = scale;
+	}
+	if (ObjectFBX::model)
+	{
+		ObjectFBX::scale = scale;
+	}
 }

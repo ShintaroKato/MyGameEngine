@@ -16,11 +16,18 @@ private: // エイリアス
 
 public:
 	/// <summary>
-	/// 3Dオブジェクト生成
+	/// OBJモデル生成
 	/// </summary>
 	/// <returns>インスタンス</returns>
 	static Player* Create(ModelOBJ* obj = nullptr);
-	static Player* Create(ModelFBX* fbx = nullptr);
+
+	/// <summary>
+	/// FBXモデル生成
+	/// </summary>
+	/// <param name="fbx">モデルデータ</param>
+	/// <param name="animationNumber">アニメーション番号</param>
+	/// <returns>インスタンス</returns>
+	static Player* Create(ModelFBX* fbx = nullptr, int animationNumber = 0);
 
 public:
 	/// <summary>
@@ -49,6 +56,11 @@ public:
 	/// </summary>
 	bool Hit();
 
+	/// <summary>
+	/// 座標を取得
+	/// </summary>
+	XMFLOAT3 GetPosition();
+
 	//BaseCollider* GetCollider() { return collider; }
 
 	/// <summary>
@@ -56,6 +68,21 @@ public:
 	/// </summary>
 	/// <param name="info">衝突情報</param>
 	//void OnCollision(const CollisionInfo& info) override;
+
+	/// <summary>
+	/// 座標を設定
+	/// </summary>
+	void SetPosition(XMFLOAT3 pos);
+
+	/// <summary>
+	/// 回転を設定
+	/// </summary>
+	void SetRotation(XMFLOAT3 rot);
+
+	/// <summary>
+	/// 座標を設定
+	/// </summary>
+	void SetScale(XMFLOAT3 scale);
 
 private:
 
