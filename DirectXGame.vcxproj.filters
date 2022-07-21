@@ -138,6 +138,9 @@
     <ClCompile Include="GameObject\GameObject.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\SceneStageEdit.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\SpriteVS.hlsl">
@@ -250,6 +253,9 @@
       <Filter>ヘッダー ファイル\2D</Filter>
     </ClInclude>
     <ClInclude Include="GameObject\GameObject.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneStageEdit.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
