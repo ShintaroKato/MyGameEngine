@@ -15,14 +15,19 @@
 /// </summary>
 class ObjectFBX
 {
-private: // エイリアス
+protected: // エイリアス
 	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 	// DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
+	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
+
+public: // 定数
+	// ボーンの最大数
+	static const int MAX_BONES = 32;
 
 public: // サブクラス
 
@@ -34,12 +39,11 @@ public: // サブクラス
 		XMFLOAT3 camPos;			// カメラの位置
 	};
 
-private: // 定数
-	//static const int division = 50;					// 分割数
-	//static const float radius;				// 底面の半径
-	//static const float prizmHeight;			// 柱の高さ
-	//static const int planeCount = division * 2 + division * 2;		// 面の数
-	//static const int vertexCount = planeCount * 3;		// 頂点数
+	// 定数バッファ用データ構造体(スキニング)
+	struct ConstBufferDataSkin
+	{
+		XMMATRIX bones[MAX_BONES];
+	};
 
 public: // 静的メンバ関数
 	/// <summary>
@@ -56,6 +60,16 @@ public: // 静的メンバ関数
 	/// </summary>
 	/// <returns></returns>
 	static ObjectFBX* Create();
+	/// <summary>
+	/// カメラの設定
+	/// </summary>
+	/// <param name="camera"></param>
+	static void SetCamera(Camera* camera) { ObjectFBX::camera = camera; }
+	/// <summary>
+	/// デバイスの設定
+	/// </summary>
+	/// <param name="device"></param>
+	static void SetDevice(ID3D12Device* device) { ObjectFBX::device = device; }
 
 private: // 静的メンバ変数
 	// デバイス
@@ -73,23 +87,17 @@ private:// 静的メンバ関数
 	/// <returns>成否</returns>
 	static bool InitializeGraphicsPipeline();
 
-	/// <summary>
-	///	シェーダファイルの読み込みとコンパイル
-	/// </summary>
-	/// <param name="filename">ファイル名</param>
-	static void LoadShader(ComPtr<ID3DBlob> blob, ComPtr<ID3DBlob> errorBlob, const LPCWSTR& filename);
-
 public: // メンバ関数
-	bool Initialize();
+	virtual bool Initialize();
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
-	void Update();
+	virtual void Update();
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw(ID3D12GraphicsCommandList* cmdList);
+	virtual void Draw(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// 座標の取得
@@ -98,33 +106,75 @@ public: // メンバ関数
 	const XMFLOAT3& GetPosition() { return position; }
 
 	/// <summary>
+	/// 回転の取得
+	/// </summary>
+	/// <returns>座標</returns>
+	const XMFLOAT3& GetRotation() { return rotation; }
+
+	/// <summary>
 	/// 座標の設定
 	/// </summary>
 	/// <param name="position">座標</param>
 	void SetPosition(XMFLOAT3 position) { this->position = position; }
 
 	/// <summary>
+	/// 回転の設定
+	/// </summary>
+	/// <param name="rotation">回転</param>
+	void SetRotation(XMFLOAT3 rotation) { this->rotation = rotation; }
+
+	/// <summary>
+	/// スケールの設定
+	/// </summary>
+	/// <param name="scale">スケール</param>
+	void SetScale(XMFLOAT3 scale) { this->scale = scale; }
+
+	/// <summary>
 	/// モデルの設定
 	/// </summary>
-	void SetModel(ModelFBX* model) { this->model = model; }
+	void SetModelFBX(ModelFBX* model) { this->model = model; }
 
 	/// <summary>
-	/// カメラの設定
+	/// アニメーションセット
 	/// </summary>
-	/// <param name="camera"></param>
-	void SetCamera(Camera* camera) { this->camera = camera; }
+	/// <param name="number">アニメーション番号</param>
+	void SetAnimationNumber(int number);
 
 	/// <summary>
-	/// デバイスの設定
+	/// アニメーション再生
 	/// </summary>
-	/// <param name="device"></param>
-	static void SetDevice(ID3D12Device* device) { ObjectFBX::device = device; }
+	void AnimationPlay();
+
+	/// <summary>
+	/// アニメーション一時停止
+	/// </summary>
+	void AnimationStop();
+
+	/// <summary>
+	/// アニメーションをリセットして停止
+	/// </summary>
+	void AnimationReset();
 
 private: // メンバ変数
-	// モデル
-	ModelFBX* model = nullptr;
+
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffB0;
+	// 定数バッファ(スキン)
+	ComPtr<ID3D12Resource> constBufferSkin;
+	// アニメーション時間情報
+	FbxTakeInfo* takeInfo = nullptr;
+	// 1フレームの時間
+	FbxTime frameTime;
+	// アニメーション開始時間
+	FbxTime startTime;
+	// アニメーション終了時間
+	FbxTime endTime;
+	// 現在時間
+	FbxTime currentTime;
+
+protected: // メンバ変数
+	// モデル
+	ModelFBX* model = nullptr;
 	// 色
 	XMFLOAT4 color = { 1,1,1,1 };
 	// ローカルスケール
@@ -137,4 +187,9 @@ private: // メンバ変数
 	XMMATRIX matWorld{};
 	// 親オブジェクト
 	ObjectFBX* parent = nullptr;
+	// アニメーション再生中
+	bool isPlay = false;
+
+protected:
+	Camera* GetCamera() { return ObjectFBX::camera; }
 };

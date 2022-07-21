@@ -15,7 +15,7 @@ using namespace std;
 //静的メンバ変数の実体
 ID3D12Device* ModelOBJ::device = nullptr;
 UINT ModelOBJ::descriptorHandleIncrementSize = 0;
-const std::string ModelOBJ::baseDirectory = "Resources/";
+const std::string ModelOBJ::baseDirectory = "Resources/3D/";
 
 void ModelOBJ::StaticInitialize(ID3D12Device* device)
 {
@@ -144,10 +144,6 @@ void ModelOBJ::LoadFromOBJInternal(const string& modelName, bool smoothing)
 			line_stream >> position.y;
 			line_stream >> position.z;
 			positions.emplace_back(position);
-
-			//VertexPosNormalUv vertex{};
-			//vertex.pos = position;
-			//vertices.emplace_back(vertex);
 		}
 		// 先頭文字列がvtならテクスチャ
 		if (key == "vt")

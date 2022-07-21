@@ -7,6 +7,7 @@
 #include <DirectXMath.h>
 #include <DirectXTex.h>
 #include <vector>
+#include <fbxsdk.h>
 
 // ノード
 struct Node
@@ -24,6 +25,23 @@ struct Node
 
 class ModelFBX
 {
+public:
+	// ボーン
+	struct Bone
+	{
+		std::string name;
+
+		DirectX::XMMATRIX invInitialPose;
+		FbxCluster* fbxCluster;
+
+		Bone(const std::string& name)
+		{
+			this->name = name;
+		}
+	};
+
+	~ModelFBX();
+
 private:
 	template <class T>using ComPtr = Microsoft::WRL::ComPtr<T>;
 
@@ -41,16 +59,17 @@ public:
 	friend class FBXLoader;
 
 public:
-	struct VertexPosNormalUv
+	static const int MAX_BONE_INDICES = 4;
+
+private:
+	struct VertexPosNormalUvSkin
 	{
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT3 normal;
 		DirectX::XMFLOAT2 uv;
+		UINT boneIndex[MAX_BONE_INDICES];
+		float boneWeight[MAX_BONE_INDICES];
 	};
-
-	Node* meshNode = nullptr;
-	std::vector<VertexPosNormalUv> vertices;
-	std::vector<unsigned short> indices;
 
 private:
 	// モデル名
@@ -77,6 +96,16 @@ private:
 	D3D12_INDEX_BUFFER_VIEW ibView = {};
 	// SRV用デスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> descHeapSRV;
+	// メッシュノード
+	Node* meshNode = nullptr;
+	// 頂点配列
+	vector<VertexPosNormalUvSkin> vertices;
+	// インデックス配列
+	vector<unsigned short> indices;
+	// ボーン配列
+	vector<Bone> bones;
+	// FBXシーン
+	FbxScene* fbxScene = nullptr;
 
 public:
 
@@ -94,4 +123,14 @@ public:
 	/// モデルの変換行列を取得
 	/// </summary>
 	const XMMATRIX& GetModelTransform() { return meshNode->globalTransform; }
+
+	/// <summary>
+	/// ボーンの配列を取得
+	/// </summary>
+	vector<Bone>& GetBones() { return bones; }
+
+	/// <summary>
+	/// FBXシーンを取得
+	/// </summary>
+	FbxScene* GetFbxScene() { return fbxScene; }
 };

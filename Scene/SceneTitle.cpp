@@ -6,18 +6,11 @@ SceneTitle::SceneTitle()
 
 void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
 {
-	// nullptrチェック
-	assert(dxCommon);
-	assert(sprCommon);
-	assert(input);
-
-	this->dxCommon = dxCommon;
-	this->spriteCommon = sprCommon;
-	this->input = input;
+	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
 
 	// スプライト共通テクスチャ読み込み
-	spriteCommon->LoadTexture(0, L"Resources/debugfont.png");
-	spriteCommon->LoadTexture(1, L"Resources/background.png");
+	spriteCommon->LoadTexture(0, "debugfont.png");
+	spriteCommon->LoadTexture(1, "background.png");
 
 	// テキスト
 	text->GetInstance()->Initialize(spriteCommon, 0);
@@ -38,9 +31,13 @@ void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 
 void SceneTitle::Update()
 {
-	if (input->PushKey(DIK_SPACE))
+	if (input->TriggerKey(DIK_1))
 	{
-		SceneManager::SceneChange();
+		SceneManager::SetScene(EDIT);
+	}
+	if (input->TriggerKey(DIK_2))
+	{
+		SceneManager::SetScene(GAME);
 	}
 
 	spriteBG->Update();
@@ -48,8 +45,6 @@ void SceneTitle::Update()
 
 void SceneTitle::Draw()
 {
-	dxCommon->PreDraw();
-
 #pragma region 背景スプライト
 
 	// スプライト描画前処理
@@ -79,7 +74,7 @@ void SceneTitle::Draw()
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
 	// スプライト描画
-	spriteBG->Draw();
+	//spriteBG->Draw();
 
 	// テキスト描画
 	//text->DrawAll(dxCommon->GetCmdList());
@@ -88,7 +83,5 @@ void SceneTitle::Draw()
 
 #pragma endregion
 
-
-	dxCommon->PostDraw();
 #pragma endregion グラフィックスコマンド
 }

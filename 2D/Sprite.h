@@ -11,7 +11,7 @@
 // スプライト
 class Sprite
 {
-private: // エイリアス
+protected: // エイリアス
 	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 	// DirectX::を省略
@@ -94,15 +94,21 @@ public:
 	/// <param name="texSize">テクスチャサイズ</param>
 	void SetTextureRect(XMFLOAT2 texLeftTop, XMFLOAT2 texSize);
 
-private: // メンバ関数
+protected: // メンバ関数
+	/// <summary>
+	/// 頂点バッファ生成
+	/// </summary>
+	void CreateVertexBuffer();
 	/// <summary>
 	/// 頂点データ転送
 	/// </summary>
 	void TransferVertexBuffer();
 
-private:
+protected:
 	// スプライト共通部分
 	SpriteCommon* spriteCommon = nullptr;
+	// コマンドリスト
+	ID3D12GraphicsCommandList* cmdList = nullptr;
 	// 頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff;
 	// 定数バッファ

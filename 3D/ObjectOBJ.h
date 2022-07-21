@@ -29,17 +29,10 @@ public: // サブクラス
 	// 定数バッファ用データ構造体B0
 	struct ConstBufferDataB0
 	{
-		XMMATRIX viewProjection;	// ビュープロジェクション行列
+		XMMATRIX viewProj;	// ビュープロジェクション行列
 		XMMATRIX world;				// ワールド行列
 		XMFLOAT3 camPos;			// カメラの位置
 	};
-
-private: // 定数
-	//static const int division = 50;					// 分割数
-	//static const float radius;				// 底面の半径
-	//static const float prizmHeight;			// 柱の高さ
-	//static const int planeCount = division * 2 + division * 2;		// 面の数
-	//static const int vertexCount = planeCount * 3;		// 頂点数
 
 public: // 静的メンバ関数
 	/// <summary>
@@ -100,16 +93,16 @@ public:
 	static void SetDevice(ID3D12Device* device) { ObjectOBJ::device = device; }
 
 public: // メンバ関数
-	bool Initialize();
+	virtual bool Initialize();
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
-	void Update();
+	virtual void Update();
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	virtual void Draw();
 
 	/// <summary>
 	/// 座標の取得
@@ -118,10 +111,28 @@ public: // メンバ関数
 	const XMFLOAT3& GetPosition() { return position; }
 
 	/// <summary>
+	/// 回転の取得
+	/// </summary>
+	/// <returns></returns>
+	const XMFLOAT3& GetRotation() { return rotation; }
+
+	/// <summary>
 	/// 座標の設定
 	/// </summary>
 	/// <param name="position">座標</param>
 	void SetPosition(XMFLOAT3 position) { this->position = position; }
+
+	/// <summary>
+	/// 回転の設定
+	/// </summary>
+	/// <param name="rotation">回転</param>
+	void SetRotation(XMFLOAT3 rotation) { this->rotation = rotation; }
+
+	/// <summary>
+	/// スケールの設定
+	/// </summary>
+	/// <param name="scale">スケール</param>
+	void SetScale(XMFLOAT3 scale) { this->scale = scale; }
 
 	/// <summary>
 	/// モデルの設定
@@ -129,10 +140,12 @@ public: // メンバ関数
 	void SetModelOBJ(ModelOBJ* model) { this->model = model; }
 
 private: // メンバ変数
-	// モデル
-	ModelOBJ* model = nullptr;
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffB0;
+
+protected: // メンバ変数
+	// モデル
+	ModelOBJ* model = nullptr;
 	// 色
 	XMFLOAT4 color = { 1,1,1,1 };
 	// ローカルスケール
@@ -145,4 +158,7 @@ private: // メンバ変数
 	XMMATRIX matWorld{};
 	// 親オブジェクト
 	ObjectOBJ* parent = nullptr;
+
+protected:
+	Camera* GetCamera() { return ObjectOBJ::camera; }
 };

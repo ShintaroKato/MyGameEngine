@@ -38,11 +38,7 @@ void Sprite::Initialize(SpriteCommon* spriteCommon, UINT texNumber, XMFLOAT2 pos
 	}
 
 	// 頂点バッファ生成
-	result = this->spriteCommon->GetDevice()->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(sizeof(vertices)),
-		D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&vertBuff));
+	CreateVertexBuffer();
 
 	// 頂点バッファデータ転送
 	TransferVertexBuffer();
@@ -103,7 +99,7 @@ void Sprite::Draw()
 		return;
 	}
 
-	ID3D12GraphicsCommandList* cmdList = spriteCommon->GetCommandList();
+	cmdList = spriteCommon->GetCommandList();
 
 	// 頂点バッファをセット
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
@@ -173,6 +169,18 @@ void Sprite::SetTextureRect(XMFLOAT2 texLeftTop, XMFLOAT2 texSize)
 
 	// 頂点バッファへデータ転送
 	TransferVertexBuffer();
+}
+
+void Sprite::CreateVertexBuffer()
+{
+	HRESULT result;
+
+	// 頂点バッファ生成
+	result = this->spriteCommon->GetDevice()->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(sizeof(VertexPosUv)),
+		D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&vertBuff));
 }
 
 // スプライト単体頂点バッファの転送

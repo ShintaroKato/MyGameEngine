@@ -79,12 +79,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(ProjectDir)Collision\;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)GameObject\;$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib\DirectXTex\lib\Release;$(ProjectDir)lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(ProjectDir)lib\DirectXTex\lib\Release;$(ProjectDir)lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
     <IncludePath>$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(ProjectDir)Collision\;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)GameObject\;$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -121,6 +123,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -138,6 +141,7 @@
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -148,10 +152,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="2D\PostEffect.cpp" />
+    <ClCompile Include="2D\RenderTexture.cpp" />
     <ClCompile Include="2D\Sprite.cpp" />
     <ClCompile Include="2D\SpriteCommon.cpp" />
     <ClCompile Include="2D\Text.cpp" />
     <ClCompile Include="3D\FBXLoader.cpp" />
+    <ClCompile Include="GameObject\GameObject.cpp" />
     <ClCompile Include="3D\ModelFBX.cpp" />
     <ClCompile Include="3D\ObjectFBX.cpp" />
     <ClCompile Include="3D\Material.cpp" />
@@ -168,11 +175,15 @@
     <ClCompile Include="Collision\MeshCollider.cpp" />
     <ClCompile Include="Collision\SphereCollider.cpp" />
     <ClCompile Include="Collision\TouchableObject.cpp" />
+    <ClCompile Include="GameObject\Enemy.cpp" />
+    <ClCompile Include="GameObject\Player.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Scene\PostEffectScene.cpp" />
     <ClCompile Include="Scene\SceneInGame.cpp" />
     <ClCompile Include="Scene\SceneBase.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
+    <ClCompile Include="Scene\SceneStageEdit.cpp" />
     <ClCompile Include="Scene\SceneTitle.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -221,6 +232,38 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="Resources\shaders\PhongPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\PostEffectPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\PostEffectVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\RenderTexturePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\RenderTextureVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="Resources\shaders\SpritePS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
@@ -238,13 +281,18 @@
     <None Include="Resources\shaders\Basic.hlsli" />
     <None Include="Resources\shaders\FBX.hlsli" />
     <None Include="Resources\shaders\Obj.hlsli" />
+    <None Include="Resources\shaders\PostEffect.hlsli" />
+    <None Include="Resources\shaders\RenderTexture.hlsli" />
     <None Include="Resources\shaders\Sprite.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="2D\PostEffect.h" />
+    <ClInclude Include="2D\RenderTexture.h" />
     <ClInclude Include="2D\Sprite.h" />
     <ClInclude Include="2D\SpriteCommon.h" />
     <ClInclude Include="2D\Text.h" />
     <ClInclude Include="3D\FBXLoader.h" />
+    <ClInclude Include="GameObject\GameObject.h" />
     <ClInclude Include="3D\ModelFBX.h" />
     <ClInclude Include="3D\ObjectFBX.h" />
     <ClInclude Include="3D\Material.h" />
@@ -267,10 +315,14 @@
     <ClInclude Include="Collision\RaycastHit.h" />
     <ClInclude Include="Collision\SphereCollider.h" />
     <ClInclude Include="Collision\TouchableObject.h" />
+    <ClInclude Include="GameObject\Enemy.h" />
+    <ClInclude Include="GameObject\Player.h" />
     <ClInclude Include="Input\Input.h" />
+    <ClInclude Include="Scene\PostEffectScene.h" />
     <ClInclude Include="Scene\SceneBase.h" />
     <ClInclude Include="Scene\SceneInGame.h" />
     <ClInclude Include="Scene\SceneManager.h" />
+    <ClInclude Include="Scene\SceneStageEdit.h" />
     <ClInclude Include="Scene\SceneTitle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

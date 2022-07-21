@@ -1,4 +1,4 @@
-﻿#include "Object3d.h"
+﻿#include "ObjectOBJ.h"
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
 #include <fstream>
@@ -15,8 +15,6 @@ using namespace std;
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-//const float Object3d::radius = 5.0f;				// 底面の半径
-//const float Object3d::prizmHeight = 8.0f;			// 柱の高さ
 ID3D12Device* ObjectOBJ::device = nullptr;
 ID3D12GraphicsCommandList* ObjectOBJ::cmdList = nullptr;
 PipelineSet ObjectOBJ::pipelineSet;
@@ -74,7 +72,7 @@ ObjectOBJ* ObjectOBJ::Create()
 		return nullptr;
 	}
 
-	float scale_val = 20;
+	float scale_val = 1;
 	object3d->scale = { scale_val,scale_val,scale_val };
 
 	return object3d;
@@ -112,7 +110,7 @@ bool ObjectOBJ::InitializeGraphicsPipeline()
 
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/shaders/ObjPS.hlsl",	// シェーダファイル名
+		L"Resources/shaders/PhongPS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -218,7 +216,7 @@ bool ObjectOBJ::InitializeGraphicsPipeline()
 	// ルートシグネチャの生成
 	result = device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&pipelineSet.rootsignature));
 	if (FAILED(result)) {
-		return result;
+		assert(0);
 	}
 
 	gpipeline.pRootSignature = pipelineSet.rootsignature.Get();
@@ -227,7 +225,7 @@ bool ObjectOBJ::InitializeGraphicsPipeline()
 	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelineSet.pipelinestate));
 
 	if (FAILED(result)) {
-		return result;
+		assert(0);
 	}
 
 	return true;
@@ -253,6 +251,8 @@ bool ObjectOBJ::Initialize()
 
 void ObjectOBJ::Update()
 {
+	if (model == nullptr) return;
+
 	HRESULT result;
 	XMMATRIX matScale, matRot, matTrans;
 
@@ -276,14 +276,13 @@ void ObjectOBJ::Update()
 		matWorld *= parent->matWorld;
 	}
 
-	const XMMATRIX& matViewProjection =
-		camera->GetProjectionMatrix();
+	const XMMATRIX& matViewProjection = camera->GetViewMatrix() * camera->GetProjectionMatrix();
 
 	// 定数バッファへデータ転送
 	ConstBufferDataB0* constMap = nullptr;
 	result = constBuffB0->Map(0, nullptr, (void**)&constMap);
-	constMap->viewProjection = matViewProjection;
-	constMap->world = matWorld * camera->GetViewMatrix() * camera->GetProjectionMatrix();	// 行列の合成
+	constMap->viewProj = matViewProjection;
+	constMap->world = matWorld;
 	constMap->camPos = camera->GetEye();
 	constBuffB0->Unmap(0, nullptr);
 }

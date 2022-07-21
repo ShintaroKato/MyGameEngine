@@ -4,13 +4,25 @@
 
 using namespace DirectX;
 
-const std::string FBXLoader::baseDirectory = "Resources/";
+const std::string FBXLoader::baseDirectory = "Resources/3D/";
 const std::string FBXLoader::defaultTextureFileName = "white1x1.png";
 
 FBXLoader* FBXLoader::GetInstance()
 {
 	static FBXLoader instance;
 	return &instance;
+}
+
+void FBXLoader::ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			// 1要素コピー
+			dst->r[i].m128_f32[j] = (float)src.Get(i, j);
+		}
+	}
 }
 
 void FBXLoader::Initialize(ID3D12Device* device)
@@ -54,19 +66,19 @@ ModelFBX* FBXLoader::LoadModelFromFile(const string& modelName)
 	fbxImporter->Import(fbxScene);
 	fbxImporter->Import(fbxScene);
 
-	ModelFBX* fbxModel = new ModelFBX();
-	fbxModel->name = modelName;
+	ModelFBX* model = new ModelFBX();
+	model->name = modelName;
 
 	int nodeCount = fbxScene->GetNodeCount();
-	fbxModel->node.reserve(nodeCount);
+	model->node.reserve(nodeCount);
 
-	ParseNode(fbxModel, fbxScene->GetRootNode());
+	ParseNode(model, fbxScene->GetRootNode());
 
-	fbxScene->Destroy();
+	model->fbxScene = fbxScene;
 
-	fbxModel->CreateBuffers(device);
+	model->CreateBuffers(device);
 
-	return fbxModel;
+	return model;
 }
 
 void FBXLoader::ParseNode(ModelFBX* fbxModel, FbxNode* fbxNode, Node* parent)
@@ -125,13 +137,14 @@ void FBXLoader::ParseNode(ModelFBX* fbxModel, FbxNode* fbxNode, Node* parent)
 	}
 }
 
-void FBXLoader::ParseMesh(ModelFBX* fbxModel, FbxNode* fbxNode)
+void FBXLoader::ParseMesh(ModelFBX* model, FbxNode* fbxNode)
 {
 	FbxMesh* fbxMesh = fbxNode->GetMesh();
 
-	ParseVertex(fbxModel, fbxMesh);
-	ParseFace(fbxModel, fbxMesh);
-	ParseMaterial(fbxModel, fbxNode);
+	ParseVertex(model, fbxMesh);
+	ParseFace(model, fbxMesh);
+	ParseMaterial(model, fbxNode);
+	ParseSkin(model, fbxMesh);
 
 }
 
@@ -142,14 +155,14 @@ void FBXLoader::ParseVertex(ModelFBX* fbxModel, FbxMesh* fbxMesh)
 	const int controlPointCount =
 		fbxMesh->GetControlPointsCount();
 
-	ModelFBX::VertexPosNormalUv vert{};
+	ModelFBX::VertexPosNormalUvSkin vert{};
 	fbxModel->vertices.resize(controlPointCount, vert);
 
 	FbxVector4* pCoord = fbxMesh->GetControlPoints();
 
 	for (int i = 0; i < controlPointCount; i++)
 	{
-		ModelFBX::VertexPosNormalUv& vertex = vertices[i];
+		ModelFBX::VertexPosNormalUvSkin& vertex = vertices[i];
 
 		vertex.pos.x = (float)pCoord[i][0];
 		vertex.pos.y = (float)pCoord[i][1];
@@ -180,7 +193,7 @@ void FBXLoader::ParseFace(ModelFBX* fbxModel, FbxMesh* fbxMesh)
 			int index = fbxMesh->GetPolygonVertex(i, j);
 			assert(index >= 0);
 
-			ModelFBX::VertexPosNormalUv& vertex = vertices[index];
+			ModelFBX::VertexPosNormalUvSkin& vertex = vertices[index];
 			FbxVector4 normal;
 
 			if (fbxMesh->GetPolygonVertexNormal(i, j, normal))
@@ -267,6 +280,113 @@ void FBXLoader::ParseMaterial(ModelFBX* fbxModel, FbxNode* fbxNode)
 		if (!textureLoaded)
 		{
 			LoadTexture(fbxModel, baseDirectory + defaultTextureFileName);
+		}
+	}
+}
+
+void FBXLoader::ParseSkin(ModelFBX* model, FbxMesh* fbxMesh)
+{
+	FbxSkin* fbxSkin =
+		static_cast<FbxSkin*>(fbxMesh->GetDeformer(0, FbxDeformer::eSkin));
+
+	if (fbxSkin == nullptr)
+	{
+		// 各頂点について処理
+		for (int i = 0; i < model->vertices.size(); i++)
+		{
+			// 最初のボーン(単位行列)の影響を100%にする
+			model->vertices[i].boneIndex[0] = 0;
+			model->vertices[i].boneWeight[0] = 1.0f;
+		}
+
+		return;
+	}
+
+	std::vector<ModelFBX::Bone>& bones = model->bones;
+
+	// ボーンの数
+	int clusterCount = fbxSkin->GetClusterCount();
+	bones.reserve(clusterCount);
+
+	for (int i = 0; i < clusterCount; i++)
+	{
+		FbxCluster* fbxCluster = fbxSkin->GetCluster(i);
+
+		const char* boneName = fbxCluster->GetLink()->GetName();
+
+		bones.emplace_back(ModelFBX::Bone(boneName));
+		ModelFBX::Bone& bone = bones.back();
+
+		bone.fbxCluster = fbxCluster;
+
+		FbxAMatrix fbxMat;
+		fbxCluster->GetTransformLinkMatrix(fbxMat);
+
+		XMMATRIX initialPose;
+		ConvertMatrixFromFbx(&initialPose, fbxMat);
+
+		bone.invInitialPose = XMMatrixInverse(nullptr, initialPose);
+	}
+
+	// ボーン番号とスキンウェイト
+	struct WeightSet
+	{
+		UINT index;
+		float weight;
+	};
+
+	std::vector<std::list<WeightSet>> weightLists(model->vertices.size());
+
+	for (int i = 0; i < clusterCount; i++)
+	{
+		FbxCluster* fbxCluster = fbxSkin->GetCluster(i);
+
+		int controlPointIndicesCount = fbxCluster->GetControlPointIndicesCount();
+
+		int* controlPointIndices = fbxCluster->GetControlPointIndices();
+		double* controlPointWeights = fbxCluster->GetControlPointWeights();
+
+		for (int j = 0; j < controlPointIndicesCount; j++)
+		{
+			int vertIndex = controlPointIndices[j];
+
+			float weight = (float)controlPointWeights[j];
+
+			weightLists[vertIndex].emplace_back(WeightSet{ (UINT)i,weight });
+		}
+	}
+
+	auto& vertices = model->vertices;
+
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		auto& weightList = weightLists[i];
+
+		// 大小比較用のラムダ式
+		weightList.sort([](auto const& lhs, auto const& rhs)
+			{
+				return lhs.weight > rhs.weight;
+			});
+
+		int weightArrayIndex = 0;
+
+		for(auto& weightSet : weightList)
+		{
+			vertices[i].boneIndex[weightArrayIndex] = weightSet.index;
+			vertices[i].boneWeight[weightArrayIndex] = weightSet.weight;
+
+			if (++weightArrayIndex >= ModelFBX::MAX_BONE_INDICES)
+			{
+				float weight = 0.0f;
+
+				for (int j = 1; j < ModelFBX::MAX_BONE_INDICES; j++)
+				{
+					weight += vertices[i].boneWeight[j];
+				}
+
+				vertices[i].boneWeight[0] = 1.0f - weight;
+				break;
+			}
 		}
 	}
 }

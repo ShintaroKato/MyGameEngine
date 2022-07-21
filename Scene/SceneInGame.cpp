@@ -1,4 +1,5 @@
 #include "SceneInGame.h"
+#include "PostEffect.h"
 
 SceneInGame::SceneInGame()
 {
@@ -6,8 +7,7 @@ SceneInGame::SceneInGame()
 
 SceneInGame::~SceneInGame()
 {
-	delete fbxCube;
-	delete fbxModelCube;
+	delete player;
 }
 
 void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
@@ -25,12 +25,17 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	camera = new Camera();
 	camera->Initialize(WinApp::window_width, WinApp::window_height);
 
-	//Object3d::SetCamera(camera);
-	//Object3d::SetDevice(dxCommon->GetDev());
+	ObjectOBJ::SetCamera(camera);
+	ObjectOBJ::SetDevice(dxCommon->GetDev());
+
+	ObjectFBX::SetCamera(camera);
+	ObjectFBX::SetDevice(dxCommon->GetDev());
+	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
+
 
 	// スプライト共通テクスチャ読み込み
-	spriteCommon->LoadTexture(0, L"Resources/debugfont.png");
-	spriteCommon->LoadTexture(1, L"Resources/background.png");
+	spriteCommon->LoadTexture(0, "debugfont.png");
+	spriteCommon->LoadTexture(1, "background.png");
 
 	// テキスト
 	text = Text::GetInstance();
@@ -40,38 +45,110 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	spriteBG = Sprite::Create(spriteCommon, 1, { 0,0 }, {0,0});
 	spriteBG->Update();
 
-	//// obj.からモデルデータ読み込み
-	//modelSphere = Model::LoadObj("sphere", true);
-	//// 3Dオブジェクト生成
-	//objSphere = Object3d::Create();
-	//objSphere->SetCamera(camera);
-	//// オブジェクトにモデルを紐づける
-	//objSphere->SetModel(modelSphere);
+	// .objからモデルデータ読み込み
+	modelSkydome = ModelOBJ::LoadObj("skydome", true);
+	modelGround = ModelOBJ::LoadObj("ground", true);
+	modelCubeRed = ModelOBJ::LoadObj("cube64Red", true);
+	modelCubeGreen = ModelOBJ::LoadObj("cube64Green", true);
+	modelCubeBlue = ModelOBJ::LoadObj("cube64Blue", true);
 
-	//objSphere->SetPosition({ 0,0,30 });
-	//objSphere->Update();
+	// .fbxからモデルデータ読み込み
+	fbxModelAnim = FBXLoader::GetInstance()->LoadModelFromFile("boneTest");
 
-	fbxModelCube = FBXLoader::GetInstance()->LoadModelFromFile("cube");
-	fbxCube = ObjectFBX::Create();
-	fbxCube->SetModel(fbxModelCube);
+	// 3Dオブジェクト生成
+	objSkydome = ObjectOBJ::Create();
+	objGround = ObjectOBJ::Create();
+	// オブジェクトにモデルを紐づける
+	objSkydome->SetModelOBJ(modelSkydome);
+	objGround->SetModelOBJ(modelGround);
+
+	for (int i = 0; i < CUBE_RED_MAX; i++)
+	{
+		objCubeRed[i] = GameObject::Create(modelCubeRed);
+		objCubeGreen[i] = GameObject::Create(modelCubeGreen);
+		objCubeBlue[i] = GameObject::Create(modelCubeBlue);
+
+		objCubeRed[i]->ObjectOBJ::SetScale({ 2,2,2 });
+		objCubeGreen[i]->ObjectOBJ::SetScale({ 2,2,2 });
+		objCubeBlue[i]->ObjectOBJ::SetScale({ 2,2,2 });
+
+		objCubeRed[i]->ObjectOBJ::SetPosition({ 25,0,50 });
+		objCubeGreen[i]->ObjectOBJ::SetPosition({ -25,0,50 });
+		objCubeBlue[i]->ObjectOBJ::SetPosition({ 0,0,-25 });
+	}
+
+	objSkydome->SetScale({ 5,5,5 });
+	objSkydome->Update();
+
+	objGround->SetScale({ 5,5,5 });
+	objGround->Update();
+
+	player = Player::Create(fbxModelAnim);
+	player->SetPosition({ 0, 0, 0 });
+	player->SetScale({ 2,2,2 });
+	player->Update();
+
+	camera->SetTarget({0,0,0});
+	camera->SetEye({ 0,50,-100 });
+	camera->SetTarget(player->GetPosition());
+	camera->Update();
 }
 
 void SceneInGame::Update()
 {
-	if (input->TriggerKey(DIK_SPACE))
+	camera->SetTarget({ 0,0,0 });
+
+	camera->Update();
+
+	objCubeRed[0]->Update();
+	objCubeGreen[0]->Update();
+	objCubeBlue[0]->Update();
+
+	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) ||
+		input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
 	{
-		SceneManager::SceneChangeTitle();
+		if (input->PushKey(DIK_UP))
+		{
+			camera->CameraMoveVector({ 0,1,0 });
+		}
+		else if (input->PushKey(DIK_DOWN))
+		{
+			camera->CameraMoveVector({ 0,-1,0 });
+		}
+		if (input->PushKey(DIK_LEFT))
+		{
+			camera->CameraMoveVector({ 1,0,0 });
+		}
+		else if (input->PushKey(DIK_RIGHT))
+		{
+			camera->CameraMoveVector({ -1,0,0 });
+		}
+	}
+	else
+	{
+		camera->CameraMoveVector({ 0,0,0 });
 	}
 
-	fbxCube->Update();
+	camera->SetTarget(player->GetPosition());
+
+	camera->Update();
+
+	if (input->TriggerKey(DIK_SPACE))
+	{
+		SceneManager::SceneChange();
+	}
+
+	// obj更新
+	objSkydome->Update();
+	objGround->Update();
+	// fbx更新
+	player->Update();
 
 	spriteBG->Update();
 }
 
 void SceneInGame::Draw()
 {
-	dxCommon->PreDraw();
-
 #pragma region 背景スプライト
 
 	// スプライト描画前処理
@@ -87,13 +164,23 @@ void SceneInGame::Draw()
 #pragma region 3Dオブジェクト
 
 	// 3Dオブジェクト描画前処理
-	//Object3d::PreDraw(dxCommon->GetCmdList());
+
+	// OBJモデル
+	ObjectOBJ::PreDraw(dxCommon->GetCmdList());
 
 	//objSphere->Draw();
+	objSkydome->Draw();
+	//objPlayer->Draw();
+	objGround->Draw();
 
-	//Object3d::PostDraw();
+	objCubeRed[0]->ObjectOBJ::Draw();
+	objCubeGreen[0]->ObjectOBJ::Draw();
+	objCubeBlue[0]->ObjectOBJ::Draw();
 
-	fbxCube->Draw(dxCommon->GetCmdList());
+	ObjectOBJ::PostDraw();
+
+	// FBXモデル
+	player->ObjectFBX::Draw(dxCommon->GetCmdList());
 
 #pragma endregion
 
@@ -105,14 +192,12 @@ void SceneInGame::Draw()
 	// スプライト描画
 	//spriteBG->Draw();
 
+	spriteCommon->PostDraw();
+
 	// テキスト描画
 	//text->DrawAll(dxCommon->GetCmdList());
 
-	spriteCommon->PostDraw();
-
 #pragma endregion
 
-
-	dxCommon->PostDraw();
 #pragma endregion グラフィックスコマンド
 }

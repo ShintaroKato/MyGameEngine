@@ -1,11 +1,6 @@
 #pragma once
 
-#pragma warning (push)
-#pragma warning (disable:26495)
-//#pragma warning (disable:26812)
 #include "fbxsdk.h"
-#pragma warning (pop)
-
 #include <d3d12.h>
 #include <d3dx12.h>
 
@@ -28,6 +23,13 @@ public:
 	/// </summary>
 	/// <returns>インスタンス</returns>
 	static FBXLoader* GetInstance();
+
+	/// <summary>
+	/// FBXの行列をXMMatrixに変換
+	/// </summary>
+	/// <param name="dst">書き込み先</param>
+	/// <param name="src">元となるFBX行列</param>
+	static void ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src);
 
 	/// <summary>
 	/// 初期化
@@ -70,6 +72,11 @@ public:
 	/// マテリアル読み取り
 	/// </summary>
 	void ParseMaterial(ModelFBX* fbxModel, FbxNode* fbxNode);
+
+	/// <summary>
+	/// スキニング情報読み取り
+	/// </summary>
+	void ParseSkin(ModelFBX* model, FbxMesh* fbxMesh);
 
 	/// <summary>
 	/// テクスチャ読み込み
