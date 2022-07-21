@@ -22,7 +22,7 @@ float4 main(VSOutput input) : SV_TARGET
         // RGBÇQî{
         texcolor = float4(texcolor.rgb * 2.0f, alpha);
     }
-    if (mode == 2)
+    if (mode == 0)
     {
         // êFîΩì]
         texcolor = float4(float3(1, 1, 1) - texcolor.rgb, alpha);

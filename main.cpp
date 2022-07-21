@@ -74,17 +74,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 #pragma region 描画初期化処理
 
-	//FbxManager* fbxManager = FbxManager::Create();
-
 	// スプライト共通データ生成
 	SpriteCommon* spriteCommon = nullptr;
 	spriteCommon = new SpriteCommon();
 	spriteCommon->Initialize(dxCommon->GetDev(), dxCommon->GetCmdList(), winApp->window_width, winApp->window_height);
 
+	// ポストエフェクト生成
 	PostEffect* postEffect = nullptr;
-	UINT postEffectNum = 100;
-	spriteCommon->LoadTexture(postEffectNum, "white1x1.png");
-	postEffect = PostEffect::Create(spriteCommon, 100, { 0,0 });
+	postEffect = PostEffect::Create();
+	postEffect->SetTexSize({ 1,1 });
+
+	// ポストエフェクト用シーン生成
+	PostEffectScene* postEffectScene = new PostEffectScene();
 
 	//// 3Dオブジェクト静的初期化
 	ObjectOBJ::StaticInitialize(dxCommon->GetDev());
@@ -94,16 +95,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	ObjectFBX::StaticInitialize(dxCommon->GetDev());
 
 	// シーン初期化
+	SceneTitle* title = new SceneTitle();
+	SceneStageEdit* edit = new SceneStageEdit();
 	SceneInGame* game = new SceneInGame();
 
 	SceneBase* scene[] =
 	{
+		title,
+		edit,
 		game,
 	};
 	for (int i = 0; i < _countof(scene); i++)
 	{
 		scene[i]->Initialize(dxCommon, spriteCommon, input, audio);
 	}
+
+	postEffectScene->Initialize(dxCommon, spriteCommon, input, audio);
 
 #pragma endregion 描画初期化処理
 
@@ -114,31 +121,43 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			break;
 		}
 
+		// 初期化
+		if (!SceneManager::GetInitFlag())
+		{
+			scene[SceneManager::GetScene()]->Initialize(dxCommon, spriteCommon, input, audio);
+			SceneManager::ChangeLoaded();
+		}
+
 		// 更新
 		input->Update();
 
 		// シーン更新
 		scene[SceneManager::GetScene()]->Update();
+		postEffectScene->Update();
 
-		//描画開始
+		//描画
+
+
+		if (!SceneManager::GetInitFlag())
+		{
+			postEffect->PreDrawScene(dxCommon->GetCmdList());
+			postEffectScene->Draw();
+			postEffect->PostDrawScene(dxCommon->GetCmdList());
+		}
+
 		dxCommon->PreDraw();
 		// シーン描画
 		scene[SceneManager::GetScene()]->Draw();
 
-		// ポストエフェクト
-		//spriteCommon->PreDraw(dxCommon->GetCmdList());
-		//postEffect->Draw();
-		//spriteCommon->PostDraw();
+		if (!SceneManager::GetInitFlag())
+		{
+			postEffect->Draw();
+		}
 
-		// シーン描画
-		scene[SceneManager::GetScene()]->Draw();
-
-		//描画終了
 		dxCommon->PostDraw();
-	}
 
-	delete postEffect1;
-	delete postEffect2;
+
+	}
 
 	FBXLoader::GetInstance()->Finalize();
 

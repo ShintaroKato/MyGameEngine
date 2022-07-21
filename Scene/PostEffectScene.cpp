@@ -41,13 +41,13 @@ void PostEffectScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCo
 	// オブジェクトにモデルを紐づける
 	objSphere->SetModelOBJ(modelSphere);
 
-	objSphere->SetPosition({ 0,-50,0 });
+	objSphere->SetPosition({ 0,0,0 });
 	objSphere->SetCamera(camera);
 	objSphere->Update();
 
 	fbxModelAnim = FBXLoader::GetInstance()->LoadModelFromFile("boneTest");
 	fbxAnimTest = ObjectFBX::Create();
-	fbxAnimTest->SetModel(fbxModelAnim);
+	fbxAnimTest->SetModelFBX(fbxModelAnim);
 	fbxAnimTest->SetPosition({ 0,-10,-80 });
 	fbxAnimTest->SetRotation({ 0,0,0 });
 	fbxAnimTest->SetAnimationNumber(0);
@@ -143,7 +143,7 @@ void PostEffectScene::Draw()
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
 	// スプライト描画
-	//spriteBG->Draw();
+	spriteBG->Draw();
 
 	spriteCommon->PostDraw();
 
