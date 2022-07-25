@@ -50,11 +50,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// DirectX初期化処理　ここから
 #ifdef _DEBUG
 	//デバッグレイヤーをオンに
-	ComPtr<ID3D12Debug> debugController;
+	ComPtr<ID3D12Debug1> debugController;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
 	{
 		debugController->EnableDebugLayer();
+		debugController->SetEnableGPUBasedValidation(TRUE);
 	}
+
+	ComPtr<ID3D12InfoQueue> infoQueue;
+	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&infoQueue))))
+	{
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
+	}
+
 #endif
 	//ポインター置き場
 	DirectXCommon* dxCommon = nullptr;
