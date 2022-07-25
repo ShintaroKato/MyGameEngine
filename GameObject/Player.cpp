@@ -59,12 +59,12 @@ bool Player::Initialize()
 	ObjectOBJ::Initialize();
 
 	// コライダーの追加
-	/*float radius = 0.6f;
-	collider = new SphereCollider(XMVECTOR({ 0,radius,0,0 }), radius);*/
+	float radius = 0.6f;
+	collider = new SphereCollider(XMVECTOR({ 0,radius,0,0 }), radius);
 
 	// 半径分だけ足元から浮いた座標を球の中心にする
-	/*SetCollider(collider);
-	collider->SetAttribute(COLLISION_ATTR_ALLIES);*/
+	SetCollider(collider);
+	collider->SetAttribute(COLLISION_ATTR_ALLIES);
 
 	return true;
 }

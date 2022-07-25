@@ -1,4 +1,5 @@
 #pragma once
+#include "CollisionManager.h"
 #include "ObjectFBX.h"
 #include "ObjectOBJ.h"
 
@@ -67,7 +68,7 @@ public:
 	/// 衝突時コールバック関数
 	/// </summary>
 	/// <param name="info">衝突情報</param>
-	//void OnCollision(const CollisionInfo& info) override;
+	void OnCollision(const CollisionInfo& info) override;
 
 	/// <summary>
 	/// 座標を設定

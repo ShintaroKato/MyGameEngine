@@ -2,7 +2,8 @@
 
 #include "CollisionTypes.h"
 #include "CollisionInfo.h"
-#include "Object3d.h"
+#include "ObjectOBJ.h"
+#include "ObjectFBX.h"
 
 /// <summary>
 /// コライダー基底クラス
@@ -15,12 +16,20 @@ public:
 	BaseCollider() = default;
 	virtual ~BaseCollider() = default;
 
-	inline void SetObject(Object3d* object) {
-		this->object3d = object;
+	inline void SetObjectOBJ(ObjectOBJ* obj) {
+		this->obj = obj;
 	}
 
-	inline Object3d* GetObject3d() {
-		return object3d;
+	inline ObjectOBJ* GetObjectOBJ() {
+		return obj;
+	}
+
+	inline void SetObjectFBX(ObjectFBX* fbx) {
+		this->fbx = fbx;
+	}
+
+	inline ObjectFBX* GetObjectFBX() {
+		return fbx;
 	}
 
 	/// <summary>
@@ -35,7 +44,15 @@ public:
 	/// </summary>
 	/// <param name="info">衝突情報</param>
 	inline void OnCollision(const CollisionInfo& info) {
-		object3d->OnCollision(info);
+		obj->OnCollision(info);
+	}
+
+	/// <summary>
+	/// 衝突時コールバック関数
+	/// </summary>
+	/// <param name="info">衝突情報</param>
+	inline void OnCollision(const CollisionInfo& info) {
+		fbx->OnCollision(info);
 	}
 
 	inline void SetAttribute(unsigned short attribute)
@@ -57,7 +74,8 @@ public:
 	}
 
 protected:
-	Object3d* object3d = nullptr;
+	ObjectOBJ* obj = nullptr;
+	ObjectFBX* fbx = nullptr;
 	// 形状タイプ
 	CollisionShapeType shapeType = SHAPE_UNKNOWN;
 	// 当たり判定属性
