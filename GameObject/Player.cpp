@@ -127,6 +127,11 @@ XMFLOAT3 Player::GetPosition()
 	}
 }
 
+void Player::OnCollision(const CollisionInfo& info)
+{
+
+}
+
 void Player::SetPosition(XMFLOAT3 pos)
 {
 	if (ObjectOBJ::model)

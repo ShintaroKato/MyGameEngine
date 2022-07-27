@@ -62,7 +62,10 @@ public:
 	/// </summary>
 	XMFLOAT3 GetPosition();
 
-	//BaseCollider* GetCollider() { return collider; }
+	/// <summary>
+	/// コライダーを取得
+	/// </summary>
+	BaseCollider* GetCollider() { return collider; }
 
 	/// <summary>
 	/// 衝突時コールバック関数
