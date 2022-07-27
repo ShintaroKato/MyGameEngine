@@ -20,7 +20,8 @@ public:
 	/// <summary>
 	/// 三角形の配列を構築する
 	/// </summary>
-	void ConstructTriangle(Model* model);
+	void ConstructTriangle(ModelOBJ* model);
+	void ConstructTriangle(ModelFBX* model);
 
 	/// <summary>
 	/// 更新

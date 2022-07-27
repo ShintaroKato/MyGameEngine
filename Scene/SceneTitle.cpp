@@ -21,7 +21,7 @@ void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 	//// obj.からモデルデータ読み込み
 	//modelSphere = Model::LoadObj("sphere");
 	//// 3Dオブジェクト生成
-	//objSphere = Object3d::Create();
+	//objSphere = ObjectOBJ::Create();
 	//// オブジェクトにモデルを紐づける
 	//objSphere->SetModel(modelSphere);
 
@@ -60,11 +60,11 @@ void SceneTitle::Draw()
 #pragma region 3Dオブジェクト
 
 	// 3Dオブジェクト描画前処理
-	//Object3d::PreDraw(dxCommon->GetCmdList());
+	//ObjectOBJ::PreDraw(dxCommon->GetCmdList());
 
 	//objSphere->Draw();
 
-	//Object3d::PostDraw();
+	//ObjectOBJ::PostDraw();
 
 #pragma endregion
 

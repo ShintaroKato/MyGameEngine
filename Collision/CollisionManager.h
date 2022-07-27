@@ -44,6 +44,11 @@ public: //メンバ関数
 	bool CheckCollision(BaseCollider* colA, BaseCollider* colB);
 
 	/// <summary>
+	/// セットされているオブジェクトを判別
+	/// </summary>
+	void CheckSetObject(BaseCollider* colA, BaseCollider* colB, XMVECTOR inter);
+
+	/// <summary>
 	/// レイキャスト
 	/// </summary>
 	/// <param name="ray">レイ</param>

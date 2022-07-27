@@ -56,7 +56,7 @@ public: //静的メンバ関数
 	static void SetDevice(ID3D12Device* device) { ModelOBJ::device = device; }
 
 	//メッシュコンテナを取得
-	inline const std::vector<Mesh*>& GetMesh() { return meshes; }
+	inline const std::vector<Mesh*>& GetMeshes() { return meshes; }
 
 private: //非公開のメンバ変数
 	// 名前

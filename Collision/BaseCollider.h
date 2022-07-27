@@ -43,16 +43,10 @@ public:
 	/// 衝突時コールバック関数
 	/// </summary>
 	/// <param name="info">衝突情報</param>
-	inline void OnCollision(const CollisionInfo& info) {
-		obj->OnCollision(info);
-	}
-
-	/// <summary>
-	/// 衝突時コールバック関数
-	/// </summary>
-	/// <param name="info">衝突情報</param>
-	inline void OnCollision(const CollisionInfo& info) {
-		fbx->OnCollision(info);
+	inline void OnCollision(const CollisionInfo& info)
+	{
+		this->obj->OnCollision(info);
+		this->fbx->OnCollision(info);
 	}
 
 	inline void SetAttribute(unsigned short attribute)

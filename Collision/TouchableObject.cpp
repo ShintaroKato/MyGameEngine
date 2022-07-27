@@ -1,7 +1,7 @@
 #include "TouchableObject.h"
 #include "MeshCollider.h"
 
-TouchableObject* TouchableObject::Create(Model* model)
+TouchableObject* TouchableObject::Create(ModelOBJ* obj, ModelFBX* fbx)
 {
 	//オブジェクトのインスタンスを生成
 	TouchableObject* instance = new TouchableObject();
@@ -10,7 +10,7 @@ TouchableObject* TouchableObject::Create(Model* model)
 		return nullptr;
 	}
 	//初期化
-	if (!instance->Initialize(model))
+	if (!instance->Initialize(obj, fbx))
 	{
 		delete instance;
 		assert(0);
@@ -19,20 +19,33 @@ TouchableObject* TouchableObject::Create(Model* model)
 	return instance;
 }
 
-bool TouchableObject::Initialize(Model* model)
+bool TouchableObject::Initialize(ModelOBJ* obj, ModelFBX* fbx)
 {
-	if (!Object3d::Initialize())
+	if (!ObjectOBJ::Initialize() && !ObjectFBX::Initialize())
 	{
 		return false;
 	}
 
-	SetModel(model);
+	if (obj) 
+	{
+		SetModelOBJ(obj);
 
-	//コライダーの追加
-	MeshCollider* collider = new MeshCollider;
-	SetCollider(collider);
-	collider->ConstructTriangle(model);
-	collider->SetAttribute(COLLISION_ATTR_LANDSHAPE);
+		//コライダーの追加
+		MeshCollider* collider = new MeshCollider;
+		ObjectOBJ::SetCollider(collider);
+		collider->ConstructTriangle(obj);
+		collider->SetAttribute(COLLISION_ATTR_LANDSHAPE);
+	}
+	if (fbx)
+	{
+		SetModelFBX(fbx);
+
+		//コライダーの追加
+		MeshCollider* collider = new MeshCollider;
+		ObjectFBX::SetCollider(collider);
+		collider->ConstructTriangle(fbx);
+		collider->SetAttribute(COLLISION_ATTR_LANDSHAPE);
+	}
 
 	return true;
 }

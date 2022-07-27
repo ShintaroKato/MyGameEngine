@@ -9,6 +9,9 @@
 #include "PipelineSet.h"
 #include "ModelOBJ.h"
 #include "Camera.h"
+#include "CollisionInfo.h"
+
+class BaseCollider;
 
 /// <summary>
 /// 3Dオブジェクト
@@ -117,6 +120,12 @@ public: // メンバ関数
 	const XMFLOAT3& GetRotation() { return rotation; }
 
 	/// <summary>
+	/// ワールド行列の取得
+	/// </summary>
+	/// <returns>ワールド行列</returns>
+	const XMMATRIX& GetMatWorld() { return matWorld; }
+
+	/// <summary>
 	/// 座標の設定
 	/// </summary>
 	/// <param name="position">座標</param>
@@ -139,6 +148,17 @@ public: // メンバ関数
 	/// </summary>
 	void SetModelOBJ(ModelOBJ* model) { this->model = model; }
 
+	/// <summary>
+	/// コライダーの設定
+	/// </summary>
+	void SetCollider(BaseCollider* collider);
+
+	/// <summary>
+	/// 衝突時コールバック関数
+	/// </summary>
+	/// <param name="info">衝突情報</param>
+	virtual void OnCollision(const CollisionInfo& info) {}
+
 private: // メンバ変数
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffB0;
@@ -158,6 +178,9 @@ protected: // メンバ変数
 	XMMATRIX matWorld{};
 	// 親オブジェクト
 	ObjectOBJ* parent = nullptr;
+
+	// コライダー
+	BaseCollider* collider = nullptr;
 
 protected:
 	Camera* GetCamera() { return ObjectOBJ::camera; }

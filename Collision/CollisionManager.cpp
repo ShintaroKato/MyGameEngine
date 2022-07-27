@@ -45,8 +45,7 @@ bool CollisionManager::CheckCollision(BaseCollider* colA, BaseCollider* colB)
 
 		if (Collision::CheckShpere2Sphere(*sphereA, *sphereB, &inter))
 		{
-			colA->OnCollision(CollisionInfo(colB->GetObject3d(), colB, inter));
-			colB->OnCollision(CollisionInfo(colA->GetObject3d(), colA, inter));
+			CheckSetObject(colA, colB, inter);
 
 			return true;
 		}
@@ -61,8 +60,7 @@ bool CollisionManager::CheckCollision(BaseCollider* colA, BaseCollider* colB)
 
 		if (meshCollider->CheckCollisionSphere(*sphere, &inter))
 		{
-			colA->OnCollision(CollisionInfo(colB->GetObject3d(), colB, inter));
-			colB->OnCollision(CollisionInfo(colA->GetObject3d(), colA, inter));
+			CheckSetObject(colA, colB, inter);
 
 			return true;
 		}
@@ -77,14 +75,49 @@ bool CollisionManager::CheckCollision(BaseCollider* colA, BaseCollider* colB)
 
 		if (meshCollider->CheckCollisionSphere(*sphere, &inter))
 		{
-			colA->OnCollision(CollisionInfo(colB->GetObject3d(), colB, inter));
-			colB->OnCollision(CollisionInfo(colA->GetObject3d(), colA, inter));
+			CheckSetObject(colA, colB, inter);
 
 			return true;
 		}
 	}
 
 	return false;
+}
+
+void CollisionManager::CheckSetObject(BaseCollider* colA, BaseCollider* colB, XMVECTOR inter)
+{
+	// A‚ÆB‚Æ‚à‚ÉOBJ
+	if (colA->obj && colB->obj)
+	{
+		colA->OnCollision(CollisionInfo(colB->GetObjectOBJ(), colB, inter));
+		colB->OnCollision(CollisionInfo(colA->GetObjectOBJ(), colA, inter));
+
+		return;
+	}
+	// A‚ªOBJAB‚ªFBX
+	if (colA->obj && colB->fbx)
+	{
+		colA->OnCollision(CollisionInfo(colB->GetObjectFBX(), colB, inter));
+		colB->OnCollision(CollisionInfo(colA->GetObjectOBJ(), colA, inter));
+
+		return;
+	}
+	// A‚ªFBXAB‚ªOBJ
+	if (colA->fbx && colB->obj)
+	{
+		colA->OnCollision(CollisionInfo(colB->GetObjectOBJ(), colB, inter));
+		colB->OnCollision(CollisionInfo(colA->GetObjectFBX(), colA, inter));
+
+		return;
+	}
+	// A‚ÆB‚Æ‚à‚ÉFBX
+	if (colA->fbx && colB->fbx)
+	{
+		colA->OnCollision(CollisionInfo(colB->GetObjectFBX(), colB, inter));
+		colB->OnCollision(CollisionInfo(colA->GetObjectFBX(), colA, inter));
+
+		return;
+	}
 }
 
 bool CollisionManager::Raycast(const Ray& ray, RaycastHit* hitInfo, float maxDistance)
@@ -154,7 +187,8 @@ bool CollisionManager::Raycast(const Ray& ray, unsigned short attribute, Raycast
 			hitInfo->distance = distance;
 			hitInfo->inter = inter;
 			hitInfo->collider = *it_hit;
-			hitInfo->object = hitInfo->collider->GetObject3d();
+			hitInfo->obj = hitInfo->collider->GetObjectOBJ();
+			hitInfo->fbx = hitInfo->collider->GetObjectFBX();
 		}
 	}
 

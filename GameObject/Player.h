@@ -86,6 +86,12 @@ public:
 	void SetScale(XMFLOAT3 scale);
 
 private:
+	// 接地フラグ
+	bool onGround = true;
+	// 落下ベクトル
+	DirectX::XMVECTOR fallV;
+	// コライダー
+	BaseCollider* collider = nullptr;
 
 	// HP
 	float HP = 20.0f;

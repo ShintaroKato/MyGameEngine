@@ -5,6 +5,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "BaseCollider.h"
+#include "CollisionManager.h"
 
 #pragma comment(lib, "d3dcompiler.lib")
 
@@ -388,4 +390,14 @@ void ObjectFBX::AnimationReset()
 	currentTime = startTime;
 	// 非再生状態にする
 	isPlay = false;
+}
+
+void ObjectFBX::SetCollider(BaseCollider* collider)
+{
+	collider->SetObjectFBX(this);
+	this->collider = collider;
+	// コリジョンマネージャに追加
+	CollisionManager::GetInstance()->AddCollider(collider);
+	// コライダーを更新しておく
+	collider->Update();
 }

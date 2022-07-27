@@ -1,5 +1,8 @@
 #include "Player.h"
 #include "Input.h"
+#include "SphereCollider.h"
+#include "CollisionManager.h"
+#include "CollisionAttribute.h"
 
 Player* Player::Create(ModelFBX* fbx, int animationNumber)
 {
@@ -63,7 +66,8 @@ bool Player::Initialize()
 	collider = new SphereCollider(XMVECTOR({ 0,radius,0,0 }), radius);
 
 	// ”¼Œa•ª‚¾‚¯‘«Œ³‚©‚ç•‚‚¢‚½À•W‚ð‹…‚Ì’†S‚É‚·‚é
-	SetCollider(collider);
+	if(ObjectOBJ::model) ObjectOBJ::SetCollider(collider);
+	if(ObjectFBX::model) ObjectFBX::SetCollider(collider);
 	collider->SetAttribute(COLLISION_ATTR_ALLIES);
 
 	return true;

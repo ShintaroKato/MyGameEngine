@@ -1,8 +1,9 @@
 #pragma once
-#include "Object3d.h"
+#include "ObjectOBJ.h"
+#include "ObjectFBX.h"
 #include "CollisionAttribute.h"
 
-class TouchableObject : public Object3d
+class TouchableObject : public ObjectOBJ, public ObjectFBX
 {
 public:
 
@@ -10,11 +11,11 @@ public:
 	/// オブジェクト生成
 	/// </summary>
 	/// <returns></returns>
-	static TouchableObject* Create(Model* model = nullptr);
+	static TouchableObject* Create(ModelOBJ* obj = nullptr, ModelFBX* fbx = nullptr);
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	/// <returns></returns>
-	bool Initialize(Model* model);
+	bool Initialize(ModelOBJ* obj, ModelFBX* fbx);
 };

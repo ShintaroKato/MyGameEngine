@@ -9,6 +9,9 @@
 #include "PipelineSet.h"
 #include "FBXLoader.h"
 #include "Camera.h"
+#include "CollisionInfo.h"
+
+class BaseCollider;
 
 /// <summary>
 /// 3Dオブジェクト
@@ -112,6 +115,12 @@ public: // メンバ関数
 	const XMFLOAT3& GetRotation() { return rotation; }
 
 	/// <summary>
+	/// ワールド行列の取得
+	/// </summary>
+	/// <returns>ワールド行列</returns>
+	const XMMATRIX& GetMatWorld() { return matWorld; }
+
+	/// <summary>
 	/// 座標の設定
 	/// </summary>
 	/// <param name="position">座標</param>
@@ -155,6 +164,17 @@ public: // メンバ関数
 	/// </summary>
 	void AnimationReset();
 
+	/// <summary>
+	/// コライダーの設定
+	/// </summary>
+	void SetCollider(BaseCollider* collider);
+
+	/// <summary>
+	/// 衝突時コールバック関数
+	/// </summary>
+	/// <param name="info">衝突情報</param>
+	virtual void OnCollision(const CollisionInfo& info) {}
+
 private: // メンバ変数
 
 	// 定数バッファ
@@ -189,6 +209,8 @@ protected: // メンバ変数
 	ObjectFBX* parent = nullptr;
 	// アニメーション再生中
 	bool isPlay = false;
+	// コライダー
+	BaseCollider* collider = nullptr;
 
 protected:
 	Camera* GetCamera() { return ObjectFBX::camera; }

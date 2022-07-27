@@ -3,7 +3,7 @@
 
 using namespace DirectX;
 
-void MeshCollider::ConstructTriangle(Model* model)
+void MeshCollider::ConstructTriangle(ModelOBJ* model)
 {
 	triangles.clear();
 
@@ -51,9 +51,51 @@ void MeshCollider::ConstructTriangle(Model* model)
 	}
 }
 
+void MeshCollider::ConstructTriangle(ModelFBX* model)
+{
+	triangles.clear();
+
+	int start = 0;
+
+		const std::vector<ModelFBX::VertexPosNormalUvSkin>& vertices = model->GetVertices();
+		const std::vector<unsigned short>& indices = model->GetIndices();
+
+		size_t triangleNum = indices.size() / 3;
+
+		triangles.resize(triangles.size() + triangleNum);
+
+	for (int i = 0; i < triangleNum; i++) {
+
+		Triangle& tri = triangles[start + i];
+		int idx0 = indices[i * 3 + 0];
+		int idx1 = indices[i * 3 + 1];
+		int idx2 = indices[i * 3 + 2];
+
+		tri.p0 = {
+			vertices[idx0].pos.x,
+			vertices[idx0].pos.y,
+			vertices[idx0].pos.z,
+			1 };
+
+		tri.p1 = {
+			vertices[idx1].pos.x,
+			vertices[idx1].pos.y,
+			vertices[idx1].pos.z,
+			1 };
+
+		tri.p2 = {
+			vertices[idx2].pos.x,
+			vertices[idx2].pos.y,
+			vertices[idx2].pos.z,
+			1 };
+
+		tri.ComputeNormal();
+	}
+}
+
 void MeshCollider::Update()
 {
-	invMatWorld = XMMatrixInverse(nullptr, GetObject3d()->GetMatWorld());
+	invMatWorld = XMMatrixInverse(nullptr, GetObjectOBJ()->GetMatWorld());
 }
 
 bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR* inter)
@@ -70,7 +112,7 @@ bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR*
 
 		if (Collision::CheckSphere2Triangle(localSphere, triangle, inter)) {
 			if (inter) {
-				const XMMATRIX& matWorld = GetObject3d()->GetMatWorld();
+				const XMMATRIX& matWorld = GetObjectOBJ()->GetMatWorld();
 
 				*inter = XMVector3Transform(*inter, matWorld);
 			}
@@ -97,7 +139,7 @@ bool MeshCollider::CheckCollisionRay(const Ray& ray, float* distance, DirectX::X
 
 		if (Collision::CheckRay2Triangle(localRay, triangle, nullptr, &tempInter)) {
 
-			const XMMATRIX& matWorld = GetObject3d()->GetMatWorld();
+			const XMMATRIX& matWorld = GetObjectOBJ()->GetMatWorld();
 
 			tempInter = XMVector3Transform(tempInter, matWorld);
 

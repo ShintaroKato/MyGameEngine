@@ -61,7 +61,7 @@ public:
 public:
 	static const int MAX_BONE_INDICES = 4;
 
-private:
+public:
 	struct VertexPosNormalUvSkin
 	{
 		DirectX::XMFLOAT3 pos;
@@ -133,4 +133,8 @@ public:
 	/// FBXƒV[ƒ“‚ğæ“¾
 	/// </summary>
 	FbxScene* GetFbxScene() { return fbxScene; }
+
+	const vector<VertexPosNormalUvSkin>& GetVertices() { return vertices; }
+
+	const vector<unsigned short>& GetIndices() { return indices; }
 };

@@ -2,7 +2,8 @@
 
 #include <DirectXMath.h>
 
-class Object3d;
+class ObjectOBJ;
+class ObjectFBX;
 class BaseCollider;
 
 /// <summary>
@@ -11,14 +12,21 @@ class BaseCollider;
 struct CollisionInfo
 {
 public:
-	CollisionInfo(Object3d* object, BaseCollider* collider, const DirectX::XMVECTOR& inter) {
-		this->object = object;
+	CollisionInfo(ObjectOBJ* obj, BaseCollider* collider, const DirectX::XMVECTOR& inter) {
+		this->obj = obj;
+		this->collider = collider;
+		this->inter = inter;
+	}
+
+	CollisionInfo(ObjectFBX* fbx, BaseCollider* collider, const DirectX::XMVECTOR& inter) {
+		this->fbx = fbx;
 		this->collider = collider;
 		this->inter = inter;
 	}
 
 	// 衝突相手のオブジェクト
-	Object3d* object = nullptr;
+	ObjectOBJ* obj = nullptr;
+	ObjectFBX* fbx = nullptr;
 	// 衝突相手のコライダー
 	BaseCollider* collider = nullptr;
 	// 衝突点
