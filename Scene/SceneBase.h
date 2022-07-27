@@ -7,6 +7,7 @@
 #include "Text.h"
 #include "ObjectOBJ.h"
 #include "ObjectFBX.h"
+#include "Tool/Physics.h"
 
 class SceneBase
 {

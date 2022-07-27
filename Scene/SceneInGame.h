@@ -56,8 +56,13 @@ private: // ÉÅÉìÉoïœêî
 
 	Sprite* spriteBG = nullptr;
 
+	Physics* physics = nullptr;
+
 	ModelOBJ* modelSphere = nullptr;
 	ObjectOBJ* objSphere = nullptr;
+
+	ModelOBJ* modelGround = nullptr;
+	ObjectOBJ* objGround = nullptr;
 
 	ModelFBX* fbxModelAnim = nullptr;
 	ObjectFBX* fbxAnimTest = nullptr;

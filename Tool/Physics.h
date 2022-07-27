@@ -22,10 +22,17 @@ public:
 
 	void SetObjectFBX(ObjectFBX* fbx);
 
+	void SetParam(float mass, XMVECTOR velocity, XMVECTOR acceleration);
+
 	/// <summary>
-	/// 等加速度運動
+	/// 等加速度運動(2D)
 	/// </summary>
-	void UniformlyAccelMotion();
+	void UniformlyAccelMotion2D();
+
+	/// <summary>
+	/// 等加速度運動(3D)
+	/// </summary>
+	void UniformlyAccelMotion3D();
 
 private:
 	// オブジェクト

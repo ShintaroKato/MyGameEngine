@@ -11,6 +11,16 @@ XMFLOAT3 operator+(XMFLOAT3 lhs, XMVECTOR rhs)
 	return result;
 }
 
+XMFLOAT2 operator+(XMFLOAT2 lhs, XMVECTOR rhs)
+{
+	XMFLOAT2 result{};
+
+	result.x = lhs.x + rhs.m128_f32[0];
+	result.y = lhs.y + rhs.m128_f32[1];
+
+	return result;
+}
+
 Physics::Physics()
 {
 }
@@ -50,13 +60,27 @@ void Physics::SetObjectFBX(ObjectFBX* fbx)
 	position = fbx->GetPosition();
 }
 
-void Physics::UniformlyAccelMotion()
+void Physics::SetParam(float mass, XMVECTOR velocity, XMVECTOR acceleration)
 {
-	if (obj == nullptr) return;
+	this->mass = mass;
+	this->velocity = velocity;
+	this->acceleration = acceleration;
+}
+
+void Physics::UniformlyAccelMotion2D()
+{
+	position = position + velocity; 
+	velocity = velocity + acceleration;
+
+	Update();
+}
+
+void Physics::UniformlyAccelMotion3D()
+{
+	if (!obj && !fbx) return;
 
 	position = position + velocity;
 	velocity = velocity + acceleration;
 
 	Update();
 }
-

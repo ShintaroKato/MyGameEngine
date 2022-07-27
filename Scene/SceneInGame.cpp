@@ -45,6 +45,8 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	fbxAnimTest->SetAnimationNumber(0);
 	fbxAnimTest->Update();
 
+	physics = new Physics(1, { 0,1,0 }, { 1.0f,0.0f,0.0f });
+
 	camera->SetTarget({ 0,0,0 });
 	camera->SetEye({ 0,0,-100 });
 	camera->SetTarget(fbxAnimTest->GetPosition());
@@ -58,19 +60,19 @@ void SceneInGame::Update()
 	{
 		if (input->PushKey(DIK_UP))
 		{
-			camera->CameraMoveVector({ 0,1,0 });
+			camera->CameraMoveVector({ 0,0.1,0 });
 		}
 		else if (input->PushKey(DIK_DOWN))
 		{
-			camera->CameraMoveVector({ 0,-1,0 });
+			camera->CameraMoveVector({ 0,-0.1,0 });
 		}
 		if (input->PushKey(DIK_LEFT))
 		{
-			camera->CameraMoveVector({ 1,0,0 });
+			camera->CameraMoveVector({ 0.1,0,0 });
 		}
 		else if (input->PushKey(DIK_RIGHT))
 		{
-			camera->CameraMoveVector({ -1,0,0 });
+			camera->CameraMoveVector({ -0.1,0,0 });
 		}
 	}
 	else
@@ -78,14 +80,14 @@ void SceneInGame::Update()
 		camera->CameraMoveVector({ 0,0,0 });
 	}
 
-	camera->SetTarget(fbxAnimTest->GetPosition());
+	camera->SetTarget(objSphere->GetPosition());
 
 	camera->Update();
 
 	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) ||
 		input->PushKey(DIK_A) || input->PushKey(DIK_D))
 	{
-		XMFLOAT3 rot = fbxAnimTest->GetRotation();
+		XMFLOAT3 rot = objSphere->GetRotation();
 
 		if (input->PushKey(DIK_W))
 		{
@@ -107,24 +109,13 @@ void SceneInGame::Update()
 		fbxAnimTest->SetRotation(rot);
 	}
 
-	if (input->TriggerKey(DIK_SPACE))
+	if (input->PushKey(DIK_SPACE))
 	{
-		
-	}
-	if (input->PushKey(DIK_Y))
-	{
-		fbxAnimTest->AnimationPlay();
-	}
-	if (input->PushKey(DIK_T))
-	{
-		fbxAnimTest->AnimationStop();
-	}
-	if (input->PushKey(DIK_R))
-	{
-		fbxAnimTest->AnimationReset();
+		physics->SetObjectOBJ(objSphere);
+		physics->UniformlyAccelMotion3D();
 	}
 
-	fbxAnimTest->Update();
+	//fbxAnimTest->Update();
 	objSphere->Update();
 
 	spriteBG->Update();
@@ -149,11 +140,11 @@ void SceneInGame::Draw()
 	// 3Dオブジェクト描画前処理
 	ObjectOBJ::PreDraw(dxCommon->GetCmdList());
 
-	//objSphere->Draw();
+	objSphere->Draw();
 
 	ObjectOBJ::PostDraw();
 
-	fbxAnimTest->Draw(dxCommon->GetCmdList());
+	//fbxAnimTest->Draw(dxCommon->GetCmdList());
 
 #pragma endregion
 
