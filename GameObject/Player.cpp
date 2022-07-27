@@ -1,5 +1,8 @@
 #include "Player.h"
 #include "Input.h"
+#include "SphereCollider.h"
+#include "CollisionManager.h"
+#include "CollisionAttribute.h"
 
 Player* Player::Create(ModelFBX* fbx, int animationNumber)
 {
@@ -59,12 +62,13 @@ bool Player::Initialize()
 	ObjectOBJ::Initialize();
 
 	// コライダーの追加
-	/*float radius = 0.6f;
-	collider = new SphereCollider(XMVECTOR({ 0,radius,0,0 }), radius);*/
+	float radius = 0.6f;
+	collider = new SphereCollider(XMVECTOR({ 0,radius,0,0 }), radius);
 
 	// 半径分だけ足元から浮いた座標を球の中心にする
-	/*SetCollider(collider);
-	collider->SetAttribute(COLLISION_ATTR_ALLIES);*/
+	if(ObjectOBJ::model) ObjectOBJ::SetCollider(collider);
+	if(ObjectFBX::model) ObjectFBX::SetCollider(collider);
+	collider->SetAttribute(COLLISION_ATTR_ALLIES);
 
 	return true;
 }
@@ -121,6 +125,11 @@ XMFLOAT3 Player::GetPosition()
 	{
 		return ObjectFBX::position;
 	}
+}
+
+void Player::OnCollision(const CollisionInfo& info)
+{
+
 }
 
 void Player::SetPosition(XMFLOAT3 pos)

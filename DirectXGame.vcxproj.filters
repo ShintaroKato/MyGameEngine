@@ -58,6 +58,12 @@
     <Filter Include="ヘッダー ファイル\Camera">
       <UniqueIdentifier>{136d03de-1939-486f-970c-1c0ff240a367}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Collision">
+      <UniqueIdentifier>{6dc5fd50-31cc-473e-ae1f-0772f5a37cfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Collision">
+      <UniqueIdentifier>{6b414ff0-7fd2-4a3d-80eb-b9c661e6e0e2}</UniqueIdentifier>
+    </Filter>
     <Filter Include="ソース ファイル\GameObject">
       <UniqueIdentifier>{db69ef88-9c2b-4484-87ef-9c89405a7ce1}</UniqueIdentifier>
     </Filter>
@@ -125,6 +131,24 @@
     </ClCompile>
     <ClCompile Include="Scene\SceneBase.cpp">
       <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision\MeshCollider.cpp">
+      <Filter>ソース ファイル\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision\TouchableObject.cpp">
+      <Filter>ソース ファイル\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision\Collision.cpp">
+      <Filter>ソース ファイル\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision\CollisionManager.cpp">
+      <Filter>ソース ファイル\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision\CollisionPrimitive.cpp">
+      <Filter>ソース ファイル\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision\SphereCollider.cpp">
+      <Filter>ソース ファイル\Collision</Filter>
     </ClCompile>
     <ClCompile Include="GameObject\Player.cpp">
       <Filter>ソース ファイル\GameObject</Filter>
@@ -256,6 +280,39 @@
     </ClInclude>
     <ClInclude Include="Scene\SceneBase.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\CollisionAttribute.h">
+      <Filter>ヘッダー ファイル\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\MeshCollider.h">
+      <Filter>ヘッダー ファイル\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\RaycastHit.h">
+      <Filter>ヘッダー ファイル\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\TouchableObject.h">
+      <Filter>ヘッダー ファイル\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\SphereCollider.h">
+      <Filter>ヘッダー ファイル\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\BaseCollider.h">
+      <Filter>ヘッダー ファイル\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\Collision.h">
+      <Filter>ヘッダー ファイル\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\CollisionInfo.h">
+      <Filter>ヘッダー ファイル\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\CollisionManager.h">
+      <Filter>ヘッダー ファイル\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\CollisionPrimitive.h">
+      <Filter>ヘッダー ファイル\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\CollisionTypes.h">
+      <Filter>ヘッダー ファイル\Collision</Filter>
     </ClInclude>
     <ClInclude Include="GameObject\Player.h">
       <Filter>ヘッダー ファイル\GameObject</Filter>

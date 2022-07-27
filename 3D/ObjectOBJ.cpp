@@ -5,6 +5,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "BaseCollider.h"
+#include "CollisionManager.h"
 
 #pragma comment(lib, "d3dcompiler.lib")
 
@@ -301,4 +303,14 @@ void ObjectOBJ::Draw()
 
 	// モデルを描画
 	model->Draw(cmdList, 1);
+}
+
+void ObjectOBJ::SetCollider(BaseCollider* collider)
+{
+	collider->SetObjectOBJ(this);
+	this->collider = collider;
+	// コリジョンマネージャに追加
+	CollisionManager::GetInstance()->AddCollider(collider);
+	// コライダーを更新しておく
+	collider->Update();
 }

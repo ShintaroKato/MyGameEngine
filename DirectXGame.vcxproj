@@ -78,12 +78,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(ProjectDir)Collision\;$(IncludePath)</IncludePath>
     <IncludePath>$(ProjectDir)GameObject\;$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib\DirectXTex\lib\Release;$(ProjectDir)lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(ProjectDir)lib\DirectXTex\lib\Release;$(ProjectDir)lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(ProjectDir)Collision\;$(IncludePath)</IncludePath>
     <IncludePath>$(ProjectDir)GameObject\;$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -167,6 +169,12 @@
     <ClCompile Include="Base\DirectXCommon.cpp" />
     <ClCompile Include="Base\WinApp.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
+    <ClCompile Include="Collision\Collision.cpp" />
+    <ClCompile Include="Collision\CollisionManager.cpp" />
+    <ClCompile Include="Collision\CollisionPrimitive.cpp" />
+    <ClCompile Include="Collision\MeshCollider.cpp" />
+    <ClCompile Include="Collision\SphereCollider.cpp" />
+    <ClCompile Include="Collision\TouchableObject.cpp" />
     <ClCompile Include="GameObject\Enemy.cpp" />
     <ClCompile Include="GameObject\Player.cpp" />
     <ClCompile Include="Input\Input.cpp" />
@@ -296,6 +304,17 @@
     <ClInclude Include="Base\PipelineSet.h" />
     <ClInclude Include="Base\WinApp.h" />
     <ClInclude Include="Camera\Camera.h" />
+    <ClInclude Include="Collision\BaseCollider.h" />
+    <ClInclude Include="Collision\Collision.h" />
+    <ClInclude Include="Collision\CollisionAttribute.h" />
+    <ClInclude Include="Collision\CollisionInfo.h" />
+    <ClInclude Include="Collision\CollisionManager.h" />
+    <ClInclude Include="Collision\CollisionPrimitive.h" />
+    <ClInclude Include="Collision\CollisionTypes.h" />
+    <ClInclude Include="Collision\MeshCollider.h" />
+    <ClInclude Include="Collision\RaycastHit.h" />
+    <ClInclude Include="Collision\SphereCollider.h" />
+    <ClInclude Include="Collision\TouchableObject.h" />
     <ClInclude Include="GameObject\Enemy.h" />
     <ClInclude Include="GameObject\Player.h" />
     <ClInclude Include="Input\Input.h" />
