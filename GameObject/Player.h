@@ -1,4 +1,5 @@
 #pragma once
+#include "CollisionManager.h"
 #include "ObjectFBX.h"
 #include "ObjectOBJ.h"
 
@@ -61,13 +62,16 @@ public:
 	/// </summary>
 	XMFLOAT3 GetPosition();
 
-	//BaseCollider* GetCollider() { return collider; }
+	/// <summary>
+	/// コライダーを取得
+	/// </summary>
+	BaseCollider* GetCollider() { return collider; }
 
 	/// <summary>
 	/// 衝突時コールバック関数
 	/// </summary>
 	/// <param name="info">衝突情報</param>
-	//void OnCollision(const CollisionInfo& info) override;
+	void OnCollision(const CollisionInfo& info) override;
 
 	/// <summary>
 	/// 座標を設定
@@ -85,6 +89,12 @@ public:
 	void SetScale(XMFLOAT3 scale);
 
 private:
+	// 接地フラグ
+	bool onGround = true;
+	// 落下ベクトル
+	DirectX::XMVECTOR fallV;
+	// コライダー
+	BaseCollider* collider = nullptr;
 
 	// HP
 	float HP = 20.0f;
