@@ -62,20 +62,20 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 	objSkydome->SetModelOBJ(modelSkydome);
 	objGround->SetModelOBJ(modelGround);
 
-	for (int i = 0; i < CUBE_RED_MAX; i++)
+	for (int i = 0; i < OBJECT_MAX / 3; i++)
 	{
 		objCubeRed[i] = GameObject::Create(modelCubeRed);
 		objCubeGreen[i] = GameObject::Create(modelCubeGreen);
 		objCubeBlue[i] = GameObject::Create(modelCubeBlue);
-
-		objCubeRed[i]->ObjectOBJ::SetScale({ 2,2,2 });
-		objCubeGreen[i]->ObjectOBJ::SetScale({ 2,2,2 });
-		objCubeBlue[i]->ObjectOBJ::SetScale({ 2,2,2 });
-
-		objCubeRed[i]->ObjectOBJ::SetPosition({ 25,0,50 });
-		objCubeGreen[i]->ObjectOBJ::SetPosition({ -25,0,50 });
-		objCubeBlue[i]->ObjectOBJ::SetPosition({ 0,0,-25 });
 	}
+	objCubeRed[0]->ObjectOBJ::SetPosition({ 25,0,50 });
+	objCubeGreen[0]->ObjectOBJ::SetPosition({ -25,0,50 });
+	objCubeBlue[0]->ObjectOBJ::SetPosition({ 0,0,-25 });
+
+	objCubeRed[1]->ObjectOBJ::SetPosition({ 50,0,25 });
+	objCubeGreen[1]->ObjectOBJ::SetPosition({ -50,0,25 });
+	objCubeBlue[1]->ObjectOBJ::SetPosition({ 0,0,-50 });
+
 
 	objSkydome->SetScale({ 5,5,5 });
 	objSkydome->Update();
@@ -101,9 +101,6 @@ void SceneStageEdit::Update()
 
 	camera->Update();
 
-	objCubeRed[0]->Update();
-	objCubeGreen[0]->Update();
-	objCubeBlue[0]->Update();
 
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) ||
 		input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
@@ -134,16 +131,40 @@ void SceneStageEdit::Update()
 
 	camera->Update();
 
-	if (input->TriggerKey(DIK_SPACE))
+	if (input->TriggerKey(DIK_ESCAPE))
 	{
 		SceneManager::SetScene(TITLE);
+
+		for (int i = 0; i < OBJECT_MAX / 3; i++)
+		{
+			SceneBase::tmp[i] = objCubeRed[i]->ObjectOBJ::GetPosition();
+			SceneBase::tmp[i + 10] = objCubeGreen[i]->ObjectOBJ::GetPosition();
+			SceneBase::tmp[i + 20] = objCubeBlue[i]->ObjectOBJ::GetPosition();
+		}
+	}
+	if (input->TriggerKey(DIK_R))
+	{
+		objCubeRed[0]->ObjectOBJ::SetPosition({ 25,0,50 });
+		objCubeGreen[0]->ObjectOBJ::SetPosition({ -25,0,50 });
+		objCubeBlue[0]->ObjectOBJ::SetPosition({ 0,0,-25 });
+
+		objCubeRed[1]->ObjectOBJ::SetPosition({ 50,0,25 });
+		objCubeGreen[1]->ObjectOBJ::SetPosition({ -50,0,25 });
+		objCubeBlue[1]->ObjectOBJ::SetPosition({ 0,0,-50 });
 	}
 
 	// obj更新
 	objSkydome->Update();
 	objGround->Update();
 	// fbx更新
-	player->Update();
+	//player->Update();
+
+	for (int i = 0; i < 10; i++)
+	{
+		objCubeRed[i]->Update();
+		objCubeGreen[i]->Update();
+		objCubeBlue[i]->Update();
+	}
 
 	spriteBG->Update();
 }
@@ -178,6 +199,10 @@ void SceneStageEdit::Draw()
 	objCubeGreen[0]->ObjectOBJ::Draw();
 	objCubeBlue[0]->ObjectOBJ::Draw();
 
+	objCubeRed[1]->ObjectOBJ::Draw();
+	objCubeGreen[1]->ObjectOBJ::Draw();
+	objCubeBlue[1]->ObjectOBJ::Draw();
+
 	ObjectOBJ::PostDraw();
 
 	// FBXモデル
@@ -201,4 +226,12 @@ void SceneStageEdit::Draw()
 #pragma endregion
 
 #pragma endregion グラフィックスコマンド
+}
+
+void SceneStageEdit::SaveDat()
+{
+	//FILE* file = fopen("Resources/Data/stageData.dat", "wb");
+	//assert(!file);
+
+	//fwrite()
 }

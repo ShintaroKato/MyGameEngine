@@ -22,9 +22,9 @@ private: // エイリアス
 private: // 定数
 	static const int debugTextTexNumber = 0;
 
-	static const int CUBE_RED_MAX = 3;
-	static const int CUBE_GREEN_MAX = 3;
-	static const int CUBE_BLUE_MAX = 3;
+	static const int CUBE_RED_MAX = 10;
+	static const int CUBE_GREEN_MAX = 10;
+	static const int CUBE_BLUE_MAX = 10;
 
 public: // メンバ関数
 
@@ -53,6 +53,11 @@ public: // メンバ関数
 	/// </summary>
 	void Draw()override;
 
+	/// <summary>
+	/// datファイル読み込み
+	/// </summary>
+	void LoadDat();	
+
 private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
@@ -64,6 +69,7 @@ private: // メンバ変数
 
 	ModelOBJ* modelSkydome = nullptr;
 	ModelOBJ* modelGround = nullptr;
+	ModelOBJ* modelPlayer = nullptr;
 	ModelOBJ* modelCubeRed = nullptr;
 	ModelOBJ* modelCubeGreen = nullptr;
 	ModelOBJ* modelCubeBlue = nullptr;
@@ -72,6 +78,7 @@ private: // メンバ変数
 
 	ObjectOBJ* objSkydome = nullptr;
 	ObjectOBJ* objGround = nullptr;
+
 	GameObject* objCubeRed[CUBE_RED_MAX]{};
 	GameObject* objCubeGreen[CUBE_GREEN_MAX]{};
 	GameObject* objCubeBlue[CUBE_BLUE_MAX]{};

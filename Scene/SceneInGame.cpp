@@ -25,10 +25,8 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	camera = new Camera();
 	camera->Initialize(WinApp::window_width, WinApp::window_height);
 
-	ObjectOBJ::SetCamera(camera);
 	ObjectOBJ::SetDevice(dxCommon->GetDev());
 
-	ObjectFBX::SetCamera(camera);
 	ObjectFBX::SetDevice(dxCommon->GetDev());
 	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
 
@@ -48,6 +46,7 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	// .objからモデルデータ読み込み
 	modelSkydome = ModelOBJ::LoadObj("skydome", true);
 	modelGround = ModelOBJ::LoadObj("ground", true);
+	modelPlayer = ModelOBJ::LoadObj("player");
 	modelCubeRed = ModelOBJ::LoadObj("cube64Red", true);
 	modelCubeGreen = ModelOBJ::LoadObj("cube64Green", true);
 	modelCubeBlue = ModelOBJ::LoadObj("cube64Blue", true);
@@ -68,13 +67,13 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 		objCubeGreen[i] = GameObject::Create(modelCubeGreen);
 		objCubeBlue[i] = GameObject::Create(modelCubeBlue);
 
-		objCubeRed[i]->ObjectOBJ::SetScale({ 2,2,2 });
-		objCubeGreen[i]->ObjectOBJ::SetScale({ 2,2,2 });
-		objCubeBlue[i]->ObjectOBJ::SetScale({ 2,2,2 });
-
-		objCubeRed[i]->ObjectOBJ::SetPosition({ 25,0,50 });
-		objCubeGreen[i]->ObjectOBJ::SetPosition({ -25,0,50 });
-		objCubeBlue[i]->ObjectOBJ::SetPosition({ 0,0,-25 });
+		objCubeRed[i]->ObjectOBJ::SetPosition(SceneBase::tmp[i]);
+		objCubeGreen[i]->ObjectOBJ::SetPosition(SceneBase::tmp[i + 10]);
+		objCubeBlue[i]->ObjectOBJ::SetPosition(SceneBase::tmp[i + 20]);
+		
+		objCubeRed[i]->ChangeFixed();
+		objCubeGreen[i]->ChangeFixed();
+		objCubeBlue[i]->ChangeFixed();
 	}
 
 	objSkydome->SetScale({ 5,5,5 });
@@ -83,66 +82,40 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	objGround->SetScale({ 5,5,5 });
 	objGround->Update();
 
-	player = Player::Create(fbxModelAnim);
+	player = Player::Create(modelPlayer);
+	player->ObjectOBJ::SetCamera(camera);
 	player->SetPosition({ 0, 0, 0 });
-	player->SetScale({ 2,2,2 });
 	player->Update();
 
 	camera->SetTarget({0,0,0});
-	camera->SetEye({ 0,50,-100 });
+	camera->SetEye({ 0,5,-10 });
 	camera->SetTarget(player->GetPosition());
 	camera->Update();
 }
 
 void SceneInGame::Update()
 {
-	camera->SetTarget({ 0,0,0 });
-
-	camera->Update();
-
-	objCubeRed[0]->Update();
-	objCubeGreen[0]->Update();
-	objCubeBlue[0]->Update();
-
-	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) ||
-		input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
-	{
-		if (input->PushKey(DIK_UP))
-		{
-			camera->CameraMoveVector({ 0,1,0 });
-		}
-		else if (input->PushKey(DIK_DOWN))
-		{
-			camera->CameraMoveVector({ 0,-1,0 });
-		}
-		if (input->PushKey(DIK_LEFT))
-		{
-			camera->CameraMoveVector({ 1,0,0 });
-		}
-		else if (input->PushKey(DIK_RIGHT))
-		{
-			camera->CameraMoveVector({ -1,0,0 });
-		}
-	}
-	else
-	{
-		camera->CameraMoveVector({ 0,0,0 });
-	}
-
 	camera->SetTarget(player->GetPosition());
 
 	camera->Update();
 
-	if (input->TriggerKey(DIK_SPACE))
+	if (input->TriggerKey(DIK_ESCAPE))
 	{
-		SceneManager::SceneChange();
+		SceneManager::SetScene(TITLE);
 	}
-
 	// obj更新
 	objSkydome->Update();
 	objGround->Update();
 	// fbx更新
+
 	player->Update();
+
+	for (int i = 0; i < 10; i++)
+	{
+		objCubeRed[i]->Update();
+		objCubeGreen[i]->Update();
+		objCubeBlue[i]->Update();
+	}
 
 	spriteBG->Update();
 }
@@ -170,17 +143,21 @@ void SceneInGame::Draw()
 
 	//objSphere->Draw();
 	objSkydome->Draw();
-	//objPlayer->Draw();
+	player->ObjectOBJ::Draw();
 	objGround->Draw();
 
 	objCubeRed[0]->ObjectOBJ::Draw();
 	objCubeGreen[0]->ObjectOBJ::Draw();
 	objCubeBlue[0]->ObjectOBJ::Draw();
 
+	objCubeRed[1]->ObjectOBJ::Draw();
+	objCubeGreen[1]->ObjectOBJ::Draw();
+	objCubeBlue[1]->ObjectOBJ::Draw();
+
 	ObjectOBJ::PostDraw();
 
 	// FBXモデル
-	player->ObjectFBX::Draw(dxCommon->GetCmdList());
+	//player->ObjectFBX::Draw(dxCommon->GetCmdList());
 
 #pragma endregion
 
@@ -200,4 +177,9 @@ void SceneInGame::Draw()
 #pragma endregion
 
 #pragma endregion グラフィックスコマンド
+}
+
+void SceneInGame::LoadDat()
+{
+
 }

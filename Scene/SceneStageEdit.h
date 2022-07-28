@@ -22,9 +22,9 @@ private: // エイリアス
 private: // 定数
 	static const int debugTextTexNumber = 0;
 
-	static const int CUBE_RED_MAX = 3;
-	static const int CUBE_GREEN_MAX = 3;
-	static const int CUBE_BLUE_MAX = 3;
+	static const int CUBE_RED_MAX = 10;
+	static const int CUBE_GREEN_MAX = 10;
+	static const int CUBE_BLUE_MAX = 10;
 
 public: // メンバ関数
 
@@ -52,6 +52,11 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	void Draw()override;
+
+	/// <summary>
+	/// datファイルに保存
+	/// </summary>
+	void SaveDat();
 
 private: // メンバ変数
 	/// <summary>

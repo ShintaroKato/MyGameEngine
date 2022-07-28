@@ -1,5 +1,7 @@
 #include "SceneBase.h"
 
+XMFLOAT3 SceneBase::tmp[OBJECT_MAX];
+
 void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input, Audio* audio)
 {
 	// nullptrチェック
@@ -16,7 +18,7 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	camera = new Camera();
 	camera->Initialize(WinApp::window_width, WinApp::window_height);
 
-	//ObjectOBJ::SetCamera(camera);
+	ObjectOBJ::SetCamera(camera);
 	ObjectOBJ::SetDevice(this->dxCommon->GetDev());
 
 	ObjectFBX::SetCamera(camera);

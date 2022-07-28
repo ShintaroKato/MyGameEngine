@@ -7,9 +7,13 @@
 #include "Text.h"
 #include "ObjectOBJ.h"
 #include "ObjectFBX.h"
+#define OBJECT_MAX 30
 
 class SceneBase
 {
+public:
+	static XMFLOAT3 tmp[OBJECT_MAX];
+
 public:
 	/// <summary>
 	/// ‰Šú‰»
