@@ -255,6 +255,23 @@ void ObjectOBJ::Update()
 {
 	if (model == nullptr) return;
 
+	UpdateWorldMatrix();
+
+	const XMMATRIX& matViewProjection = camera->GetViewMatrix() * camera->GetProjectionMatrix();
+
+	HRESULT result;
+
+	// 定数バッファへデータ転送
+	ConstBufferDataB0* constMap = nullptr;
+	result = constBuffB0->Map(0, nullptr, (void**)&constMap);
+	constMap->viewProj = matViewProjection;
+	constMap->world = matWorld;
+	constMap->camPos = camera->GetEye();
+	constBuffB0->Unmap(0, nullptr);
+}
+
+void ObjectOBJ::UpdateWorldMatrix()
+{
 	HRESULT result;
 	XMMATRIX matScale, matRot, matTrans;
 
@@ -277,16 +294,6 @@ void ObjectOBJ::Update()
 		// 親オブジェクトのワールド行列を掛ける
 		matWorld *= parent->matWorld;
 	}
-
-	const XMMATRIX& matViewProjection = camera->GetViewMatrix() * camera->GetProjectionMatrix();
-
-	// 定数バッファへデータ転送
-	ConstBufferDataB0* constMap = nullptr;
-	result = constBuffB0->Map(0, nullptr, (void**)&constMap);
-	constMap->viewProj = matViewProjection;
-	constMap->world = matWorld;
-	constMap->camPos = camera->GetEye();
-	constBuffB0->Unmap(0, nullptr);
 }
 
 void ObjectOBJ::Draw()
@@ -310,7 +317,7 @@ void ObjectOBJ::SetCollider(BaseCollider* collider)
 	collider->SetObjectOBJ(this);
 	this->collider = collider;
 	// コリジョンマネージャに追加
-	CollisionManager::GetInstance()->AddCollider(collider);
+	CollisionManager::GetInstance()->AddCollider(this->collider);
 	// コライダーを更新しておく
-	collider->Update();
+	this->collider->Update();
 }

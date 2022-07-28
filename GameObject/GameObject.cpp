@@ -2,6 +2,7 @@
 #include "SphereCollider.h"
 #include "CollisionManager.h"
 #include "CollisionAttribute.h"
+#include "Collision.h"
 
 GameObject* GameObject::Create(ModelFBX* fbx)
 {
@@ -12,17 +13,17 @@ GameObject* GameObject::Create(ModelFBX* fbx)
 		return nullptr;
 	}
 
+	// モデルのセット
+	if (fbx)
+	{
+		instance->SetModelFBX(fbx);
+	}
+
 	// 初期化
 	if (!instance->Initialize())
 	{
 		delete instance;
 		assert(0);
-	}
-
-	// モデルのセット
-	if (fbx)
-	{
-		instance->SetModelFBX(fbx);
 	}
 
 	return instance;
@@ -37,17 +38,17 @@ GameObject* GameObject::Create(ModelOBJ* obj)
 		return nullptr;
 	}
 
+	// モデルのセット
+	if (obj)
+	{
+		instance->SetModelOBJ(obj);
+	}
+
 	// 初期化
 	if (!instance->Initialize())
 	{
 		delete instance;
 		assert(0);
-	}
-
-	// モデルのセット
-	if (obj)
-	{
-		instance->SetModelOBJ(obj);
 	}
 
 	return instance;
@@ -59,12 +60,14 @@ bool GameObject::Initialize()
 	ObjectOBJ::Initialize();
 
 	// コライダーの追加
-	float radius = 0.6f;
-	collider = new SphereCollider(XMVECTOR({ 0,radius,0,0 }), radius);
+	float radius = 5.0f;
+	sphere.center = { pos.x, pos.y + radius, pos.z,0 };
+	sphere.radius = radius;
+	collider = new SphereCollider(sphere.center, sphere.radius);
 
 	if (ObjectOBJ::model) ObjectOBJ::SetCollider(collider);
 	if (ObjectFBX::model) ObjectFBX::SetCollider(collider);
-	collider->SetAttribute(COLLISION_ATTR_LANDSHAPE);
+	collider->SetAttribute(COLLISION_ATTR_OBJECT);
 
 	return true;
 }
@@ -75,7 +78,10 @@ void GameObject::Update()
 	Move();
 
 	ObjectOBJ::Update();
+	ObjectOBJ::SetCollider(collider);
+
 	ObjectFBX::Update();
+	ObjectFBX::SetCollider(collider);
 }
 
 void GameObject::Move()
@@ -104,34 +110,55 @@ void GameObject::Drag()
 
 	Input* input = Input::GetInstance();
 
-	if (input->ReleaseMouse(MOUSE_LEFT))
+	if (!input->PushMouse(MOUSE_LEFT))
 	{
 		isDrag = false;
 		return;
 	}
 
 	XMVECTOR vec = input->CursorPoint3D(Camera::GetViewMatrix(), Camera::GetProjectionMatrix());
+	Ray ray;
+	ray.start = input->CalcScreenToWorld(input->GetMousePos2(), 0.0f, Camera::GetViewMatrix(), Camera::GetProjectionMatrix());
+	ray.dir = input->CalcScreenToWorld(input->GetMousePos2(), 1.0f, Camera::GetViewMatrix(), Camera::GetProjectionMatrix());
+	ray.dir = XMVector3Normalize(ray.dir - ray.start);
+	float distance = 0;
+	XMVECTOR inter{};
 
 	if (input->TriggerMouse(MOUSE_LEFT))
 	{
-		// 取得したベクトルを座標として保存
-		pos = { vec.m128_f32[0], vec.m128_f32[1], vec.m128_f32[2] };
-
-		// 取得した座標が指定範囲内になければ関数を抜ける
-		float deadZone = 10;
-		if ((pos.x < ObjectOBJ::position.x - deadZone || pos.x > ObjectOBJ::position.x + deadZone) &&
-			(pos.x < ObjectFBX::position.x - deadZone || pos.x > ObjectFBX::position.x + deadZone)) return;
-
-		if ((pos.z < ObjectOBJ::position.z - deadZone || pos.z > ObjectOBJ::position.z + deadZone) &&
-			(pos.z < ObjectFBX::position.z - deadZone || pos.z > ObjectFBX::position.z + deadZone)) return;
-
-		// 掴んでいる状態にする
-		isDrag = true;
+		if (Collision::ChackRay2Sphere(ray, sphere, &distance, &inter))
+		{
+			// 掴んでいる状態にする
+			isDrag = true;
+		}
 	}
 	// 掴まれている時の処理
 	if (isDrag)
 	{
 		pos = { vec.m128_f32[0], vec.m128_f32[1], vec.m128_f32[2] };
+		SetPosition(pos);
+	}
+}
+
+void GameObject::SetPosition(const XMFLOAT3& pos)
+{
+	this->pos = pos;
+
+	// コライダーの追加
+	float radius = 5.0f;
+	sphere.center = { pos.x, pos.y + radius, pos.z,0 };
+	sphere.radius = radius;
+	collider = new SphereCollider(sphere.center, sphere.radius);
+
+	if (ObjectOBJ::model)
+	{
+		ObjectOBJ::SetPosition(pos);
+		ObjectOBJ::SetCollider(collider);
+	}
+	if (ObjectFBX::model)
+	{
+		ObjectFBX::SetPosition(pos);
+		ObjectFBX::SetCollider(collider);
 	}
 }
 

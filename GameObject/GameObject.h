@@ -58,6 +58,8 @@ public:
 
 	BaseCollider* GetCollider() { return collider; }
 
+	void SetPosition(const XMFLOAT3& pos);
+
 	/// <summary>
 	/// 衝突時コールバック関数
 	/// </summary>
@@ -72,5 +74,6 @@ private:
 	// 位置固定
 	bool fix = false;
 	// コライダー
+	Sphere sphere{};
 	BaseCollider* collider = nullptr;
 };

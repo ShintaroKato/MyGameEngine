@@ -98,6 +98,11 @@ public: // メンバ関数
 	virtual void Update();
 
 	/// <summary>
+	/// ワールド行列の更新
+	/// </summary>
+	void UpdateWorldMatrix();
+
+	/// <summary>
 	/// 描画
 	/// </summary>
 	virtual void Draw(ID3D12GraphicsCommandList* cmdList);

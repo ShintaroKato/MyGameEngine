@@ -68,13 +68,13 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 		objCubeGreen[i] = GameObject::Create(modelCubeGreen);
 		objCubeBlue[i] = GameObject::Create(modelCubeBlue);
 	}
-	objCubeRed[0]->ObjectOBJ::SetPosition({ 25,0,50 });
-	objCubeGreen[0]->ObjectOBJ::SetPosition({ -25,0,50 });
-	objCubeBlue[0]->ObjectOBJ::SetPosition({ 0,0,-25 });
+	objCubeRed[0]->SetPosition({ 25,0,50 });
+	objCubeGreen[0]->SetPosition({ -25,0,50 });
+	objCubeBlue[0]->SetPosition({ 0,0,-25 });
 
-	objCubeRed[1]->ObjectOBJ::SetPosition({ 50,0,25 });
-	objCubeGreen[1]->ObjectOBJ::SetPosition({ -50,0,25 });
-	objCubeBlue[1]->ObjectOBJ::SetPosition({ 0,0,-50 });
+	objCubeRed[1]->SetPosition({ 50,0,25 });
+	objCubeGreen[1]->SetPosition({ -50,0,25 });
+	objCubeBlue[1]->SetPosition({ 0,0,-50 });
 
 
 	objSkydome->SetScale({ 5,5,5 });
@@ -98,9 +98,6 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 void SceneStageEdit::Update()
 {
 	camera->SetTarget({ 0,0,0 });
-
-	camera->Update();
-
 
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) ||
 		input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
@@ -127,8 +124,6 @@ void SceneStageEdit::Update()
 		camera->CameraMoveVector({ 0,0,0 });
 	}
 
-	camera->SetTarget(player->GetPosition());
-
 	camera->Update();
 
 	if (input->TriggerKey(DIK_ESCAPE))
@@ -144,13 +139,13 @@ void SceneStageEdit::Update()
 	}
 	if (input->TriggerKey(DIK_R))
 	{
-		objCubeRed[0]->ObjectOBJ::SetPosition({ 25,0,50 });
-		objCubeGreen[0]->ObjectOBJ::SetPosition({ -25,0,50 });
-		objCubeBlue[0]->ObjectOBJ::SetPosition({ 0,0,-25 });
+		objCubeRed[0]->SetPosition({ 25,0,50 });
+		objCubeGreen[0]->SetPosition({ -25,0,50 });
+		objCubeBlue[0]->SetPosition({ 0,0,-25 });
 
-		objCubeRed[1]->ObjectOBJ::SetPosition({ 50,0,25 });
-		objCubeGreen[1]->ObjectOBJ::SetPosition({ -50,0,25 });
-		objCubeBlue[1]->ObjectOBJ::SetPosition({ 0,0,-50 });
+		objCubeRed[1]->SetPosition({ 50,0,25 });
+		objCubeGreen[1]->SetPosition({ -50,0,25 });
+		objCubeBlue[1]->SetPosition({ 0,0,-50 });
 	}
 
 	// objXV
