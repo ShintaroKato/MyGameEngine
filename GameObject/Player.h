@@ -96,6 +96,15 @@ private:
 	// コライダー
 	BaseCollider* collider = nullptr;
 
+	XMVECTOR move = { 0,0,0.1f,0 };
+
+	XMFLOAT3 position{};
+	XMFLOAT3 rotation{};
+
+	XMFLOAT3 cameraPos{};
+	XMFLOAT3 cameraRot{};
+	float cameraRotY{};
+
 	// HP
 	float HP = 20.0f;
 	const float HPMax = HP;

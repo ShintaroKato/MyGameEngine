@@ -1,4 +1,7 @@
 #include "GameObject.h"
+#include "SphereCollider.h"
+#include "CollisionManager.h"
+#include "CollisionAttribute.h"
 
 GameObject* GameObject::Create(ModelFBX* fbx)
 {
@@ -56,19 +59,19 @@ bool GameObject::Initialize()
 	ObjectOBJ::Initialize();
 
 	// コライダーの追加
-	/*float radius = 0.6f;
-	collider = new SphereCollider(XMVECTOR({ 0,radius,0,0 }), radius);*/
+	float radius = 0.6f;
+	collider = new SphereCollider(XMVECTOR({ 0,radius,0,0 }), radius);
 
-	// 半径分だけ足元から浮いた座標を球の中心にする
-	/*SetCollider(collider);
-	collider->SetAttribute(COLLISION_ATTR_ALLIES);*/
+	if (ObjectOBJ::model) ObjectOBJ::SetCollider(collider);
+	if (ObjectFBX::model) ObjectFBX::SetCollider(collider);
+	collider->SetAttribute(COLLISION_ATTR_LANDSHAPE);
 
 	return true;
 }
 
 void GameObject::Update()
 {
-	Grab();
+	Drag();
 	Move();
 
 	ObjectOBJ::Update();
@@ -78,7 +81,7 @@ void GameObject::Update()
 void GameObject::Move()
 {
 	// 掴まれていなければ関数を抜ける
-	if (!isGrabbed) return;
+	if (!isDrag) return;
 
 	if (ObjectOBJ::model != nullptr)
 	{
@@ -95,13 +98,15 @@ bool GameObject::Hit()
 	return false;
 }
 
-void GameObject::Grab()
+void GameObject::Drag()
 {
+	if(fix) return;
+
 	Input* input = Input::GetInstance();
 
 	if (input->ReleaseMouse(MOUSE_LEFT))
 	{
-		isGrabbed = false;
+		isDrag = false;
 		return;
 	}
 
@@ -121,11 +126,15 @@ void GameObject::Grab()
 			(pos.z < ObjectFBX::position.z - deadZone || pos.z > ObjectFBX::position.z + deadZone)) return;
 
 		// 掴んでいる状態にする
-		isGrabbed = true;
+		isDrag = true;
 	}
 	// 掴まれている時の処理
-	if (isGrabbed)
+	if (isDrag)
 	{
 		pos = { vec.m128_f32[0], vec.m128_f32[1], vec.m128_f32[2] };
 	}
+}
+
+void GameObject::OnCollision(const CollisionInfo& info)
+{
 }

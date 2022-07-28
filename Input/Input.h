@@ -41,10 +41,6 @@ private:
 
 	WinApp* winApp_ = nullptr;
 
-private:
-	XMVECTOR CalcScreenToWorld(XMFLOAT2 scrPos, float fZ, XMMATRIX view, XMMATRIX prj);
-	XMVECTOR CalcScreenToXZ(XMFLOAT2 scrPos, XMMATRIX view, XMMATRIX prj);
-
 public:
 	static Input* GetInstance();
 	void Initialize(WinApp* winApp);
@@ -61,4 +57,8 @@ public:
 	/// <param name="viewMat">ビュー行列</param>
 	/// <param name="prjMat">射影行列</param>
 	XMVECTOR CursorPoint3D(XMMATRIX viewMat, XMMATRIX prjMat);
+
+	XMVECTOR CalcScreenToWorld(XMFLOAT2 scrPos, float fZ, XMMATRIX view, XMMATRIX prj);
+	XMVECTOR CalcScreenToXZ(XMFLOAT2 scrPos, XMMATRIX view, XMMATRIX prj);
+
 };

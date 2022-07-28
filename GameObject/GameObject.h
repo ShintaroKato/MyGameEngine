@@ -2,6 +2,7 @@
 #include "Input.h"
 #include "ObjectFBX.h"
 #include "ObjectOBJ.h"
+#include "CollisionManager.h"
 
 class GameObject : public ObjectFBX, public ObjectOBJ
 {
@@ -48,19 +49,28 @@ public:
 	/// <summary>
 	/// オブジェクトを掴む
 	/// </summary>
-	void Grab();
+	void Drag();
 
-	//BaseCollider* GetCollider() { return collider; }
+	/// <summary>
+	/// 座標を固定された状態にする
+	/// </summary>
+	void ChangeFixed() { fix = true; }
+
+	BaseCollider* GetCollider() { return collider; }
 
 	/// <summary>
 	/// 衝突時コールバック関数
 	/// </summary>
 	/// <param name="info">衝突情報</param>
-	//void OnCollision(const CollisionInfo& info) override;
+	void OnCollision(const CollisionInfo& info) override;
 
 private:
 
 	XMFLOAT3 pos{};
 	// 掴まれているか否か
-	bool isGrabbed = false;
+	bool isDrag = false;
+	// 位置固定
+	bool fix = false;
+	// コライダー
+	BaseCollider* collider = nullptr;
 };
