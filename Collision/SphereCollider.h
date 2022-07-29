@@ -22,6 +22,13 @@ public:
 		shapeType = COLLISIONSHAPE_SPHERE;
 	}
 
+	SphereCollider(Sphere sphere)
+		: offset(sphere.center), radius(sphere.radius)
+	{
+		// 球形状をセット
+		shapeType = COLLISIONSHAPE_SPHERE;
+	}
+
 	void Update() override;
 
 	inline void SetRadius(float radius) { this->radius = radius; }
@@ -31,6 +38,12 @@ public:
 	inline void SetOffset(const XMVECTOR& offset) { this->offset = offset; }
 
 	inline float GetRadius() { return radius; }
+
+	inline void SetSphere(Sphere sphere)
+	{
+		this->offset = sphere.center;
+		this->radius = sphere.radius;
+	}
 
 private:
 	// オブジェクト中心からのオフセット
