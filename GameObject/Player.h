@@ -2,6 +2,7 @@
 #include "CollisionManager.h"
 #include "ObjectFBX.h"
 #include "ObjectOBJ.h"
+#include "SphereCollider.h"
 
 class Player : public ObjectFBX, public ObjectOBJ
 {
@@ -48,6 +49,11 @@ public:
 	void Move();
 
 	/// <summary>
+	/// 視点操作
+	/// </summary>
+	void ControlCamera();
+
+	/// <summary>
 	/// 攻撃
 	/// </summary>
 	void Attack();
@@ -65,7 +71,7 @@ public:
 	/// <summary>
 	/// コライダーを取得
 	/// </summary>
-	BaseCollider* GetCollider() { return collider; }
+	BaseCollider* GetCollider() { return sphereColl; }
 
 	/// <summary>
 	/// 衝突時コールバック関数
@@ -88,22 +94,38 @@ public:
 	/// </summary>
 	void SetScale(XMFLOAT3 scale);
 
+	/// <summary>
+	/// プレイヤーとカメラの距離
+	/// </summary>
+	void SetCameraDistance(float distance) { this->distance = distance; }
+
+	/// <summary>
+	/// 生存フラグを設定
+	/// </summary>
+	void SetAllive(bool flag) { this->alliveFlag = flag; }
+
 private:
+	// 座標
+	XMFLOAT3 pos{};
+	// 回転
+	XMFLOAT3 rotation{};
+	// 半径
+	float radius = 5.0f;
 	// 接地フラグ
 	bool onGround = true;
-	// 落下ベクトル
-	DirectX::XMVECTOR fallV;
-	// コライダー
-	BaseCollider* collider = nullptr;
-
+	// 移動ベクトル
 	XMVECTOR move = { 0,0,0.1f,0 };
+	// 落下ベクトル
+	DirectX::XMVECTOR fallVel;
+	// コライダー
+	Sphere sphere{};
+	SphereCollider* sphereColl = nullptr;
 
-	XMFLOAT3 position{};
-	XMFLOAT3 rotation{};
-
+	// カメラ
 	XMFLOAT3 cameraPos{};
 	XMFLOAT3 cameraRot{};
-	float cameraRotY{};
+	float cameraRotY = -90;
+	float distance = 10;
 
 	// HP
 	float HP = 20.0f;

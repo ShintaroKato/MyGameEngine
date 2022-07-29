@@ -3,6 +3,7 @@
 #include "ObjectFBX.h"
 #include "ObjectOBJ.h"
 #include "CollisionManager.h"
+#include "SphereCollider.h"
 
 class GameObject : public ObjectFBX, public ObjectOBJ
 {
@@ -56,7 +57,9 @@ public:
 	/// </summary>
 	void ChangeFixed() { fix = true; }
 
-	BaseCollider* GetCollider() { return collider; }
+	BaseCollider* GetCollider() { return sphereColl; }
+
+	XMFLOAT3 GetPosition();
 
 	void SetPosition(const XMFLOAT3& pos);
 
@@ -67,13 +70,15 @@ public:
 	void OnCollision(const CollisionInfo& info) override;
 
 private:
-
+	// 座標
 	XMFLOAT3 pos{};
+	// 半径
+	float radius = 5.0f;
 	// 掴まれているか否か
 	bool isDrag = false;
 	// 位置固定
 	bool fix = false;
 	// コライダー
 	Sphere sphere{};
-	BaseCollider* collider = nullptr;
+	SphereCollider* sphereColl = nullptr;
 };

@@ -13,19 +13,19 @@ Player* Player::Create(ModelFBX* fbx, int animationNumber)
 		return nullptr;
 	}
 
-	// 初期化
-	if (!instance->Initialize())
-	{
-		delete instance;
-		assert(0);
-	}
-
 	// モデルのセット
 	if (fbx)
 	{
 		instance->SetModelFBX(fbx);
 		instance->SetAnimationNumber(animationNumber);
 		instance->AnimationReset();
+	}
+
+	// 初期化
+	if (!instance->Initialize())
+	{
+		delete instance;
+		assert(0);
 	}
 
 	return instance;
@@ -40,17 +40,17 @@ Player* Player::Create(ModelOBJ* obj)
 		return nullptr;
 	}
 
+	// モデルのセット
+	if (obj)
+	{
+		instance->SetModelOBJ(obj);
+	}
+
 	// 初期化
 	if (!instance->Initialize())
 	{
 		delete instance;
 		assert(0);
-	}
-
-	// モデルのセット
-	if (obj)
-	{
-		instance->SetModelOBJ(obj);
 	}
 
 	return instance;
@@ -62,33 +62,37 @@ bool Player::Initialize()
 	ObjectOBJ::Initialize();
 
 	// コライダーの追加
-	float radius = 0.6f;
-	collider = new SphereCollider(XMVECTOR({ 0,radius,0,0 }), radius);
+	sphere.center = { pos.x, pos.y + radius, pos.z,0 };
+	sphere.radius = radius;
+	sphereColl = new SphereCollider(sphere);
 
-	// 半径分だけ足元から浮いた座標を球の中心にする
-	if(ObjectOBJ::model) ObjectOBJ::SetCollider(collider);
-	if(ObjectFBX::model) ObjectFBX::SetCollider(collider);
-	collider->SetAttribute(COLLISION_ATTR_ALLIES);
+	if (ObjectOBJ::model) ObjectOBJ::SetCollider(sphereColl);
+	if (ObjectFBX::model) ObjectFBX::SetCollider(sphereColl);
+	sphereColl->SetAttribute(COLLISION_ATTR_OBJECT);
 
 	return true;
 }
 
 void Player::Update()
 {
-	if (ObjectOBJ::model) position = ObjectOBJ::position;
-	if (ObjectFBX::model) position = ObjectFBX::position;
+	ControlCamera();
+
+	if (!alliveFlag) return;
+
+	if (ObjectOBJ::model) pos = ObjectOBJ::position;
+	if (ObjectFBX::model) pos = ObjectFBX::position;
 
 	Move();
 	Attack();
 
 	if (ObjectOBJ::model)
 	{
-		ObjectOBJ::position = position;
+		ObjectOBJ::position = pos;
 		ObjectOBJ::rotation = rotation;
 	}
 	if (ObjectFBX::model)
 	{
-		ObjectFBX::position = position;
+		ObjectFBX::position = pos;
 		ObjectFBX::rotation = rotation;
 	}
 	ObjectOBJ::Update();
@@ -99,39 +103,10 @@ void Player::Move()
 {
 	Input* input = Input::GetInstance();
 
-	cameraPos = ObjectOBJ::GetCamera()->GetEye();
-
-	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) ||
-		input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
-	{
-		if (input->PushKey(DIK_UP))
-		{
-			cameraPos.y -= 0.1;
-		}
-		else if (input->PushKey(DIK_DOWN))
-		{
-			cameraPos.y += 0.1;
-		}
-		if (input->PushKey(DIK_LEFT))
-		{
-			cameraRotY++;
-		}
-		else if (input->PushKey(DIK_RIGHT))
-		{
-			cameraRotY--;
-		}
-
-	}
-
 	//移動ベクトルをy軸周りの角度で回転
 	move = { 0,0,0.1f,0 };
 	XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rotation.y));
 	move = XMVector3TransformNormal(move, matRot);
-
-
-	cameraRot.y = XMConvertToDegrees(
-		atan2f(position.x - ObjectOBJ::GetCamera()->GetEye().x,
-			position.z - ObjectOBJ::GetCamera()->GetEye().z));
 
 	//向いている方向に移動
 	if (input->PushKey(DIK_S) || input->PushKey(DIK_W) ||
@@ -170,15 +145,10 @@ void Player::Move()
 			rotation.y = 315 + cameraRot.y;
 		}
 
-		position.x += move.m128_f32[0];
-		position.y += move.m128_f32[1];
-		position.z += move.m128_f32[2];
+		pos.x += move.m128_f32[0];
+		pos.y += move.m128_f32[1];
+		pos.z += move.m128_f32[2];
 	}
-
-	cameraPos.x = position.x + 10 * cos(XMConvertToRadians(cameraRotY));
-	cameraPos.z = position.z + 10 * sin(XMConvertToRadians(cameraRotY));
-
-	ObjectOBJ::GetCamera()->SetEye(cameraPos);
 
 	//落下処理
 	if (!onGround)
@@ -187,20 +157,57 @@ void Player::Move()
 		const float fallAcc = -0.01f;
 		const float fallVYMin = -0.5f;
 		//加速
-		fallV.m128_f32[1] = max(fallV.m128_f32[1] + fallAcc, fallVYMin);
+		fallVel.m128_f32[1] = max(fallVel.m128_f32[1] + fallAcc, fallVYMin);
 		//移動
-		position.x += fallV.m128_f32[0];
-		position.y += fallV.m128_f32[1];
-		position.z += fallV.m128_f32[2];
+		pos.x += fallVel.m128_f32[0];
+		pos.y += fallVel.m128_f32[1];
+		pos.z += fallVel.m128_f32[2];
 	}
 	//ジャンプ操作
 	else if (Input::GetInstance()->TriggerKey(DIK_SPACE))
 	{
 		onGround = false;
-		const float jumpVYFist = 0.2f; //ジャンプ時上向き初速
-		fallV = { 0,jumpVYFist,0,0 };
+		const float jumpVYFirst = 0.2f; //ジャンプ時上向き初速
+		fallVel = { 0,jumpVYFirst,0,0 };
 	}
 
+}
+
+void Player::ControlCamera()
+{
+	Input* input = Input::GetInstance();
+
+	cameraPos = ObjectOBJ::GetCamera()->GetEye();
+
+	cameraRot.y = XMConvertToDegrees(
+		atan2f(pos.x - ObjectOBJ::GetCamera()->GetEye().x,
+			pos.z - ObjectOBJ::GetCamera()->GetEye().z));
+
+	cameraPos.x = pos.x + distance * cos(XMConvertToRadians(cameraRotY));
+	cameraPos.z = pos.z + distance * sin(XMConvertToRadians(cameraRotY));
+
+	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) ||
+		input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
+	{
+		if (input->PushKey(DIK_UP))
+		{
+			cameraPos.y -= 0.1;
+		}
+		else if (input->PushKey(DIK_DOWN))
+		{
+			cameraPos.y += 0.1;
+		}
+		if (input->PushKey(DIK_LEFT))
+		{
+			cameraRotY++;
+		}
+		else if (input->PushKey(DIK_RIGHT))
+		{
+			cameraRotY--;
+		}
+	}
+
+	ObjectOBJ::GetCamera()->SetEye(cameraPos);
 }
 
 void Player::Attack()
@@ -231,13 +238,21 @@ void Player::OnCollision(const CollisionInfo& info)
 
 void Player::SetPosition(XMFLOAT3 pos)
 {
+	// コライダーの追加
+	sphere.center = { pos.x, pos.y + radius, pos.z,0 };
+	sphere.radius = radius;
+
+	sphereColl->SetSphere(sphere);
+
 	if (ObjectOBJ::model)
 	{
-		ObjectOBJ::position = pos;
+		ObjectOBJ::SetPosition(pos);
+		ObjectOBJ::SetCollider(sphereColl);
 	}
 	if (ObjectFBX::model)
 	{
-		ObjectFBX::position = pos;
+		ObjectFBX::SetPosition(pos);
+		ObjectFBX::SetCollider(sphereColl);
 	}
 }
 

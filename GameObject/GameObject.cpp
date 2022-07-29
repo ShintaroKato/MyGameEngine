@@ -1,5 +1,4 @@
 #include "GameObject.h"
-#include "SphereCollider.h"
 #include "CollisionManager.h"
 #include "CollisionAttribute.h"
 #include "Collision.h"
@@ -60,14 +59,13 @@ bool GameObject::Initialize()
 	ObjectOBJ::Initialize();
 
 	// コライダーの追加
-	float radius = 5.0f;
 	sphere.center = { pos.x, pos.y + radius, pos.z,0 };
 	sphere.radius = radius;
-	collider = new SphereCollider(sphere.center, sphere.radius);
+	sphereColl = new SphereCollider(sphere);
 
-	if (ObjectOBJ::model) ObjectOBJ::SetCollider(collider);
-	if (ObjectFBX::model) ObjectFBX::SetCollider(collider);
-	collider->SetAttribute(COLLISION_ATTR_OBJECT);
+	if (ObjectOBJ::model) ObjectOBJ::SetCollider(sphereColl);
+	if (ObjectFBX::model) ObjectFBX::SetCollider(sphereColl);
+	sphereColl->SetAttribute(COLLISION_ATTR_OBJECT);
 
 	return true;
 }
@@ -78,10 +76,7 @@ void GameObject::Update()
 	Move();
 
 	ObjectOBJ::Update();
-	ObjectOBJ::SetCollider(collider);
-
 	ObjectFBX::Update();
-	ObjectFBX::SetCollider(collider);
 }
 
 void GameObject::Move()
@@ -142,23 +137,33 @@ void GameObject::Drag()
 
 void GameObject::SetPosition(const XMFLOAT3& pos)
 {
-	this->pos = pos;
-
 	// コライダーの追加
-	float radius = 5.0f;
 	sphere.center = { pos.x, pos.y + radius, pos.z,0 };
 	sphere.radius = radius;
-	collider = new SphereCollider(sphere.center, sphere.radius);
+
+	sphereColl->SetSphere(sphere);
 
 	if (ObjectOBJ::model)
 	{
 		ObjectOBJ::SetPosition(pos);
-		ObjectOBJ::SetCollider(collider);
+		ObjectOBJ::SetCollider(sphereColl);
 	}
 	if (ObjectFBX::model)
 	{
 		ObjectFBX::SetPosition(pos);
-		ObjectFBX::SetCollider(collider);
+		ObjectFBX::SetCollider(sphereColl);
+	}
+}
+
+XMFLOAT3 GameObject::GetPosition()
+{
+	if (ObjectOBJ::model)
+	{
+		return ObjectOBJ::position;
+	}
+	if (ObjectFBX::model)
+	{
+		return ObjectFBX::position;
 	}
 }
 
