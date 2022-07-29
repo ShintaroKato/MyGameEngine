@@ -75,7 +75,7 @@ void Text::NPrint(int len, const char* text)
 }
 
 // まとめて描画
-void Text::DrawAll(ID3D12GraphicsCommandList* cmdList)
+void Text::DrawAll()
 {
 	// 全ての文字のスプライトについて
 	for (int i = 0; i < spriteIndex; i++)

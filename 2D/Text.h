@@ -6,7 +6,7 @@
 // デバッグ文字列クラスの定義
 class Text
 {
-public: // 定数の宣言    
+private: // 定数の宣言    
 	static const int maxCharCount = 256;    // 最大文字数
 	static const int fontWidth = 9;         // フォント画像内1文字分の横幅
 	static const int fontHeight = 18;       // フォント画像内1文字分の縦幅
@@ -25,7 +25,7 @@ public: // メンバ関数
 
 	void NPrint(int len, const char* text);
 
-	void DrawAll(ID3D12GraphicsCommandList* cmdList);
+	void DrawAll();
 
 	void SetPosition(float x, float y) {
 		this->posX = x;
