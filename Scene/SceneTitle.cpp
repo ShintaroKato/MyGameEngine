@@ -8,25 +8,7 @@ void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 {
 	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
 
-	// スプライト共通テクスチャ読み込み
-	spriteCommon->LoadTexture(0, "debugfont.png");
-	spriteCommon->LoadTexture(1, "background.png");
-
-	// テキスト
-	text->GetInstance()->Initialize(spriteCommon, 0);
-	// スプライト
-	spriteBG = Sprite::Create(spriteCommon, 1, { 0,0 }, { 0,0 });
-	spriteBG->Update();
-
-	//// obj.からモデルデータ読み込み
-	//modelSphere = Model::LoadObj("sphere");
-	//// 3Dオブジェクト生成
-	//objSphere = ObjectOBJ::Create();
-	//// オブジェクトにモデルを紐づける
-	//objSphere->SetModel(modelSphere);
-
-	//objSphere->SetPosition({ 0,0,30 });
-	//objSphere->Update();
+	SceneBase::Update();
 }
 
 void SceneTitle::Update()
@@ -40,7 +22,7 @@ void SceneTitle::Update()
 		SceneManager::SetScene(GAME);
 	}
 
-	spriteBG->Update();
+	SceneBase::Update();
 }
 
 void SceneTitle::Draw()

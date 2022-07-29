@@ -24,14 +24,14 @@ void PostEffectScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCo
 
 	// スプライト共通テクスチャ読み込み
 	spriteCommon->LoadTexture(0, "debugfont.png");
-	spriteCommon->LoadTexture(1, "background.png");
+	spriteCommon->LoadTexture(100, "background2.png");
 
 	// テキスト
 	text = Text::GetInstance();
 	text->Initialize(spriteCommon, 0);
 
 	// スプライト
-	spriteBG = Sprite::Create(spriteCommon, 1, { 0,0 }, { 0,0 });
+	spriteBG = Sprite::Create(spriteCommon, 100, { 0,0 }, { 0,0 });
 	spriteBG->Update();
 
 	// obj.からモデルデータ読み込み
