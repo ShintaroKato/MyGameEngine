@@ -1,5 +1,4 @@
 #include "SceneInGame.h"
-#include "PostEffect.h"
 
 SceneInGame::SceneInGame()
 {
@@ -7,118 +6,45 @@ SceneInGame::SceneInGame()
 
 SceneInGame::~SceneInGame()
 {
-	delete fbxAnimTest;
+
 }
 
 void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
 {
 	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
 
-	// スプライト共通テクスチャ読み込み
-	spriteCommon->LoadTexture(0, "debugfont.png");
-	spriteCommon->LoadTexture(1, "background.png");
+	objSkydome->SetScale({ 5,5,5 });
+	objGround->SetScale({ 5,5,5 });
+	objSphere->SetPosition({ 0,0,-40 });
 
-	// テキスト
-	text = Text::GetInstance();
-	text->Initialize(spriteCommon, 0);
-
-	// スプライト
-	spriteBG = Sprite::Create(spriteCommon, 1, { 0,0 }, {0,0});
-	spriteBG->Update();
-
-	// obj.からモデルデータ読み込み
-	modelSphere = ModelOBJ::LoadObj("sphere", true);
-	// 3Dオブジェクト生成
-	objSphere = ObjectOBJ::Create();
-	// オブジェクトにモデルを紐づける
-	objSphere->SetModelOBJ(modelSphere);
-
-	objSphere->SetPosition({ 0,0,10});
-	objSphere->SetCamera(camera);
-	objSphere->Update();
-
-	fbxModelAnim = FBXLoader::GetInstance()->LoadModelFromFile("boneTest");
-	fbxAnimTest = ObjectFBX::Create();
-	fbxAnimTest->SetModel(fbxModelAnim);
-	fbxAnimTest->SetPosition({ 0,-10,-80 });
-	fbxAnimTest->SetRotation({ 0,0,0 });
-	fbxAnimTest->SetAnimationNumber(0);
-	fbxAnimTest->Update();
-
-	physics = new Physics(1, { 0,1,0 }, { 1.0f,0.0f,0.0f });
-
+	camera->SetEye({ 0,500,-50 });
 	camera->SetTarget({ 0,0,0 });
-	camera->SetEye({ 0,0,-100 });
-	camera->SetTarget(fbxAnimTest->GetPosition());
-	camera->Update();
+
+	physics = new Physics(10, { 0,0,0.1f }, { 0,0,0.1f }, { 0,0,0 });
+
+	SceneBase::Update();
 }
 
 void SceneInGame::Update()
 {
-	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) ||
-		input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
+	if (input->PushKey(DIK_SPACE))
 	{
-		if (input->PushKey(DIK_UP))
-		{
-			camera->CameraMoveVector({ 0,0.1,0 });
-		}
-		else if (input->PushKey(DIK_DOWN))
-		{
-			camera->CameraMoveVector({ 0,-0.1,0 });
-		}
-		if (input->PushKey(DIK_LEFT))
-		{
-			camera->CameraMoveVector({ 0.1,0,0 });
-		}
-		else if (input->PushKey(DIK_RIGHT))
-		{
-			camera->CameraMoveVector({ -0.1,0,0 });
-		}
+		objSphere->SetPosition(physics->UniformlyAccelMotion3D(objSphere->GetPosition(), true));
 	}
 	else
 	{
-		camera->CameraMoveVector({ 0,0,0 });
+		physics->SetParam(10, { 0,10,5 }, { 0,2.0f,0.1f });
 	}
 
-	camera->SetTarget(objSphere->GetPosition());
-
-	camera->Update();
-
-	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) ||
-		input->PushKey(DIK_A) || input->PushKey(DIK_D))
+	if (input->TriggerKey(DIK_R))
 	{
-		XMFLOAT3 rot = objSphere->GetRotation();
-
-		if (input->PushKey(DIK_W))
-		{
-			rot.x++;
-		}
-		else if (input->PushKey(DIK_S))
-		{
-			rot.x--;
-		}
-		else if (input->PushKey(DIK_D))
-		{
-			rot.y++;
-		}
-		else if (input->PushKey(DIK_A))
-		{
-			rot.y--;
-		}
-
-		fbxAnimTest->SetRotation(rot);
+		objSphere->SetPosition({ 0,0,-40 });
 	}
 
-	if (input->PushKey(DIK_SPACE))
-	{
-		physics->SetObjectOBJ(objSphere);
-		physics->UniformlyAccelMotion3D();
-	}
+	camera->SetEye({ 0,10,-200 });
+	camera->SetTarget({ 0,10,0 });
 
-	//fbxAnimTest->Update();
-	objSphere->Update();
-
-	spriteBG->Update();
+	SceneBase::Update();
 }
 
 void SceneInGame::Draw()
@@ -138,13 +64,17 @@ void SceneInGame::Draw()
 #pragma region 3Dオブジェクト
 
 	// 3Dオブジェクト描画前処理
+
+	// OBJモデル
 	ObjectOBJ::PreDraw(dxCommon->GetCmdList());
 
 	objSphere->Draw();
+	objSkydome->Draw();
+	objGround->Draw();
 
 	ObjectOBJ::PostDraw();
 
-	//fbxAnimTest->Draw(dxCommon->GetCmdList());
+	// FBXモデル
 
 #pragma endregion
 
@@ -155,11 +85,11 @@ void SceneInGame::Draw()
 
 	// スプライト描画
 	//spriteBG->Draw();
+	// テキスト描画
+	text->DrawAll(dxCommon->GetCmdList());
 
 	spriteCommon->PostDraw();
 
-	// テキスト描画
-	//text->DrawAll(dxCommon->GetCmdList());
 
 #pragma endregion
 

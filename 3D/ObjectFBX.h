@@ -154,7 +154,7 @@ public: // メンバ関数
 	/// </summary>
 	void AnimationReset();
 
-private: // メンバ変数
+protected: // メンバ変数
 	// モデル
 	ModelFBX* model = nullptr;
 	// 定数バッファ

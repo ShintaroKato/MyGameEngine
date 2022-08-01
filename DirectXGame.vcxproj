@@ -84,7 +84,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(ProjectDir)lib\DirectXTex\lib\Release;$(ProjectDir)lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(ProjectDir)Tool\;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(ProjectDir)Physics\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -168,12 +168,12 @@
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Physics\Physics.cpp" />
     <ClCompile Include="Scene\PostEffectScene.cpp" />
     <ClCompile Include="Scene\SceneInGame.cpp" />
     <ClCompile Include="Scene\SceneBase.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Scene\SceneTitle.cpp" />
-    <ClCompile Include="Tool\Physics.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="DirectXTex\DirectXTex_Desktop_2019_Win10.vcxproj">
@@ -293,12 +293,12 @@
     <ClInclude Include="Base\WinApp.h" />
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="Input\Input.h" />
+    <ClInclude Include="Physics\Physics.h" />
     <ClInclude Include="Scene\PostEffectScene.h" />
     <ClInclude Include="Scene\SceneBase.h" />
     <ClInclude Include="Scene\SceneInGame.h" />
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="Scene\SceneTitle.h" />
-    <ClInclude Include="Tool\Physics.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

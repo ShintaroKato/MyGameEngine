@@ -139,7 +139,7 @@ public: // メンバ関数
 	/// </summary>
 	void SetModelOBJ(ModelOBJ* model) { this->model = model; }
 
-private: // メンバ変数
+protected: // メンバ変数
 	// モデル
 	ModelOBJ* model = nullptr;
 	// 定数バッファ
