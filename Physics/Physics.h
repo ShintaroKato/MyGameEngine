@@ -19,6 +19,8 @@ public:
 
 	void SetParam(float mass, XMVECTOR velocity = { 0,0,0 }, XMVECTOR acceleration = { 0,0,0 }, XMVECTOR force = {0,0,0});
 
+	void ResetParam();
+
 	/// <summary>
 	/// “™‰Á‘¬“x‰^“®(2D)
 	/// </summary>
@@ -31,7 +33,7 @@ public:
 
 private:
 	// Ž¿—Ê
-	float mass;
+	float m;
 	// ‘¬“x
 	XMVECTOR v0;
 	XMVECTOR v;
@@ -39,5 +41,5 @@ private:
 	XMVECTOR a0;
 	XMVECTOR a;
 	// —Í
-	XMVECTOR force;
+	XMVECTOR F;
 };

@@ -27,18 +27,25 @@ Physics::Physics()
 
 Physics::Physics(float mass, XMVECTOR velocity, XMVECTOR acceleration, XMVECTOR force)
 {
-	this->mass = mass;
-	this->v = velocity;
-	this->a = acceleration;
-	this->force = force;
+	this->m = mass;
+	this->v0 = velocity;
+	this->a0 = acceleration;
+	this->F = force;
+
+
 }
 
 void Physics::SetParam(float mass, XMVECTOR velocity, XMVECTOR acceleration, XMVECTOR force)
 {
-	this->mass = mass;
-	this->v = velocity;
-	this->a = acceleration;
-	this->force = force;
+	this->m = mass;
+	this->v0 = velocity;
+	this->a0 = acceleration;
+	this->F = force;
+
+}
+
+void Physics::ResetParam()
+{
 }
 
 XMFLOAT2 Physics::UniformlyAccelMotion2D(XMFLOAT2 position, bool gravity)
@@ -51,7 +58,7 @@ XMFLOAT2 Physics::UniformlyAccelMotion2D(XMFLOAT2 position, bool gravity)
 	}
 
 	v = v + a;
-	a = a + force / mass;
+	a = a + F / m;
 
 	return position;
 }
@@ -66,7 +73,7 @@ XMFLOAT3 Physics::UniformlyAccelMotion3D(XMFLOAT3 position, bool gravity)
 	}
 
 	v = v + a;
-	a = a + force / mass;
+	a = a + F / m;
 
 	return position;
 }
