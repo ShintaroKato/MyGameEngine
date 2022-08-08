@@ -3,6 +3,7 @@
 #include "ObjectFBX.h"
 #include "ObjectOBJ.h"
 #include "SphereCollider.h"
+#include "GameObject.h"
 
 class Player : public ObjectFBX, public ObjectOBJ
 {
@@ -103,6 +104,11 @@ public:
 	/// ¶‘¶ƒtƒ‰ƒO‚ğİ’è
 	/// </summary>
 	void SetAllive(bool flag) { this->alliveFlag = flag; }
+
+	///// <summary>
+	///// ‰Ÿ‚µ–ß‚µ
+	///// </summary>
+	//void Rejection(GameObject* gameObject);
 
 private:
 	// À•W

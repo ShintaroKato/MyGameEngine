@@ -11,11 +11,13 @@ public:
 	/// オブジェクト生成
 	/// </summary>
 	/// <returns></returns>
-	static TouchableObject* Create(ModelOBJ* obj = nullptr, ModelFBX* fbx = nullptr);
+	static TouchableObject* Create(ModelOBJ* obj = nullptr);
+	static TouchableObject* Create(ModelFBX* fbx = nullptr);
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	/// <returns></returns>
-	bool Initialize(ModelOBJ* obj, ModelFBX* fbx);
+	bool Initialize(ModelOBJ* obj);
+	bool Initialize(ModelFBX* fbx);
 };

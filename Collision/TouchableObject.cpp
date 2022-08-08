@@ -1,7 +1,7 @@
 #include "TouchableObject.h"
 #include "MeshCollider.h"
 
-TouchableObject* TouchableObject::Create(ModelOBJ* obj, ModelFBX* fbx)
+TouchableObject* TouchableObject::Create(ModelOBJ* obj)
 {
 	//オブジェクトのインスタンスを生成
 	TouchableObject* instance = new TouchableObject();
@@ -10,7 +10,7 @@ TouchableObject* TouchableObject::Create(ModelOBJ* obj, ModelFBX* fbx)
 		return nullptr;
 	}
 	//初期化
-	if (!instance->Initialize(obj, fbx))
+	if (!instance->Initialize(obj))
 	{
 		delete instance;
 		assert(0);
@@ -19,7 +19,25 @@ TouchableObject* TouchableObject::Create(ModelOBJ* obj, ModelFBX* fbx)
 	return instance;
 }
 
-bool TouchableObject::Initialize(ModelOBJ* obj, ModelFBX* fbx)
+TouchableObject* TouchableObject::Create(ModelFBX* fbx)
+{
+	//オブジェクトのインスタンスを生成
+	TouchableObject* instance = new TouchableObject();
+	if (instance == nullptr)
+	{
+		return nullptr;
+	}
+	//初期化
+	if (!instance->Initialize(fbx))
+	{
+		delete instance;
+		assert(0);
+	}
+
+	return instance;
+}
+
+bool TouchableObject::Initialize(ModelOBJ* obj)
 {
 	if (!ObjectOBJ::Initialize() && !ObjectFBX::Initialize())
 	{
@@ -36,6 +54,17 @@ bool TouchableObject::Initialize(ModelOBJ* obj, ModelFBX* fbx)
 		collider->ConstructTriangle(obj);
 		collider->SetAttribute(COLLISION_ATTR_LANDSHAPE);
 	}
+
+	return true;
+}
+
+bool TouchableObject::Initialize(ModelFBX* fbx)
+{
+	if (!ObjectOBJ::Initialize() && !ObjectFBX::Initialize())
+	{
+		return false;
+	}
+
 	if (fbx)
 	{
 		SetModelFBX(fbx);

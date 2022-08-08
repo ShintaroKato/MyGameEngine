@@ -19,9 +19,9 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 		objCubeGreen[i]->ObjectOBJ::SetPosition(SceneBase::tmp[i + 10]);
 		objCubeBlue[i]->ObjectOBJ::SetPosition(SceneBase::tmp[i + 20]);
 
-		objCubeRed[i]->ChangeFixed();
-		objCubeGreen[i]->ChangeFixed();
-		objCubeBlue[i]->ChangeFixed();
+		objCubeRed[i]->PositionFix();
+		objCubeGreen[i]->PositionFix();
+		objCubeBlue[i]->PositionFix();
 	}
 
 	objSkydome->SetScale({ 5,5,5 });

@@ -61,11 +61,11 @@ bool GameObject::Initialize()
 	// コライダーの追加
 	sphere.center = { pos.x, pos.y + radius, pos.z,0 };
 	sphere.radius = radius;
-	sphereColl = new SphereCollider(sphere);
 
-	if (ObjectOBJ::model) ObjectOBJ::SetCollider(sphereColl);
-	if (ObjectFBX::model) ObjectFBX::SetCollider(sphereColl);
-	sphereColl->SetAttribute(COLLISION_ATTR_OBJECT);
+	meshColl = new MeshCollider();
+
+	SetPosition(pos);
+	meshColl->SetAttribute(COLLISION_ATTR_OBJECT);
 
 	return true;
 }
@@ -141,17 +141,17 @@ void GameObject::SetPosition(const XMFLOAT3& pos)
 	sphere.center = { pos.x, pos.y + radius, pos.z,0 };
 	sphere.radius = radius;
 
-	sphereColl->SetSphere(sphere);
-
 	if (ObjectOBJ::model)
 	{
+		meshColl->ConstructTriangle(ObjectOBJ::model);
 		ObjectOBJ::SetPosition(pos);
-		ObjectOBJ::SetCollider(sphereColl);
+		ObjectOBJ::SetCollider(meshColl);
 	}
 	if (ObjectFBX::model)
 	{
+		meshColl->ConstructTriangle(ObjectFBX::model);
 		ObjectFBX::SetPosition(pos);
-		ObjectFBX::SetCollider(sphereColl);
+		ObjectFBX::SetCollider(meshColl);
 	}
 }
 

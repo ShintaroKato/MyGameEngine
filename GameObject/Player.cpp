@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Input.h"
 #include "SphereCollider.h"
+#include "Collision.h"
 #include "CollisionManager.h"
 #include "CollisionAttribute.h"
 
