@@ -9,6 +9,7 @@
 #include "ObjectFBX.h"
 #include "Player.h"
 #include "GameObject.h"
+#include "TouchableObject.h"
 #define OBJECT_MAX 30
 
 class SceneBase
@@ -76,7 +77,7 @@ protected:
 	ModelFBX* fbxModelAnim = nullptr;
 
 	ObjectOBJ* objSkydome = nullptr;
-	ObjectOBJ* objGround = nullptr;
+	TouchableObject* objGround = nullptr;
 
 	GameObject* objCubeRed[CUBE_RED_MAX]{};
 	GameObject* objCubeGreen[CUBE_GREEN_MAX]{};

@@ -174,7 +174,7 @@
     <ClCompile Include="Collision\CollisionPrimitive.cpp" />
     <ClCompile Include="Collision\MeshCollider.cpp" />
     <ClCompile Include="Collision\SphereCollider.cpp" />
-    <ClCompile Include="Collision\TouchableObject.cpp" />
+    <ClCompile Include="GameObject\TouchableObject.cpp" />
     <ClCompile Include="GameObject\Enemy.cpp" />
     <ClCompile Include="GameObject\Player.cpp" />
     <ClCompile Include="Input\Input.cpp" />
@@ -314,7 +314,7 @@
     <ClInclude Include="Collision\MeshCollider.h" />
     <ClInclude Include="Collision\RaycastHit.h" />
     <ClInclude Include="Collision\SphereCollider.h" />
-    <ClInclude Include="Collision\TouchableObject.h" />
+    <ClInclude Include="GameObject\TouchableObject.h" />
     <ClInclude Include="GameObject\Enemy.h" />
     <ClInclude Include="GameObject\Player.h" />
     <ClInclude Include="Input\Input.h" />

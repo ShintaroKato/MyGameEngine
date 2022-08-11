@@ -25,7 +25,7 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	}
 
 	objSkydome->SetScale({ 5,5,5 });
-	objGround->SetScale({ 5,5,5 });
+	objGround->ObjectOBJ::SetScale({ 5,5,5 });
 
 	player->SetPosition({ 0, 0, 0 });
 	player->Update();
@@ -72,7 +72,7 @@ void SceneInGame::Draw()
 	//objSphere->Draw();
 	objSkydome->Draw();
 	player->ObjectOBJ::Draw();
-	objGround->Draw();
+	objGround->ObjectOBJ::Draw();
 
 	objCubeRed[0]->ObjectOBJ::Draw();
 	objCubeGreen[0]->ObjectOBJ::Draw();

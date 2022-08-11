@@ -49,10 +49,10 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 
 	// 3Dオブジェクト生成
 	objSkydome = ObjectOBJ::Create();
-	objGround = ObjectOBJ::Create();
 	// オブジェクトにモデルを紐づける
 	objSkydome->SetModelOBJ(modelSkydome);
-	objGround->SetModelOBJ(modelGround);
+
+	objGround = TouchableObject::Create(modelGround);
 
 	for (int i = 0; i < CUBE_RED_MAX; i++)
 	{
@@ -81,7 +81,7 @@ void SceneBase::Update()
 
 	// obj更新
 	objSkydome->Update();
-	objGround->Update();
+	objGround->ObjectOBJ::Update();
 
 	// fbx更新
 

@@ -4,7 +4,7 @@
 #include "ObjectOBJ.h"
 #include "CollisionManager.h"
 #include "SphereCollider.h"
-#include "TouchableObject.h"
+#include "MeshCollider.h"
 
 class GameObject : public ObjectFBX, public ObjectOBJ
 {
@@ -58,7 +58,7 @@ public:
 	/// </summary>
 	void PositionFix() { fix = true; }
 
-	BaseCollider* GetCollider() { return ; }
+	BaseCollider* GetCollider() { return meshColl; }
 
 	XMFLOAT3 GetPosition();
 
@@ -81,5 +81,5 @@ private:
 	bool fix = false;
 	// コライダー
 	Sphere sphere{};
-	TouchableObject* meshColl = nullptr;
+	MeshCollider* meshColl = nullptr;
 };

@@ -23,7 +23,7 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 
 
 	objSkydome->SetScale({ 5,5,5 });
-	objGround->SetScale({ 5,5,5 });
+	objGround->ObjectOBJ::SetScale({ 5,5,5 });
 
 	player->SetAllive(false);
 	player->SetCameraDistance(80);
@@ -86,7 +86,7 @@ void SceneStageEdit::Draw()
 	//objSphere->Draw();
 	objSkydome->Draw();
 	//objPlayer->Draw();
-	objGround->Draw();
+	objGround->ObjectOBJ::Draw();
 
 	objCubeRed[0]->ObjectOBJ::Draw();
 	objCubeGreen[0]->ObjectOBJ::Draw();

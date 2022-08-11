@@ -209,6 +209,41 @@ void Player::ControlCamera()
 	}
 
 	ObjectOBJ::GetCamera()->SetEye(cameraPos);
+
+	// 球の上端から球の下端までのレイキャスト
+	Ray ray;
+	ray.start = sphereColl->center;
+	ray.start.m128_f32[1] += sphereColl->GetRadius();
+	ray.dir = { 0,-1,0,0 };
+	RaycastHit raycastHit;
+
+	// 接地状態
+	if (onGround) {
+		// スムーズに坂を下る為の吸着距離
+		const float adsDistance = 0.2f;
+		// 接地を維持
+		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, sphereColl->GetRadius() * 2.0f + adsDistance) &&
+			raycastHit.distance <= sphereColl->GetRadius())
+		{
+			onGround = true;
+			pos.y -= (raycastHit.distance - sphereColl->GetRadius() * 2.0f);
+		}
+		// 地面がないので落下
+		else {
+			onGround = false;
+			fallVel = {};
+		}
+	}
+	// 落下状態
+	else if (fallVel.m128_f32[1] <= 0.0f) {
+		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, sphereColl->GetRadius() * 2.0f) ||
+			raycastHit.distance <= sphereColl->GetRadius())
+		{
+			// 着地
+			onGround = true;
+			pos.y -= (raycastHit.distance - sphereColl->GetRadius() * 2.0f);
+		}
+	}
 }
 
 void Player::Attack()

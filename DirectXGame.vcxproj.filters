@@ -1,340 +1,101 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="ソース ファイル">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="ヘッダー ファイル">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="リソース ファイル">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="シェーダーファイル">
-      <UniqueIdentifier>{7e5584a5-2895-4181-9eaf-f65622106b57}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Base">
-      <UniqueIdentifier>{8c96c261-b191-4285-92c3-17ec79947e3f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\3D">
-      <UniqueIdentifier>{88f0f53b-77d1-48ee-94f7-9a61df25ff0d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\2D">
-      <UniqueIdentifier>{c2270fb2-f623-4aff-a533-593f7019d4c2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Input">
-      <UniqueIdentifier>{33b746d9-3893-4652-9b78-8a10a659f86b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\3D">
-      <UniqueIdentifier>{525e5c0d-ea3d-47c8-b291-c055afe43c76}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\2D">
-      <UniqueIdentifier>{c1917034-6606-46c6-8ea8-b7a9d4ac92d2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Input">
-      <UniqueIdentifier>{576bf07e-1fed-4e83-a502-7ef49e6b2650}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Base">
-      <UniqueIdentifier>{7c0b37db-220e-489a-9a8d-2e93f99ff046}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Scene">
-      <UniqueIdentifier>{bbe20b84-366f-493f-9ec8-2db776136809}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Scene">
-      <UniqueIdentifier>{8f3a4131-0845-4dcb-a6c9-cfc0b13c803d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Audio">
-      <UniqueIdentifier>{dd9039c8-a23b-4908-ba7d-2b0a7803aaf5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Audio">
-      <UniqueIdentifier>{fb582314-2e4c-4c0d-b694-a6bbdc44060f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Camera">
-      <UniqueIdentifier>{61279d33-6684-4223-bc27-8f0b7f7cf2dc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Camera">
-      <UniqueIdentifier>{136d03de-1939-486f-970c-1c0ff240a367}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Collision">
-      <UniqueIdentifier>{6dc5fd50-31cc-473e-ae1f-0772f5a37cfe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Collision">
-      <UniqueIdentifier>{6b414ff0-7fd2-4a3d-80eb-b9c661e6e0e2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\GameObject">
-      <UniqueIdentifier>{db69ef88-9c2b-4484-87ef-9c89405a7ce1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\GameObject">
-      <UniqueIdentifier>{8424adf5-2383-493c-98e9-479dad36a4a4}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\ObjectOBJ.cpp">
-      <Filter>ソース ファイル\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\ModelOBJ.cpp">
-      <Filter>ソース ファイル\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="2D\Sprite.cpp">
-      <Filter>ソース ファイル\2D</Filter>
-    </ClCompile>
-    <ClCompile Include="2D\SpriteCommon.cpp">
-      <Filter>ソース ファイル\2D</Filter>
-    </ClCompile>
-    <ClCompile Include="Base\WinApp.cpp">
-      <Filter>ソース ファイル\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Base\DirectXCommon.cpp">
-      <Filter>ソース ファイル\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Input\Input.cpp">
-      <Filter>ソース ファイル\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\Material.cpp">
-      <Filter>ソース ファイル\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\Mesh.cpp">
-      <Filter>ソース ファイル\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\SceneInGame.cpp">
-      <Filter>ソース ファイル\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\SceneManager.cpp">
-      <Filter>ソース ファイル\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="2D\Text.cpp">
-      <Filter>ソース ファイル\2D</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\SceneTitle.cpp">
-      <Filter>ソース ファイル\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Audio\Audio.cpp">
-      <Filter>ソース ファイル\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\FBXLoader.cpp">
-      <Filter>ソース ファイル\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\ModelFBX.cpp">
-      <Filter>ソース ファイル\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera\Camera.cpp">
-      <Filter>ソース ファイル\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\ObjectFBX.cpp">
-      <Filter>ソース ファイル\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\SceneBase.cpp">
-      <Filter>ソース ファイル\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision\MeshCollider.cpp">
-      <Filter>ソース ファイル\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision\TouchableObject.cpp">
-      <Filter>ソース ファイル\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision\Collision.cpp">
-      <Filter>ソース ファイル\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision\CollisionManager.cpp">
-      <Filter>ソース ファイル\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision\CollisionPrimitive.cpp">
-      <Filter>ソース ファイル\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision\SphereCollider.cpp">
-      <Filter>ソース ファイル\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\Player.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\Enemy.cpp">
-      <Filter>ソース ファイル\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="2D\PostEffect.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-<<<<<<< HEAD
-    <ClCompile Include="GameObject\GameObject.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\SceneStageEdit.cpp">
-=======
-    <ClCompile Include="Scene\PostEffectScene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="2D\RenderTexture.cpp">
->>>>>>> CG4_Test
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Resources\shaders\SpriteVS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\BasicPS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\BasicVS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\SpritePS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\ObjPS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\ObjVS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\FBXPS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\FBXVS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
+    <FxCompile Include="Resources\shaders\BasicPS.hlsl" />
+    <FxCompile Include="Resources\shaders\BasicVS.hlsl" />
+    <FxCompile Include="Resources\shaders\FBXPS.hlsl" />
+    <FxCompile Include="Resources\shaders\FBXVS.hlsl" />
+    <FxCompile Include="Resources\shaders\ObjPS.hlsl" />
+    <FxCompile Include="Resources\shaders\ObjVS.hlsl" />
+    <FxCompile Include="Resources\shaders\PhongPS.hlsl" />
     <FxCompile Include="Resources\shaders\PostEffectPS.hlsl" />
     <FxCompile Include="Resources\shaders\PostEffectVS.hlsl" />
     <FxCompile Include="Resources\shaders\RenderTexturePS.hlsl" />
     <FxCompile Include="Resources\shaders\RenderTextureVS.hlsl" />
-    <FxCompile Include="Resources\shaders\PhongPS.hlsl" />
+    <FxCompile Include="Resources\shaders\SpritePS.hlsl" />
+    <FxCompile Include="Resources\shaders\SpriteVS.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\shaders\Basic.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
-    <None Include="Resources\shaders\Sprite.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
-    <None Include="Resources\shaders\Obj.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
-    <None Include="Resources\shaders\FBX.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
+    <ClCompile Include="2D\PostEffect.cpp" />
+    <ClCompile Include="2D\RenderTexture.cpp" />
+    <ClCompile Include="2D\Sprite.cpp" />
+    <ClCompile Include="2D\SpriteCommon.cpp" />
+    <ClCompile Include="2D\Text.cpp" />
+    <ClCompile Include="3D\FBXLoader.cpp" />
+    <ClCompile Include="GameObject\GameObject.cpp" />
+    <ClCompile Include="3D\ModelFBX.cpp" />
+    <ClCompile Include="3D\ObjectFBX.cpp" />
+    <ClCompile Include="3D\Material.cpp" />
+    <ClCompile Include="3D\Mesh.cpp" />
+    <ClCompile Include="3D\ModelOBJ.cpp" />
+    <ClCompile Include="3D\ObjectOBJ.cpp" />
+    <ClCompile Include="Audio\Audio.cpp" />
+    <ClCompile Include="Base\DirectXCommon.cpp" />
+    <ClCompile Include="Base\WinApp.cpp" />
+    <ClCompile Include="Camera\Camera.cpp" />
+    <ClCompile Include="Collision\Collision.cpp" />
+    <ClCompile Include="Collision\CollisionManager.cpp" />
+    <ClCompile Include="Collision\CollisionPrimitive.cpp" />
+    <ClCompile Include="Collision\MeshCollider.cpp" />
+    <ClCompile Include="Collision\SphereCollider.cpp" />
+    <ClCompile Include="GameObject\TouchableObject.cpp" />
+    <ClCompile Include="GameObject\Enemy.cpp" />
+    <ClCompile Include="GameObject\Player.cpp" />
+    <ClCompile Include="Input\Input.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Scene\PostEffectScene.cpp" />
+    <ClCompile Include="Scene\SceneInGame.cpp" />
+    <ClCompile Include="Scene\SceneBase.cpp" />
+    <ClCompile Include="Scene\SceneManager.cpp" />
+    <ClCompile Include="Scene\SceneStageEdit.cpp" />
+    <ClCompile Include="Scene\SceneTitle.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="2D\PostEffect.h" />
+    <ClInclude Include="2D\RenderTexture.h" />
+    <ClInclude Include="2D\Sprite.h" />
+    <ClInclude Include="2D\SpriteCommon.h" />
+    <ClInclude Include="2D\Text.h" />
+    <ClInclude Include="3D\FBXLoader.h" />
+    <ClInclude Include="GameObject\GameObject.h" />
+    <ClInclude Include="3D\ModelFBX.h" />
+    <ClInclude Include="3D\ObjectFBX.h" />
+    <ClInclude Include="3D\Material.h" />
+    <ClInclude Include="3D\Mesh.h" />
+    <ClInclude Include="3D\ModelOBJ.h" />
+    <ClInclude Include="3D\ObjectOBJ.h" />
+    <ClInclude Include="Audio\Audio.h" />
+    <ClInclude Include="Base\DirectXCommon.h" />
+    <ClInclude Include="Base\PipelineSet.h" />
+    <ClInclude Include="Base\WinApp.h" />
+    <ClInclude Include="Camera\Camera.h" />
+    <ClInclude Include="Collision\BaseCollider.h" />
+    <ClInclude Include="Collision\Collision.h" />
+    <ClInclude Include="Collision\CollisionAttribute.h" />
+    <ClInclude Include="Collision\CollisionInfo.h" />
+    <ClInclude Include="Collision\CollisionManager.h" />
+    <ClInclude Include="Collision\CollisionPrimitive.h" />
+    <ClInclude Include="Collision\CollisionTypes.h" />
+    <ClInclude Include="Collision\MeshCollider.h" />
+    <ClInclude Include="Collision\RaycastHit.h" />
+    <ClInclude Include="Collision\SphereCollider.h" />
+    <ClInclude Include="GameObject\TouchableObject.h" />
+    <ClInclude Include="GameObject\Enemy.h" />
+    <ClInclude Include="GameObject\Player.h" />
+    <ClInclude Include="Input\Input.h" />
+    <ClInclude Include="Scene\PostEffectScene.h" />
+    <ClInclude Include="Scene\SceneBase.h" />
+    <ClInclude Include="Scene\SceneInGame.h" />
+    <ClInclude Include="Scene\SceneManager.h" />
+    <ClInclude Include="Scene\SceneStageEdit.h" />
+    <ClInclude Include="Scene\SceneTitle.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\shaders\Basic.hlsli" />
+    <None Include="Resources\shaders\FBX.hlsli" />
+    <None Include="Resources\shaders\Obj.hlsli" />
     <None Include="Resources\shaders\PostEffect.hlsli" />
     <None Include="Resources\shaders\RenderTexture.hlsli" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Input\Input.h">
-      <Filter>ヘッダー ファイル\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Base\DirectXCommon.h">
-      <Filter>ヘッダー ファイル\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Base\WinApp.h">
-      <Filter>ヘッダー ファイル\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\ModelOBJ.h">
-      <Filter>ヘッダー ファイル\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\ObjectOBJ.h">
-      <Filter>ヘッダー ファイル\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="2D\Sprite.h">
-      <Filter>ヘッダー ファイル\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="2D\SpriteCommon.h">
-      <Filter>ヘッダー ファイル\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\Material.h">
-      <Filter>ヘッダー ファイル\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\Mesh.h">
-      <Filter>ヘッダー ファイル\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\SceneInGame.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\SceneManager.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="2D\Text.h">
-      <Filter>ヘッダー ファイル\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\SceneTitle.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Audio\Audio.h">
-      <Filter>ヘッダー ファイル\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\FBXLoader.h">
-      <Filter>ヘッダー ファイル\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\ModelFBX.h">
-      <Filter>ヘッダー ファイル\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera\Camera.h">
-      <Filter>ヘッダー ファイル\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Base\PipelineSet.h">
-      <Filter>ヘッダー ファイル\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\ObjectFBX.h">
-      <Filter>ヘッダー ファイル\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\SceneBase.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision\CollisionAttribute.h">
-      <Filter>ヘッダー ファイル\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision\MeshCollider.h">
-      <Filter>ヘッダー ファイル\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision\RaycastHit.h">
-      <Filter>ヘッダー ファイル\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision\TouchableObject.h">
-      <Filter>ヘッダー ファイル\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision\SphereCollider.h">
-      <Filter>ヘッダー ファイル\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision\BaseCollider.h">
-      <Filter>ヘッダー ファイル\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision\Collision.h">
-      <Filter>ヘッダー ファイル\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision\CollisionInfo.h">
-      <Filter>ヘッダー ファイル\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision\CollisionManager.h">
-      <Filter>ヘッダー ファイル\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision\CollisionPrimitive.h">
-      <Filter>ヘッダー ファイル\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision\CollisionTypes.h">
-      <Filter>ヘッダー ファイル\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject\Player.h">
-      <Filter>ヘッダー ファイル\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject\Enemy.h">
-      <Filter>ヘッダー ファイル\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="2D\PostEffect.h">
-      <Filter>ヘッダー ファイル\2D</Filter>
-    </ClInclude>
-<<<<<<< HEAD
-    <ClInclude Include="GameObject\GameObject.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\SceneStageEdit.h">
-=======
-    <ClInclude Include="Scene\PostEffectScene.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="2D\RenderTexture.h">
->>>>>>> CG4_Test
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
+    <None Include="Resources\shaders\Sprite.hlsli" />
   </ItemGroup>
 </Project>
