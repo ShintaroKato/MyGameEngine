@@ -54,6 +54,9 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 
 	objGround = TouchableObject::Create(modelGround);
 
+	objSkydome->SetScale({ 5,5,5 });
+	objGround->ObjectOBJ::SetScale({ 5,5,5 });
+
 	for (int i = 0; i < CUBE_RED_MAX; i++)
 	{
 		objCubeRed[i] = GameObject::Create(modelCubeRed);
@@ -81,7 +84,7 @@ void SceneBase::Update()
 
 	// obj更新
 	objSkydome->Update();
-	objGround->ObjectOBJ::Update();
+	objGround->Update();
 
 	// fbx更新
 

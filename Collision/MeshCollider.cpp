@@ -5,6 +5,8 @@ using namespace DirectX;
 
 void MeshCollider::ConstructTriangle(ModelOBJ* model)
 {
+	if(!obj) obj = model;
+
 	triangles.clear();
 
 	const std::vector<Mesh*>& meshes = model->GetMeshes();
@@ -53,6 +55,8 @@ void MeshCollider::ConstructTriangle(ModelOBJ* model)
 
 void MeshCollider::ConstructTriangle(ModelFBX* model)
 {
+	if (!fbx) fbx = model;
+
 	triangles.clear();
 
 	int start = 0;
@@ -95,7 +99,8 @@ void MeshCollider::ConstructTriangle(ModelFBX* model)
 
 void MeshCollider::Update()
 {
-	invMatWorld = XMMatrixInverse(nullptr, GetObjectOBJ()->GetMatWorld());
+	if(obj) invMatWorld = GetObjectOBJ()->GetInvMatWorld();
+	if(fbx) invMatWorld = GetObjectFBX()->GetInvMatWorld();
 }
 
 bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR* inter)

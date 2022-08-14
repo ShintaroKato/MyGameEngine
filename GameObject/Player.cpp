@@ -69,7 +69,7 @@ bool Player::Initialize()
 
 	if (ObjectOBJ::model) ObjectOBJ::SetCollider(sphereColl);
 	if (ObjectFBX::model) ObjectFBX::SetCollider(sphereColl);
-	sphereColl->SetAttribute(COLLISION_ATTR_OBJECT);
+	sphereColl->SetAttribute(COLLISION_ATTR_ALLIES);
 
 	return true;
 }
@@ -84,17 +84,19 @@ void Player::Update()
 	if (ObjectFBX::model) pos = ObjectFBX::position;
 
 	Move();
+	Jump();
 	Attack();
 
+	SetPosition(pos);
 	if (ObjectOBJ::model)
 	{
-		ObjectOBJ::position = pos;
 		ObjectOBJ::rotation = rotation;
+		ObjectOBJ::collider->Update();
 	}
 	if (ObjectFBX::model)
 	{
-		ObjectFBX::position = pos;
 		ObjectFBX::rotation = rotation;
+		ObjectFBX::collider->Update();
 	}
 	ObjectOBJ::Update();
 	ObjectFBX::Update();
@@ -150,28 +152,69 @@ void Player::Move()
 		pos.y += move.m128_f32[1];
 		pos.z += move.m128_f32[2];
 	}
+}
 
-	//落下処理
+void Player::Jump()
+{
+	// 落下処理
 	if (!onGround)
 	{
-		//下向き加速度
+		// 下向き加速度
 		const float fallAcc = -0.01f;
 		const float fallVYMin = -0.5f;
-		//加速
+		// 加速
 		fallVel.m128_f32[1] = max(fallVel.m128_f32[1] + fallAcc, fallVYMin);
-		//移動
+		// 移動
 		pos.x += fallVel.m128_f32[0];
 		pos.y += fallVel.m128_f32[1];
 		pos.z += fallVel.m128_f32[2];
 	}
-	//ジャンプ操作
-	else if (Input::GetInstance()->TriggerKey(DIK_SPACE))
-	{
+	// ジャンプ操作
+	else if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
 		onGround = false;
-		const float jumpVYFirst = 0.2f; //ジャンプ時上向き初速
-		fallVel = { 0,jumpVYFirst,0,0 };
+		const float jumpVYFist = 0.2f;
+		fallVel = { 0, jumpVYFist, 0, 0 };
 	}
 
+	// 球の上端から球の下端までのレイキャスト
+	Ray ray;
+	ray.start = XMVECTOR({ pos.x,pos.y,pos.z });
+	ray.start.m128_f32[1] += sphereColl->GetRadius() * 2.0f;
+	ray.dir = { 0,-1,0,0 };
+	RaycastHit raycastHit;
+
+	// 接地状態
+	if (onGround)
+	{
+		// スムーズに坂を下る為の吸着距離
+		const float adsDistance = 0.2f;
+		// 接地を維持
+		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, sphereColl->GetRadius() * 2.0f + adsDistance) ||
+			CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJECT, &raycastHit, sphereColl->GetRadius() * 2.0f + adsDistance))
+		{
+			onGround = true;
+			sphereColl->center.m128_f32[1] = raycastHit.distance - sphereColl->GetRadius();
+			pos.y -= sphereColl->center.m128_f32[1] - sphereColl->GetRadius();
+		}
+		// 地面がないので落下
+		else
+		{
+			onGround = false;
+			fallVel = {};
+		}
+	}
+	// 落下状態
+	else if (fallVel.m128_f32[1] <= 0.0f)
+	{
+		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, sphereColl->GetRadius() * 2.0f) ||
+			CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJECT, &raycastHit, sphereColl->GetRadius() * 2.0f))
+		{
+			// 着地
+			onGround = true;
+			sphereColl->center.m128_f32[1] = raycastHit.distance - sphereColl->GetRadius();
+			pos.y -= sphereColl->center.m128_f32[1] - sphereColl->GetRadius();
+		}
+	}
 }
 
 void Player::ControlCamera()
@@ -209,41 +252,6 @@ void Player::ControlCamera()
 	}
 
 	ObjectOBJ::GetCamera()->SetEye(cameraPos);
-
-	// 球の上端から球の下端までのレイキャスト
-	Ray ray;
-	ray.start = sphereColl->center;
-	ray.start.m128_f32[1] += sphereColl->GetRadius();
-	ray.dir = { 0,-1,0,0 };
-	RaycastHit raycastHit;
-
-	// 接地状態
-	if (onGround) {
-		// スムーズに坂を下る為の吸着距離
-		const float adsDistance = 0.2f;
-		// 接地を維持
-		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, sphereColl->GetRadius() * 2.0f + adsDistance) &&
-			raycastHit.distance <= sphereColl->GetRadius())
-		{
-			onGround = true;
-			pos.y -= (raycastHit.distance - sphereColl->GetRadius() * 2.0f);
-		}
-		// 地面がないので落下
-		else {
-			onGround = false;
-			fallVel = {};
-		}
-	}
-	// 落下状態
-	else if (fallVel.m128_f32[1] <= 0.0f) {
-		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, sphereColl->GetRadius() * 2.0f) ||
-			raycastHit.distance <= sphereColl->GetRadius())
-		{
-			// 着地
-			onGround = true;
-			pos.y -= (raycastHit.distance - sphereColl->GetRadius() * 2.0f);
-		}
-	}
 }
 
 void Player::Attack()

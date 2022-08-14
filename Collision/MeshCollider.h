@@ -48,6 +48,8 @@ public:
 		DirectX::XMVECTOR* inter = nullptr);
 
 private:
+	ModelOBJ* obj = nullptr;
+	ModelFBX* fbx = nullptr;
 	std::vector<Triangle>triangles;
 	// ワールド行列の逆行列
 	DirectX::XMMATRIX invMatWorld;

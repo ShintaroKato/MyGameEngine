@@ -20,4 +20,9 @@ public:
 	/// <returns></returns>
 	bool Initialize(ModelOBJ* obj);
 	bool Initialize(ModelFBX* fbx);
+
+	/// <summary>
+	/// çXêV
+	/// </summary>
+	void Update();
 };

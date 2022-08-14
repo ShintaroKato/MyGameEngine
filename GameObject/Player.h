@@ -45,9 +45,14 @@ public:
 	void Update() override;
 
 	/// <summary>
-	/// 移動・ジャンプ
+	/// 移動
 	/// </summary>
 	void Move();
+
+	/// <summary>
+	/// 落下・ジャンプ
+	/// </summary>
+	void Jump();
 
 	/// <summary>
 	/// 視点操作
@@ -116,7 +121,7 @@ private:
 	// 回転
 	XMFLOAT3 rotation{};
 	// 半径
-	float radius = 5.0f;
+	float radius = 1.0f;
 	// 接地フラグ
 	bool onGround = true;
 	// 移動ベクトル

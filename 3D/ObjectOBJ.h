@@ -129,6 +129,7 @@ public: // メンバ関数
 	/// </summary>
 	/// <returns>ワールド行列</returns>
 	const XMMATRIX& GetMatWorld() { return matWorld; }
+	const XMMATRIX& GetInvMatWorld() { return invMatWorld; }
 
 	/// <summary>
 	/// 座標の設定
@@ -181,6 +182,7 @@ protected: // メンバ変数
 	XMFLOAT3 position = { 0,0,0 };
 	// ローカルワールド変換行列
 	XMMATRIX matWorld{};
+	XMMATRIX invMatWorld{};
 	// 親オブジェクト
 	ObjectOBJ* parent = nullptr;
 

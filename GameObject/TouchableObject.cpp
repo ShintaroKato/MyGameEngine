@@ -78,3 +78,17 @@ bool TouchableObject::Initialize(ModelFBX* fbx)
 
 	return true;
 }
+
+void TouchableObject::Update()
+{
+	if (ObjectOBJ::model)
+	{
+		ObjectOBJ::Update();
+		ObjectOBJ::collider->Update();
+	}
+	if (ObjectFBX::model)
+	{
+		ObjectFBX::Update();
+		ObjectFBX::collider->Update();
+	}
+}

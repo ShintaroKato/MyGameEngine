@@ -317,6 +317,7 @@
     <ClInclude Include="GameObject\TouchableObject.h" />
     <ClInclude Include="GameObject\Enemy.h" />
     <ClInclude Include="GameObject\Player.h" />
+    <ClInclude Include="GameObject\ObjectTag.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Scene\PostEffectScene.h" />
     <ClInclude Include="Scene\SceneBase.h" />
