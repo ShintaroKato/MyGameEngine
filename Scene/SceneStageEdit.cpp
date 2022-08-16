@@ -38,12 +38,13 @@ void SceneStageEdit::Update()
 	{
 		SceneManager::SetScene(TITLE);
 
-		for (int i = 0; i < OBJECT_MAX / 3; i++)
+		for (int i = 0; i < CUBE_RED_MAX; i++)
 		{
 			SceneBase::tmp[i] = objCubeRed[i]->ObjectOBJ::GetPosition();
 			SceneBase::tmp[i + 10] = objCubeGreen[i]->ObjectOBJ::GetPosition();
 			SceneBase::tmp[i + 20] = objCubeBlue[i]->ObjectOBJ::GetPosition();
 		}
+		SceneBase::tmp[99] = objCastle->ObjectOBJ::GetPosition();
 	}
 
 	camera->SetTarget(player->GetPosition());
@@ -52,11 +53,11 @@ void SceneStageEdit::Update()
 	{
 		objCubeRed[0]->SetPosition({ 25,0,50 });
 		objCubeGreen[0]->SetPosition({ -25,0,50 });
-		objCubeBlue[0]->SetPosition({ 0,0,-25 });
+		objCubeBlue[0]->SetPosition({ 25,0,-25 });
 
 		objCubeRed[1]->SetPosition({ 50,0,25 });
 		objCubeGreen[1]->SetPosition({ -50,0,25 });
-		objCubeBlue[1]->SetPosition({ 0,0,-50 });
+		objCubeBlue[1]->SetPosition({ -25,0,-25 });
 	}
 
 	SceneBase::Update();
@@ -95,6 +96,8 @@ void SceneStageEdit::Draw()
 	objCubeRed[1]->ObjectOBJ::Draw();
 	objCubeGreen[1]->ObjectOBJ::Draw();
 	objCubeBlue[1]->ObjectOBJ::Draw();
+
+	objCastle->ObjectOBJ::Draw();
 
 	ObjectOBJ::PostDraw();
 

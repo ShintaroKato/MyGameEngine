@@ -78,7 +78,7 @@ void Player::Update()
 {
 	ControlCamera();
 
-	if (!alliveFlag) return;
+	if (!aliveFlag) return;
 
 	if (ObjectOBJ::model) pos = ObjectOBJ::position;
 	if (ObjectFBX::model) pos = ObjectFBX::position;

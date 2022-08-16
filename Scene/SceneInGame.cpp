@@ -23,6 +23,8 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 		objCubeGreen[i]->PositionFix();
 		objCubeBlue[i]->PositionFix();
 	}
+	objCastle->ObjectOBJ::SetPosition(SceneBase::tmp[99]);
+	objCastle->PositionFix();
 
 	objSkydome->SetScale({ 5,5,5 });
 	objGround->ObjectOBJ::SetScale({ 5,5,5 });
@@ -30,8 +32,14 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	player->SetPosition({ 0, 0, 0 });
 	player->Update();
 
-	camera->SetEye({ 0,5,-10 });
+	camera->SetEye({ 0,2,-5 });
 	camera->SetTarget(player->GetPosition());
+
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		enemy[i]->SetTargetPos(objCastle->GetPosition());
+		enemy[i]->SetInGame(true);
+	}
 
 	SceneBase::Update();
 }
@@ -71,7 +79,6 @@ void SceneInGame::Draw()
 
 	//objSphere->Draw();
 	objSkydome->Draw();
-	player->ObjectOBJ::Draw();
 	objGround->ObjectOBJ::Draw();
 
 	objCubeRed[0]->ObjectOBJ::Draw();
@@ -81,6 +88,15 @@ void SceneInGame::Draw()
 	objCubeRed[1]->ObjectOBJ::Draw();
 	objCubeGreen[1]->ObjectOBJ::Draw();
 	objCubeBlue[1]->ObjectOBJ::Draw();
+
+	objCastle->ObjectOBJ::Draw();
+
+	player->ObjectOBJ::Draw();
+
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		enemy[i]->ObjectOBJ::Draw();
+	}
 
 	ObjectOBJ::PostDraw();
 

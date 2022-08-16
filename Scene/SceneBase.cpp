@@ -37,15 +37,14 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	spriteBG->Update();
 
 	// .objからモデルデータ読み込み
-	modelSkydome = ModelOBJ::LoadObj("skydome", true);
-	modelGround = ModelOBJ::LoadObj("ground", true);
+	modelSkydome = ModelOBJ::LoadObj("skydome");
+	modelGround = ModelOBJ::LoadObj("ground");
 	modelPlayer = ModelOBJ::LoadObj("player");
-	modelCubeRed = ModelOBJ::LoadObj("cube64Red", true);
-	modelCubeGreen = ModelOBJ::LoadObj("cube64Green", true);
-	modelCubeBlue = ModelOBJ::LoadObj("cube64Blue", true);
-
-	// .fbxからモデルデータ読み込み
-	fbxModelAnim = FBXLoader::GetInstance()->LoadModelFromFile("boneTest");
+	modelEnemy = ModelOBJ::LoadObj("player");
+	modelCubeRed = ModelOBJ::LoadObj("cube64Red");
+	modelCubeGreen = ModelOBJ::LoadObj("cube64Green");
+	modelCubeBlue = ModelOBJ::LoadObj("cube64Blue");
+	modelCastle = ModelOBJ::LoadObj("small_castle");
 
 	// 3Dオブジェクト生成
 	objSkydome = ObjectOBJ::Create();
@@ -62,6 +61,13 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 		objCubeRed[i] = GameObject::Create(modelCubeRed);
 		objCubeGreen[i] = GameObject::Create(modelCubeGreen);
 		objCubeBlue[i] = GameObject::Create(modelCubeBlue);
+	}
+	objCastle = GameObject::Create(modelCastle);
+
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		enemy[i] = Enemy::Create(modelEnemy);
+		enemy[i]->SetInGame(false);
 	}
 
 	player = Player::Create(modelPlayer);
@@ -80,6 +86,12 @@ void SceneBase::Update()
 		objCubeRed[i]->Update();
 		objCubeGreen[i]->Update();
 		objCubeBlue[i]->Update();
+	}
+	objCastle->Update();
+
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		enemy[i]->Update();
 	}
 
 	// obj更新

@@ -7,10 +7,11 @@
 #include "Text.h"
 #include "ObjectOBJ.h"
 #include "ObjectFBX.h"
-#include "Player.h"
 #include "GameObject.h"
+#include "Player.h"
+#include "Enemy.h"
 #include "TouchableObject.h"
-#define OBJECT_MAX 30
+#define OBJECT_MAX 100
 
 class SceneBase
 {
@@ -30,6 +31,7 @@ protected: // íËêî
 	static const int CUBE_RED_MAX = 10;
 	static const int CUBE_GREEN_MAX = 10;
 	static const int CUBE_BLUE_MAX = 10;
+	static const int ENEMY_MAX = 1;
 
 public:
 	static XMFLOAT3 tmp[OBJECT_MAX];
@@ -70,11 +72,11 @@ protected:
 	ModelOBJ* modelSkydome = nullptr;
 	ModelOBJ* modelGround = nullptr;
 	ModelOBJ* modelPlayer = nullptr;
+	ModelOBJ* modelEnemy = nullptr;
 	ModelOBJ* modelCubeRed = nullptr;
 	ModelOBJ* modelCubeGreen = nullptr;
 	ModelOBJ* modelCubeBlue = nullptr;
-
-	ModelFBX* fbxModelAnim = nullptr;
+	ModelOBJ* modelCastle = nullptr;
 
 	ObjectOBJ* objSkydome = nullptr;
 	TouchableObject* objGround = nullptr;
@@ -82,6 +84,8 @@ protected:
 	GameObject* objCubeRed[CUBE_RED_MAX]{};
 	GameObject* objCubeGreen[CUBE_GREEN_MAX]{};
 	GameObject* objCubeBlue[CUBE_BLUE_MAX]{};
+	GameObject* objCastle = nullptr;
 
 	Player* player = nullptr;
+	Enemy* enemy[ENEMY_MAX]{};
 };

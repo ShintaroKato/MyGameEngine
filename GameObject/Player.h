@@ -5,6 +5,7 @@
 #include "SphereCollider.h"
 #include "GameObject.h"
 
+
 class Player : public ObjectFBX, public ObjectOBJ
 {
 private: // エイリアス
@@ -108,7 +109,7 @@ public:
 	/// <summary>
 	/// 生存フラグを設定
 	/// </summary>
-	void SetAllive(bool flag) { this->alliveFlag = flag; }
+	void SetAllive(bool flag) { this->aliveFlag = flag; }
 
 	///// <summary>
 	///// 押し戻し
@@ -143,7 +144,7 @@ private:
 	const float HPMax = HP;
 	float HPRate = HP / HPMax;
 
-	bool alliveFlag = true;
+	bool aliveFlag = true;
 
 	// 攻撃
 	bool attackFlag = false;
