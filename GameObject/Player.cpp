@@ -170,7 +170,9 @@ void Player::Jump()
 		pos.z += fallVel.m128_f32[2];
 	}
 	// ƒWƒƒƒ“ƒv‘€ì
-	else if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+	else if (Input::GetInstance()->TriggerKey(DIK_LSHIFT) ||
+			 Input::GetInstance()->TriggerKey(DIK_RSHIFT))
+	{
 		onGround = false;
 		const float jumpVYFist = 0.2f;
 		fallVel = { 0, jumpVYFist, 0, 0 };
@@ -256,6 +258,16 @@ void Player::ControlCamera()
 
 void Player::Attack()
 {
+	Input* input = Input::GetInstance();
+
+	cameraPos = ObjectOBJ::GetCamera()->GetEye();
+
+
+
+	if (input->TriggerKey(DIK_SPACE))
+	{
+
+	}
 }
 
 bool Player::Hit()

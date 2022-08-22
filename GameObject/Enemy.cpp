@@ -109,7 +109,7 @@ void Enemy::Spawn()
 	if (aliveFlag == false)
 	{
 		float rad = XMConvertToRadians(rand() % 360);
-		float distance = 100;
+		float distance = 50;
 
 		pos.x = distance * sin(rad);
 		pos.z = distance * cos(rad);
@@ -118,10 +118,11 @@ void Enemy::Spawn()
 
 		aliveFlag = true;
 	}
-	//if (pos.x == target.x && pos.z == target.z && aliveFlag == true)
-	//{
-	//	aliveFlag = false;
-	//}
+	if (abs(pos.x - target.x) <= 2 && abs(pos.z - target.z) <= 2 &&
+		aliveFlag == true)
+	{
+		aliveFlag = false;
+	}
 }
 
 void Enemy::Move()
