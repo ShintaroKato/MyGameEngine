@@ -3,6 +3,8 @@
 #include "CollisionAttribute.h"
 #include "Collision.h"
 
+bool GameObject::isDrag1 = false;
+
 GameObject* GameObject::Create(ModelFBX* fbx)
 {
 	// 3Dオブジェクトのインスタンスを生成
@@ -79,21 +81,6 @@ void GameObject::Update()
 	ObjectFBX::Update();
 }
 
-void GameObject::Move()
-{
-	// 掴まれていなければ関数を抜ける
-	if (!isDrag) return;
-
-	if (ObjectOBJ::model != nullptr)
-	{
-		ObjectOBJ::position = pos;
-	}
-	else if (ObjectFBX::model != nullptr)
-	{
-		ObjectFBX::position = pos;
-	}
-}
-
 bool GameObject::Hit()
 {
 	return false;
@@ -107,7 +94,8 @@ void GameObject::Drag()
 
 	if (!input->PushMouse(MOUSE_LEFT))
 	{
-		isDrag = false;
+		isDrag0 = false;
+		isDrag1 = false;
 		return;
 	}
 
@@ -124,14 +112,29 @@ void GameObject::Drag()
 		if (Collision::ChackRay2Sphere(ray, sphere, &distance, &inter))
 		{
 			// 掴んでいる状態にする
-			isDrag = true;
+			if(!isDrag1) isDrag0 = true;
+			isDrag1 = true;
 		}
 	}
 	// 掴まれている時の処理
-	if (isDrag)
+	if (isDrag0)
 	{
 		pos = { vec.m128_f32[0], vec.m128_f32[1], vec.m128_f32[2] };
 		SetPosition(pos);
+	}
+}
+
+void GameObject::Move()
+{
+	if(!isDrag0) return;
+
+	if (ObjectOBJ::model != nullptr)
+	{
+		ObjectOBJ::position = pos;
+	}
+	else if (ObjectFBX::model != nullptr)
+	{
+		ObjectFBX::position = pos;
 	}
 }
 

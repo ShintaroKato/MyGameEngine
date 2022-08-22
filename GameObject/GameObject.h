@@ -39,11 +39,6 @@ public:
 	void Update() override;
 
 	/// <summary>
-	/// 移動
-	/// </summary>
-	void Move();
-
-	/// <summary>
 	/// 敵との当たり判定
 	/// </summary>
 	bool Hit();
@@ -52,6 +47,11 @@ public:
 	/// オブジェクトを掴む
 	/// </summary>
 	void Drag();
+
+	/// <summary>
+	/// 移動
+	/// </summary>
+	void Move();
 
 	/// <summary>
 	/// 座標を固定された状態にする
@@ -76,7 +76,8 @@ private:
 	// 半径
 	float radius = 5.0f;
 	// 掴まれているか否か
-	bool isDrag = false;
+	bool isDrag0 = false;
+	static bool isDrag1;
 	// 位置固定
 	bool fix = false;
 	// コライダー
