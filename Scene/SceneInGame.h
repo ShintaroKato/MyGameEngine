@@ -33,9 +33,4 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	void Draw()override;
-
-	/// <summary>
-	/// datファイル読み込み
-	/// </summary>
-	void LoadDat();	
 };

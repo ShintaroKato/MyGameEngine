@@ -8,6 +8,28 @@ void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 {
 	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
 
+	for (int i = 0; i < CUBE_RED_MAX; i++)
+	{
+		objCubeRed[i]->ObjectOBJ::SetPosition(tmp[i]);
+		objCubeGreen[i]->ObjectOBJ::SetPosition(tmp[i + 10]);
+		objCubeBlue[i]->ObjectOBJ::SetPosition(tmp[i + 20]);
+
+		objCubeRed[i]->PositionFix();
+		objCubeGreen[i]->PositionFix();
+		objCubeBlue[i]->PositionFix();
+	}
+	objCastle->ObjectOBJ::SetPosition(tmp[99]);
+	objCastle->PositionFix();
+
+	objSkydome->SetScale({ 5,5,5 });
+	objGround->ObjectOBJ::SetScale({ 5,5,5 });
+
+	player->SetAllive(false);
+	player->SetCameraDistance(80);
+
+	camera->SetTarget(player->GetPosition());
+	camera->SetEye({ 0,30,-100 });
+
 	SceneBase::Update();
 }
 
@@ -33,7 +55,7 @@ void SceneTitle::Draw()
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
 	// スプライト描画
-	spriteBG->Draw();
+	spriteTitle->Draw();
 
 	spriteCommon->PostDraw();
 
@@ -42,11 +64,28 @@ void SceneTitle::Draw()
 #pragma region 3Dオブジェクト
 
 	// 3Dオブジェクト描画前処理
-	//ObjectOBJ::PreDraw(dxCommon->GetCmdList());
+	// OBJモデル
+	ObjectOBJ::PreDraw(dxCommon->GetCmdList());
 
-	//objSphere->Draw();
+	objSkydome->Draw();
+	objGround->ObjectOBJ::Draw();
 
-	//ObjectOBJ::PostDraw();
+	objCubeRed[0]->ObjectOBJ::Draw();
+	objCubeGreen[0]->ObjectOBJ::Draw();
+	objCubeBlue[0]->ObjectOBJ::Draw();
+
+	objCubeRed[1]->ObjectOBJ::Draw();
+	objCubeGreen[1]->ObjectOBJ::Draw();
+	objCubeBlue[1]->ObjectOBJ::Draw();
+
+	objCastle->ObjectOBJ::Draw();
+
+	objWall->Draw();
+
+	ObjectOBJ::PostDraw();
+
+	// FBXモデル
+	//player->ObjectFBX::Draw(dxCommon->GetCmdList());
 
 #pragma endregion
 
@@ -56,7 +95,7 @@ void SceneTitle::Draw()
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
 	// スプライト描画
-	//spriteBG->Draw();
+	spriteTitle->Draw();
 
 	// テキスト描画
 	//text->DrawAll(dxCommon->GetCmdList());

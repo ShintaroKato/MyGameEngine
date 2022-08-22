@@ -26,34 +26,38 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 
 	// スプライト共通テクスチャ読み込み
 	spriteCommon->LoadTexture(0, "debugfont.png");
-	spriteCommon->LoadTexture(1, "background.png");
+	spriteCommon->LoadTexture(1, "title_transparent.png");
 
 	// テキスト
 	text = Text::GetInstance();
 	text->Initialize(spriteCommon, 0);
 
 	// スプライト
-	spriteBG = Sprite::Create(spriteCommon, 1, { 0,0 }, { 0,0 });
-	spriteBG->Update();
+	spriteTitle = Sprite::Create(spriteCommon, 1, { 0,0 }, { 0,0 });
+	spriteTitle->Update();
 
 	// .objからモデルデータ読み込み
 	modelSkydome = ModelOBJ::LoadObj("skydome");
 	modelGround = ModelOBJ::LoadObj("ground");
-	modelPlayer = ModelOBJ::LoadObj("player");
+	modelPlayer = ModelOBJ::LoadObj("chr_sword");
 	modelEnemy = ModelOBJ::LoadObj("player");
 	modelCubeRed = ModelOBJ::LoadObj("cube64Red");
-	modelCubeGreen = ModelOBJ::LoadObj("cube64Green");
+	modelCubeGreen = ModelOBJ::LoadObj("brokenBlock");
 	modelCubeBlue = ModelOBJ::LoadObj("cube64Blue");
 	modelCastle = ModelOBJ::LoadObj("small_castle");
+	modelWall = ModelOBJ::LoadObj("square_wall");
 
 	// 3Dオブジェクト生成
 	objSkydome = ObjectOBJ::Create();
 	// オブジェクトにモデルを紐づける
 	objSkydome->SetModelOBJ(modelSkydome);
+	objSkydome->SetScale({ 5,5,5 });
+
+	objWall = ObjectOBJ::Create();
+	objWall->SetModelOBJ(modelWall);
+	objWall->SetScale({ 12,1,12 });
 
 	objGround = TouchableObject::Create(modelGround);
-
-	objSkydome->SetScale({ 5,5,5 });
 	objGround->ObjectOBJ::SetScale({ 5,5,5 });
 
 	for (int i = 0; i < CUBE_RED_MAX; i++)
@@ -68,6 +72,7 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	{
 		enemy[i] = Enemy::Create(modelEnemy);
 		enemy[i]->SetInGame(false);
+		enemy[i]->SetScale({ 2,2,2 });
 	}
 
 	player = Player::Create(modelPlayer);
@@ -97,9 +102,19 @@ void SceneBase::Update()
 	// obj更新
 	objSkydome->Update();
 	objGround->Update();
+	objWall->Update();
 
 	// fbx更新
 
 	// スプライト
-	spriteBG->Update();
+	spriteTitle->Update();
+}
+
+void SceneBase::SaveStage()
+{
+
+}
+
+void SceneBase::LoadStage()
+{
 }

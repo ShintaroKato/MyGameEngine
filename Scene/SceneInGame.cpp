@@ -15,15 +15,15 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 
 	for (int i = 0; i < CUBE_RED_MAX; i++)
 	{
-		objCubeRed[i]->ObjectOBJ::SetPosition(SceneBase::tmp[i]);
-		objCubeGreen[i]->ObjectOBJ::SetPosition(SceneBase::tmp[i + 10]);
-		objCubeBlue[i]->ObjectOBJ::SetPosition(SceneBase::tmp[i + 20]);
+		objCubeRed[i]->ObjectOBJ::SetPosition(tmp[i]);
+		objCubeGreen[i]->ObjectOBJ::SetPosition(tmp[i + 10]);
+		objCubeBlue[i]->ObjectOBJ::SetPosition(tmp[i + 20]);
 
 		objCubeRed[i]->PositionFix();
 		objCubeGreen[i]->PositionFix();
 		objCubeBlue[i]->PositionFix();
 	}
-	objCastle->ObjectOBJ::SetPosition(SceneBase::tmp[99]);
+	objCastle->ObjectOBJ::SetPosition(tmp[99]);
 	objCastle->PositionFix();
 
 	objSkydome->SetScale({ 5,5,5 });
@@ -49,6 +49,14 @@ void SceneInGame::Update()
 	if (input->TriggerKey(DIK_ESCAPE))
 	{
 		SceneManager::SetScene(TITLE);
+
+		for (int i = 0; i < CUBE_RED_MAX; i++)
+		{
+			tmp[i] = objCubeRed[i]->ObjectOBJ::GetPosition();
+			tmp[i + 10] = objCubeGreen[i]->ObjectOBJ::GetPosition();
+			tmp[i + 20] = objCubeBlue[i]->ObjectOBJ::GetPosition();
+		}
+		tmp[99] = objCastle->ObjectOBJ::GetPosition();
 	}
 
 	camera->SetTarget(player->GetPosition());
@@ -64,7 +72,7 @@ void SceneInGame::Draw()
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
 	// スプライト描画
-	spriteBG->Draw();
+	//spriteBG->Draw();
 
 	spriteCommon->PostDraw();
 
@@ -90,6 +98,8 @@ void SceneInGame::Draw()
 	objCubeBlue[1]->ObjectOBJ::Draw();
 
 	objCastle->ObjectOBJ::Draw();
+
+	objWall->Draw();
 
 	player->ObjectOBJ::Draw();
 
@@ -121,9 +131,4 @@ void SceneInGame::Draw()
 #pragma endregion
 
 #pragma endregion グラフィックスコマンド
-}
-
-void SceneInGame::LoadDat()
-{
-
 }

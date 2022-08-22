@@ -13,14 +13,13 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 {
 	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
 
-	objCubeRed[0]->SetPosition({ 25,0,50 });
-	objCubeGreen[0]->SetPosition({ -25,0,50 });
-	objCubeBlue[0]->SetPosition({ 0,0,-25 });
-
-	objCubeRed[1]->SetPosition({ 50,0,25 });
-	objCubeGreen[1]->SetPosition({ -50,0,25 });
-	objCubeBlue[1]->SetPosition({ 0,0,-50 });
-
+	for (int i = 0; i < CUBE_RED_MAX; i++)
+	{
+		objCubeRed[i]->ObjectOBJ::SetPosition(tmp[i]);
+		objCubeGreen[i]->ObjectOBJ::SetPosition(tmp[i + 10]);
+		objCubeBlue[i]->ObjectOBJ::SetPosition(tmp[i + 20]);
+	}
+	objCastle->ObjectOBJ::SetPosition(tmp[99]);
 
 	objSkydome->SetScale({ 5,5,5 });
 	objGround->ObjectOBJ::SetScale({ 5,5,5 });
@@ -40,11 +39,11 @@ void SceneStageEdit::Update()
 
 		for (int i = 0; i < CUBE_RED_MAX; i++)
 		{
-			SceneBase::tmp[i] = objCubeRed[i]->ObjectOBJ::GetPosition();
-			SceneBase::tmp[i + 10] = objCubeGreen[i]->ObjectOBJ::GetPosition();
-			SceneBase::tmp[i + 20] = objCubeBlue[i]->ObjectOBJ::GetPosition();
+			tmp[i] = objCubeRed[i]->ObjectOBJ::GetPosition();
+			tmp[i + 10] = objCubeGreen[i]->ObjectOBJ::GetPosition();
+			tmp[i + 20] = objCubeBlue[i]->ObjectOBJ::GetPosition();
 		}
-		SceneBase::tmp[99] = objCastle->ObjectOBJ::GetPosition();
+		tmp[99] = objCastle->ObjectOBJ::GetPosition();
 	}
 
 	camera->SetTarget(player->GetPosition());
@@ -58,6 +57,8 @@ void SceneStageEdit::Update()
 		objCubeRed[1]->SetPosition({ 50,0,25 });
 		objCubeGreen[1]->SetPosition({ -50,0,25 });
 		objCubeBlue[1]->SetPosition({ -25,0,-25 });
+
+		objCastle->SetPosition({ 0,0,0 });
 	}
 
 	SceneBase::Update();
@@ -71,7 +72,7 @@ void SceneStageEdit::Draw()
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
 	// スプライト描画
-	spriteBG->Draw();
+	//spriteBG->Draw();
 
 	spriteCommon->PostDraw();
 
@@ -84,9 +85,7 @@ void SceneStageEdit::Draw()
 	// OBJモデル
 	ObjectOBJ::PreDraw(dxCommon->GetCmdList());
 
-	//objSphere->Draw();
 	objSkydome->Draw();
-	//objPlayer->Draw();
 	objGround->ObjectOBJ::Draw();
 
 	objCubeRed[0]->ObjectOBJ::Draw();
@@ -98,6 +97,8 @@ void SceneStageEdit::Draw()
 	objCubeBlue[1]->ObjectOBJ::Draw();
 
 	objCastle->ObjectOBJ::Draw();
+
+	objWall->Draw();
 
 	ObjectOBJ::PostDraw();
 
@@ -122,12 +123,4 @@ void SceneStageEdit::Draw()
 #pragma endregion
 
 #pragma endregion グラフィックスコマンド
-}
-
-void SceneStageEdit::SaveDat()
-{
-	//FILE* file = fopen("Resources/Data/stageData.dat", "wb");
-	//assert(!file);
-
-	//fwrite()
 }

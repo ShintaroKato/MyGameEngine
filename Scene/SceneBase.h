@@ -52,6 +52,16 @@ public:
 	/// </summary>
 	virtual void Draw() {};
 
+	/// <summary>
+	/// 作成したステージを保存
+	/// </summary>
+	void SaveStage();
+
+	/// <summary>
+	/// 作成したステージを読み込み
+	/// </summary>
+	void LoadStage();
+
 protected:
 
 	DirectXCommon* dxCommon = nullptr;
@@ -67,7 +77,7 @@ protected:
 
 	Text* text;
 
-	Sprite* spriteBG = nullptr;
+	Sprite* spriteTitle = nullptr;
 
 	ModelOBJ* modelSkydome = nullptr;
 	ModelOBJ* modelGround = nullptr;
@@ -77,13 +87,16 @@ protected:
 	ModelOBJ* modelCubeGreen = nullptr;
 	ModelOBJ* modelCubeBlue = nullptr;
 	ModelOBJ* modelCastle = nullptr;
+	ModelOBJ* modelWall = nullptr;
 
+	ObjectOBJ* objWall = nullptr;
 	ObjectOBJ* objSkydome = nullptr;
 	TouchableObject* objGround = nullptr;
 
 	GameObject* objCubeRed[CUBE_RED_MAX]{};
 	GameObject* objCubeGreen[CUBE_GREEN_MAX]{};
 	GameObject* objCubeBlue[CUBE_BLUE_MAX]{};
+
 	GameObject* objCastle = nullptr;
 
 	Player* player = nullptr;

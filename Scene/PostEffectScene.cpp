@@ -24,7 +24,7 @@ void PostEffectScene::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCo
 
 	// スプライト共通テクスチャ読み込み
 	spriteCommon->LoadTexture(0, "debugfont.png");
-	spriteCommon->LoadTexture(100, "background2.png");
+	spriteCommon->LoadTexture(100, "loading.png");
 
 	// テキスト
 	text = Text::GetInstance();
