@@ -135,9 +135,21 @@ void Enemy::Move()
 	XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rotation.y));
 	move = XMVector3TransformNormal(move, matRot);
 
-	pos.x += move.m128_f32[0];
-	pos.y += move.m128_f32[1];
-	pos.z += move.m128_f32[2];
+	float dist = sqrtf(
+		(pos.x - target.x) * (pos.x - target.x) +
+		(pos.z - target.z) * (pos.z - target.z)
+	);
+	float nearLimit = 5.5f;
+	float farLimit = 6.0f;
+
+	//‚ ‚é’ö“x‚Ì‹——£‚ğ•Û‚¿‘±‚¯‚éˆ—
+	if (dist > nearLimit && dist < farLimit);
+	else
+	{
+		pos.x += move.m128_f32[0];
+		pos.y += move.m128_f32[1];
+		pos.z += move.m128_f32[2];
+	}
 }
 
 void Enemy::Jump()
