@@ -262,16 +262,46 @@ void Player::Attack()
 
 	cameraPos = ObjectOBJ::GetCamera()->GetEye();
 
-
-
-	if (input->TriggerKey(DIK_SPACE))
+	// 発射
+	if (input->PushKey(DIK_SPACE))
 	{
+		if (attackLevel < 3 && attackCount < 8.0f)
+		{
+			attackSphere.radius = 2.0f;
+			attackSphere.center = {
+				pos.x + sin(XMConvertToRadians(rotation.y)) * 1.5f, pos.y + 1,
+				pos.z + cos(XMConvertToRadians(rotation.y)) * 1.5f };
 
+			attackLevel++;
+			attackCount = 16.0f;
+			attackFlag = true;
+		}
+	}
+
+	if (attackFlag == true) {
+
+		attackCount -= 1.0f;
+
+		if (attackCount < 14.0f && attackCount > -4.0f)
+		{
+			pos.x += move.m128_f32[0] * 0.8f;
+			pos.z += move.m128_f32[2] * 0.8f;
+		}
+
+		// カウント0で存在フラグをfalseにする
+		if (attackCount < -10) {
+			attackFlag = false;
+		}
+	}
+	else
+	{
+		attackLevel = 0;
 	}
 }
 
 bool Player::Hit()
 {
+	if(CollisionManager::GetInstance()->CheckCollision())
 	return false;
 }
 

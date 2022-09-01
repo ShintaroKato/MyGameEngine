@@ -132,6 +132,8 @@ private:
 	// コライダー
 	Sphere sphere{};
 	SphereCollider* sphereColl = nullptr;
+	// 攻撃用コライダー
+	Sphere attackSphere{};
 
 	// カメラ
 	XMFLOAT3 cameraPos{};
@@ -148,4 +150,6 @@ private:
 
 	// 攻撃
 	bool attackFlag = false;
+	int attackLevel = 0;
+	float attackCount = 0;
 };
