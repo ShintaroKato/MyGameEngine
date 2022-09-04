@@ -49,6 +49,7 @@
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Scene\SceneStageEdit.cpp" />
     <ClCompile Include="Scene\SceneTitle.cpp" />
+    <ClCompile Include="GameObject\Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2D\PostEffect.h" />
@@ -89,6 +90,7 @@
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="Scene\SceneStageEdit.h" />
     <ClInclude Include="Scene\SceneTitle.h" />
+    <ClInclude Include="GameObject\Weapon.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli" />

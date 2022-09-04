@@ -177,6 +177,7 @@
     <ClCompile Include="GameObject\TouchableObject.cpp" />
     <ClCompile Include="GameObject\Enemy.cpp" />
     <ClCompile Include="GameObject\Player.cpp" />
+    <ClCompile Include="GameObject\Weapon.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Scene\PostEffectScene.cpp" />
@@ -317,6 +318,7 @@
     <ClInclude Include="GameObject\TouchableObject.h" />
     <ClInclude Include="GameObject\Enemy.h" />
     <ClInclude Include="GameObject\Player.h" />
+    <ClInclude Include="GameObject\Weapon.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Scene\PostEffectScene.h" />
     <ClInclude Include="Scene\SceneBase.h" />
