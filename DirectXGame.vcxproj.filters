@@ -100,4 +100,9 @@
     <None Include="Resources\shaders\RenderTexture.hlsli" />
     <None Include="Resources\shaders\Sprite.hlsli" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\Picture2\256x256Blue.png" />
+    <Image Include="..\..\Picture2\256x256Green.png" />
+    <Image Include="..\..\Picture2\256x256Red.png" />
+  </ItemGroup>
 </Project>

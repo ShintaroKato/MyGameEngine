@@ -4,7 +4,7 @@
 #include "ObjectOBJ.h"
 #include "SphereCollider.h"
 #include "GameObject.h"
-
+#include "Weapon.h"
 
 class Player : public ObjectFBX, public ObjectOBJ
 {
@@ -112,9 +112,11 @@ public:
 	void SetAllive(bool flag) { this->aliveFlag = flag; }
 
 	///// <summary>
-	///// 押し戻し
+	///// 武器をセット
 	///// </summary>
-	//void Rejection(GameObject* gameObject);
+	void SetWeapon(Weapon* weapon);
+
+	Weapon* GetWeapon() { return weapon; }
 
 private:
 	// 座標
@@ -132,8 +134,6 @@ private:
 	// コライダー
 	Sphere sphere{};
 	SphereCollider* sphereColl = nullptr;
-	// 攻撃用コライダー
-	Sphere attackSphere{};
 
 	// カメラ
 	XMFLOAT3 cameraPos{};
@@ -149,6 +149,7 @@ private:
 	bool aliveFlag = true;
 
 	// 攻撃
+	Weapon* weapon = nullptr;
 	bool attackFlag = false;
 	int attackLevel = 0;
 	float attackCount = 0;

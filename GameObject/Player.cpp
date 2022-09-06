@@ -98,6 +98,7 @@ void Player::Update()
 		ObjectFBX::rotation = rotation;
 		ObjectFBX::collider->Update();
 	}
+
 	ObjectOBJ::Update();
 	ObjectFBX::Update();
 }
@@ -262,15 +263,14 @@ void Player::Attack()
 
 	cameraPos = ObjectOBJ::GetCamera()->GetEye();
 
-	// 発射
+	// 攻撃
 	if (input->PushKey(DIK_SPACE))
 	{
-		if (attackLevel < 3 && attackCount < 8.0f)
+		if (attackLevel < 3 && attackCount < 8.0f && weapon)
 		{
-			attackSphere.radius = 2.0f;
-			attackSphere.center = {
+			weapon->SetPosition({
 				pos.x + sin(XMConvertToRadians(rotation.y)) * 1.5f, pos.y + 1,
-				pos.z + cos(XMConvertToRadians(rotation.y)) * 1.5f };
+				pos.z + cos(XMConvertToRadians(rotation.y)) * 1.5f });
 
 			attackLevel++;
 			attackCount = 16.0f;
@@ -289,19 +289,47 @@ void Player::Attack()
 		}
 
 		// カウント0で存在フラグをfalseにする
-		if (attackCount < -10) {
+		if (attackCount < -10)
+		{
 			attackFlag = false;
+		}
+
+		if (weapon)
+		{
+			XMFLOAT3 wPos = { pos.x + sin(XMConvertToRadians(rotation.y - 90 + (attackCount * attackCount - attackCount))),
+				pos.y + 0.3f,
+				pos.z + cos(XMConvertToRadians(rotation.y - 90 + (attackCount * attackCount - attackCount))) };
+
+			XMFLOAT3 wRot = { rotation.x - 90,
+				rotation.y + (attackCount * attackCount - attackCount),
+				rotation.z + 90 };
+
+			weapon->SetPosition(wPos);
+			weapon->SetRotation(wRot);
+			weapon->Update();
 		}
 	}
 	else
 	{
 		attackLevel = 0;
+
+		if (weapon)
+		{
+			XMFLOAT3 wPos = { pos.x + sin(XMConvertToRadians(rotation.y + 90)),
+				pos.y + 0.2f,
+				pos.z + cos(XMConvertToRadians(rotation.y + 90)) };
+			XMFLOAT3 wRot = { rotation.x,rotation.y,rotation.z - 90 };
+
+			weapon->SetPosition(wPos);
+			weapon->SetRotation(wRot);
+			weapon->Update();
+		}
 	}
 }
 
 bool Player::Hit()
 {
-	if(CollisionManager::GetInstance()->CheckCollision())
+
 	return false;
 }
 
@@ -363,5 +391,20 @@ void Player::SetScale(XMFLOAT3 scale)
 	if (ObjectFBX::model)
 	{
 		ObjectFBX::scale = scale;
+	}
+}
+
+void Player::SetWeapon(Weapon* weapon)
+{
+	this->weapon = weapon;
+	if (ObjectOBJ::model)
+	{
+		this->weapon->SetParent((ObjectOBJ*)this);
+		this->weapon->SetPosition(pos);
+	}
+	if(ObjectFBX::model)
+	{
+		this->weapon->SetParent((ObjectFBX*)this);
+		this->weapon->SetPosition(pos);
 	}
 }

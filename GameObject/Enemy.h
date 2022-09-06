@@ -67,7 +67,7 @@ public:
 	/// <summary>
 	/// “G‚Æ‚Ì“–‚½‚è”»’è
 	/// </summary>
-	bool Hit();
+	void Hit(BaseCollider* collider);
 
 	/// <summary>
 	/// À•W‚ğæ“¾

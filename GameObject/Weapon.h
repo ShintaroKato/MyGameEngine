@@ -3,8 +3,6 @@
 #include "ObjectFBX.h"
 #include "ObjectOBJ.h"
 #include "SphereCollider.h"
-#include "GameObject.h"
-
 
 class Weapon : public ObjectFBX, public ObjectOBJ
 {
@@ -33,10 +31,6 @@ public:
 	/// <returns>インスタンス</returns>
 	static Weapon* Create(ModelFBX* fbx = nullptr, int animationNumber = 0);
 
-	void SetParent(ObjectOBJ* obj) { this->ObjectOBJ::parent = obj; }
-	void SetParent(ObjectFBX* fbx) { this->ObjectFBX::parent = fbx; }
-
-public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -44,9 +38,36 @@ public:
 	bool Initialize() override;
 
 	/// <summary>
+	/// 親オブジェクトセット
+	/// </summary>
+	void SetParent(ObjectOBJ* obj);
+	void SetParent(ObjectFBX* fbx);
+
+	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
 	void Update() override;
+
+	/// <summary>
+	/// 衝突時コールバック関数
+	/// </summary>
+	/// <param name="info">衝突情報</param>
+	void OnCollision(const CollisionInfo& info) override;
+
+	/// <summary>
+	/// 座標を設定
+	/// </summary>
+	void SetPosition(XMFLOAT3 pos);
+
+	/// <summary>
+	/// 回転を設定
+	/// </summary>
+	void SetRotation(XMFLOAT3 rot);
+
+	/// <summary>
+	/// 座標を設定
+	/// </summary>
+	void SetScale(XMFLOAT3 scale);
 
 private:
 	// 座標
@@ -54,16 +75,13 @@ private:
 	// 回転
 	XMFLOAT3 rotation{};
 	// 半径
-	float radius = 1.0f;
+	float radius = 2.0f;
 	// 接地フラグ
 	bool onGround = true;
-	// 移動ベクトル
-	XMVECTOR move = { 0,0,0.1f,0 };
-	// 落下ベクトル
-	DirectX::XMVECTOR fallVel;
+	// 親オブジェクト
+	ObjectOBJ* obj = nullptr;
+	ObjectFBX* fbx = nullptr;
 	// コライダー
 	Sphere sphere{};
 	SphereCollider* sphereColl = nullptr;
-	// 攻撃用コライダー
-	Sphere attackSphere{};
 };

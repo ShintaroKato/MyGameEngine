@@ -90,6 +90,7 @@ void Enemy::Update()
 	Attack();
 
 	SetPosition(pos);
+
 	if (ObjectOBJ::model)
 	{
 		ObjectOBJ::rotation = rotation;
@@ -161,9 +162,15 @@ void Enemy::Attack()
 {
 }
 
-bool Enemy::Hit()
+void Enemy::Hit(BaseCollider* collider)
 {
-	return false;
+	if (CollisionManager::GetInstance()->CheckCollision(this->ObjectOBJ::collider, collider))
+	{
+		if (collider->GetAttribute() == COLLISION_ATTR_ALLIES_WEAPON)
+		{
+			aliveFlag = false;
+		}
+	}
 }
 
 XMFLOAT3 Enemy::GetPosition()
@@ -180,7 +187,10 @@ XMFLOAT3 Enemy::GetPosition()
 
 void Enemy::OnCollision(const CollisionInfo& info)
 {
-
+	if (info.collider->GetAttribute() == COLLISION_ATTR_ALLIES_WEAPON)
+	{
+		aliveFlag = false;
+	}
 }
 
 void Enemy::SetPosition(XMFLOAT3 pos)

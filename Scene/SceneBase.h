@@ -10,6 +10,7 @@
 #include "GameObject.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Weapon.h"
 #include "TouchableObject.h"
 #define OBJECT_MAX 100
 
@@ -31,7 +32,8 @@ protected: // íËêî
 	static const int CUBE_RED_MAX = 10;
 	static const int CUBE_GREEN_MAX = 10;
 	static const int CUBE_BLUE_MAX = 10;
-	static const int ENEMY_MAX = 1;
+	static const int ENEMY_MAX = 5;
+	static const int WEAPON_MAX = 1;
 
 public:
 	static XMFLOAT3 tmp[OBJECT_MAX];
@@ -88,6 +90,7 @@ protected:
 	ModelOBJ* modelCubeBlue = nullptr;
 	ModelOBJ* modelCastle = nullptr;
 	ModelOBJ* modelWall = nullptr;
+	ModelOBJ* modelWeapon = nullptr;
 
 	ObjectOBJ* objWall = nullptr;
 	ObjectOBJ* objSkydome = nullptr;
@@ -101,4 +104,5 @@ protected:
 
 	Player* player = nullptr;
 	Enemy* enemy[ENEMY_MAX]{};
+	Weapon* weapon[WEAPON_MAX]{};
 };

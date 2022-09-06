@@ -59,6 +59,11 @@ void SceneInGame::Update()
 		tmp[99] = objCastle->ObjectOBJ::GetPosition();
 	}
 
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		enemy[i]->Hit(player->GetWeapon()->ObjectOBJ::GetCollider());
+	}
+
 	camera->SetTarget(player->GetPosition());
 
 	SceneBase::Update();
@@ -102,6 +107,7 @@ void SceneInGame::Draw()
 	objWall->Draw();
 
 	player->ObjectOBJ::Draw();
+	weapon[0]->ObjectOBJ::Draw();
 
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{

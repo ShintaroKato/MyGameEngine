@@ -27,6 +27,9 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	// スプライト共通テクスチャ読み込み
 	spriteCommon->LoadTexture(0, "debugfont.png");
 	spriteCommon->LoadTexture(1, "title_transparent.png");
+	spriteCommon->LoadTexture(2, "256x256Red.png");
+	spriteCommon->LoadTexture(3, "256x256Green.png");
+	spriteCommon->LoadTexture(4, "256x256Blue.png");
 
 	// テキスト
 	text = Text::GetInstance();
@@ -46,6 +49,7 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	modelCubeBlue = ModelOBJ::LoadObj("cube64Blue");
 	modelCastle = ModelOBJ::LoadObj("small_castle");
 	modelWall = ModelOBJ::LoadObj("square_wall");
+	modelWeapon = ModelOBJ::LoadObj("sword2");
 
 	// 3Dオブジェクト生成
 	objSkydome = ObjectOBJ::Create();
@@ -75,8 +79,11 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 		enemy[i]->SetScale({ 2,2,2 });
 	}
 
+	weapon[0] = Weapon::Create(modelWeapon);
+
 	player = Player::Create(modelPlayer);
 	player->ObjectOBJ::SetCamera(camera);
+	player->SetWeapon(weapon[0]);
 }
 
 void SceneBase::Update()
@@ -103,6 +110,7 @@ void SceneBase::Update()
 	objSkydome->Update();
 	objGround->Update();
 	objWall->Update();
+	weapon[0]->Update();
 
 	// fbx更新
 

@@ -127,6 +127,11 @@ public: // メンバ関数
 	const XMMATRIX& GetInvMatWorld() { return invMatWorld; }
 
 	/// <summary>
+	/// コライダーを取得
+	/// </summary>
+	BaseCollider* GetCollider() { return collider; }
+
+	/// <summary>
 	/// 座標の設定
 	/// </summary>
 	/// <param name="position">座標</param>

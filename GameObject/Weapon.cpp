@@ -69,31 +69,93 @@ bool Weapon::Initialize()
 
 	if (ObjectOBJ::model) ObjectOBJ::SetCollider(sphereColl);
 	if (ObjectFBX::model) ObjectFBX::SetCollider(sphereColl);
-	sphereColl->SetAttribute();
 
 	return true;
 }
 
+void Weapon::SetParent(ObjectOBJ* obj)
+{
+	this->obj = obj;
+	sphereColl->SetAttribute(obj->GetCollider()->GetAttribute() + 0b1);
+}
+
+void Weapon::SetParent(ObjectFBX* fbx)
+{
+	this->fbx = fbx;
+	sphereColl->SetAttribute(fbx->GetCollider()->GetAttribute() + 0b1);
+}
+
 void Weapon::Update()
 {
-	ControlCamera();
-
-	if (!aliveFlag) return;
-
-	if (ObjectOBJ::model) pos = ObjectOBJ::position;
-	if (ObjectFBX::model) pos = ObjectFBX::position;
-
-	SetPosition(pos);
 	if (ObjectOBJ::model)
 	{
-		ObjectOBJ::rotation = rotation;
+		pos = ObjectOBJ::position;
+		rotation = ObjectOBJ::rotation;
+	}
+	if (ObjectFBX::model)
+	{
+		pos = ObjectFBX::position;
+		rotation = ObjectFBX::rotation;
+	}
+
+	SetPosition(pos);
+
+	if (ObjectOBJ::model)
+	{
 		ObjectOBJ::collider->Update();
 	}
 	if (ObjectFBX::model)
 	{
-		ObjectFBX::rotation = rotation;
 		ObjectFBX::collider->Update();
 	}
 	ObjectOBJ::Update();
 	ObjectFBX::Update();
+}
+
+void Weapon::OnCollision(const CollisionInfo& info)
+{
+}
+
+void Weapon::SetPosition(XMFLOAT3 pos)
+{
+	// コライダーの追加
+	sphere.center = { pos.x, pos.y + radius, pos.z,0 };
+	sphere.radius = radius;
+
+	sphereColl->SetSphere(sphere);
+
+	if (ObjectOBJ::model)
+	{
+		ObjectOBJ::SetPosition(pos);
+		ObjectOBJ::SetCollider(sphereColl);
+	}
+	if (ObjectFBX::model)
+	{
+		ObjectFBX::SetPosition(pos);
+		ObjectFBX::SetCollider(sphereColl);
+	}
+}
+
+void Weapon::SetRotation(XMFLOAT3 rot)
+{
+	if (ObjectOBJ::model)
+	{
+		ObjectOBJ::SetRotation(rot);
+	}
+	if (ObjectFBX::model)
+	{
+		ObjectFBX::SetRotation(rot);
+	}
+}
+
+void Weapon::SetScale(XMFLOAT3 scale)
+{
+	if (ObjectOBJ::model)
+	{
+		ObjectOBJ::scale = scale;
+	}
+	if (ObjectFBX::model)
+	{
+		ObjectFBX::scale = scale;
+	}
 }

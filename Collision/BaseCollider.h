@@ -45,8 +45,8 @@ public:
 	/// <param name="info">Õ“Ëî•ñ</param>
 	inline void OnCollision(const CollisionInfo& info)
 	{
-		this->obj->OnCollision(info);
-		this->fbx->OnCollision(info);
+		if(obj) this->obj->OnCollision(info);
+		if(fbx) this->fbx->OnCollision(info);
 	}
 
 	inline void SetAttribute(unsigned short attribute)
