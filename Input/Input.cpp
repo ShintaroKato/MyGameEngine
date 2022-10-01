@@ -32,6 +32,12 @@ void Input::Initialize(WinApp* winApp)
 	result = devMouse->SetCooperativeLevel(
 		winApp_->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 
+	result = dinput->CreateDevice(GUID_Joystick, &devJoystick, NULL);
+	// デバイスのフォーマットの設定
+	if (devJoystick != nullptr)
+	{
+		InitJoyStick(winApp_->GetHwnd());
+	}
 }
 
 void Input::Update()
@@ -51,6 +57,47 @@ void Input::Update()
 	mouseStatePre = mouseState;
 	//マウスの入力情報を取得
 	result = devMouse->GetDeviceState(sizeof(mouseState), &mouseState);
+
+	//パッドが接続されているかを判別
+	if (devJoystick == nullptr && isJoyStickConnect == true)
+	{
+		isJoyStickConnect = false;
+	}
+	if (isJoyStickConnect == false && count == 100)//100フレームに1回判定
+	{
+		result = dinput->CreateDevice(GUID_Joystick, &devJoystick, NULL);
+	}
+	if (devJoystick != nullptr)
+	{
+		if (isJoyStickConnect == false)
+		{
+			InitJoyStick(winApp_->GetHwnd());
+
+			isJoyStickConnect = true;
+		}
+
+		//ゲームパッド
+		result = devJoystick->Acquire();
+		// 前回の入力を保存
+		joyStatePre = joyState;
+		//ゲームパッドの入力情報を取得
+		result = devJoystick->GetDeviceState(sizeof(joyState), &joyState);
+
+		// 失敗時の対応
+		result = devJoystick->GetDeviceState(sizeof(DIJOYSTATE), &joyState);
+		if (FAILED(result))
+		{
+			devJoystick->Poll();
+		}
+	}
+
+	if (count == 100)
+	{
+		count = 0;
+	}
+	count++;
+
+	return;
 }
 
 bool Input::PushKey(BYTE keyNumber)
@@ -103,6 +150,112 @@ bool Input::ReleaseMouse(MouseButton button)
 	}
 
 	return false;
+}
+
+bool Input::PushButton(BYTE buttonNumber)
+{
+	// 前回が0で、今回が0でなければ
+	if (joyState.rgbButtons[buttonNumber]) {
+		return true;
+	}
+
+	return false;
+}
+
+bool Input::TriggerButton(BYTE buttonNumber)
+{
+	// 前回が0で、今回が0でなければトリガー
+	if (!joyStatePre.rgbButtons[buttonNumber] && joyState.rgbButtons[buttonNumber]) {
+		return true;
+	}
+
+	return false;
+}
+
+bool Input::PushCrossButton(int buttonNumber)
+{
+	// 前回が0で、今回が0でなければ
+	if (joyState.rgdwPOV[0] == buttonNumber) {
+		return true;
+	}
+
+	return false;
+}
+
+bool Input::TriggerCrossButton(int buttonNumber)
+{
+	// 前回が0で、今回が0でなければトリガー
+	if (!joyStatePre.rgdwPOV[0] == -1 && joyState.rgdwPOV[0] == buttonNumber) {
+		return true;
+	}
+
+	return false;
+}
+
+int Input::CheckCrossButton(DIJOYSTATE2 joyState)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		isPushCrossButton[i] = false;
+	}
+
+	if (joyState.rgdwPOV[0] == 0xFFFFFFFF) return NONE;//無効な値であればNONE(何も押されていない状態)を返す
+
+	CrossButton button = CrossButton::NONE;
+
+	float rad = XMConvertToRadians(joyState.rgdwPOV[0] / 100.0f);
+	float x = sin(rad);
+	float y = cos(rad);
+
+	if (x < -0.01f)
+	{
+		isPushCrossButton[LEFT] = true;
+		button = LEFT;
+	}
+	else if (x > 0.01f)
+	{
+		isPushCrossButton[RIGHT] = true;
+		button = RIGHT;
+	}
+
+	if (y > 0.01f)
+	{
+		isPushCrossButton[UP] = true;
+		button = UP;
+	}
+	else if (y < -0.01f)
+	{
+		isPushCrossButton[DOWN] = true;
+		button = DOWN;
+	}
+
+	if (button == NONE) return button;//4つのフラグが全てfalseならNONE(何も押されていない状態)を返す
+
+	//斜め方向の入力を判別
+	if (isPushCrossButton[UP])
+	{
+		if (isPushCrossButton[RIGHT])
+		{
+			button = UP_RIGHT;//右上
+		}
+		else if (isPushCrossButton[LEFT])
+		{
+			button = UP_LEFT;//左上
+		}
+	}
+	else if (isPushCrossButton[DOWN])
+	{
+		if (isPushCrossButton[RIGHT])
+		{
+			button = DOWN_RIGHT;//右下
+		}
+		else if (isPushCrossButton[LEFT])
+		{
+			button = DOWN_LEFT;//左下
+		}
+	}
+
+	return button;
 }
 
 XMFLOAT2 Input::GetMousePos2()
@@ -170,4 +323,41 @@ XMVECTOR Input::CalcScreenToXZ(XMFLOAT2 scrPos, XMMATRIX view, XMMATRIX prj)
 	{
 		return farPos;
 	}
+}
+
+void Input::InitJoyStick(HWND hwnd)
+{
+	HRESULT result;
+
+	result = devJoystick->SetDataFormat(&c_dfDIJoystick);
+
+	// 軸モードを絶対値モードとして設定
+	DIPROPDWORD diprop;
+	ZeroMemory(&diprop, sizeof(diprop));
+	diprop.diph.dwSize = sizeof(diprop);
+	diprop.diph.dwHeaderSize = sizeof(diprop.diph);
+	diprop.diph.dwHow = DIPH_DEVICE;
+	diprop.diph.dwObj = 0;
+	diprop.dwData = DIPROPAXISMODE_ABS;	// 絶対値モードの指定(DIPROPAXISMODE_RELにしたら相対値)
+
+	result = devJoystick->SetProperty(DIPROP_AXISMODE, &diprop.diph);
+
+	// X軸の値の範囲設定
+	DIPROPRANGE diprg;
+	ZeroMemory(&diprg, sizeof(diprg));
+	diprg.diph.dwSize = sizeof(diprg);
+	diprg.diph.dwHeaderSize = sizeof(diprg.diph);
+	diprg.diph.dwHow = DIPH_BYOFFSET;
+	diprg.diph.dwObj = DIJOFS_X;
+	diprg.lMin = -1000;
+	diprg.lMax = 1000;
+	result = devJoystick->SetProperty(DIPROP_RANGE, &diprop.diph);
+
+
+	// Y軸の値の範囲設定
+	diprg.diph.dwObj = DIJOFS_Y;
+	result = devJoystick->SetProperty(DIPROP_RANGE, &diprg.diph);
+
+	// 協調モードの設定
+	result = devJoystick->SetCooperativeLevel(hwnd, DISCL_EXCLUSIVE | DISCL_FOREGROUND);
 }
