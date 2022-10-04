@@ -171,8 +171,7 @@ void Player::Jump()
 		pos.z += fallVel.m128_f32[2];
 	}
 	// ジャンプ操作
-	else if (Input::GetInstance()->TriggerKey(DIK_LSHIFT) ||
-			 Input::GetInstance()->TriggerKey(DIK_RSHIFT))
+	else if (Input::GetInstance()->TriggerKey(DIK_SPACE))
 	{
 		onGround = false;
 		const float jumpVYFist = 0.2f;
@@ -230,19 +229,31 @@ void Player::ControlCamera()
 		atan2f(pos.x - ObjectOBJ::GetCamera()->GetEye().x,
 			pos.z - ObjectOBJ::GetCamera()->GetEye().z));
 
-	cameraPos.x = pos.x + distance * cos(XMConvertToRadians(cameraRotY));
-	cameraPos.z = pos.z + distance * sin(XMConvertToRadians(cameraRotY));
+	if (cameraRotX < -70)
+	{
+		cameraRotX = -70;
+	}
+	if (cameraRotX > 70)
+	{
+		cameraRotX = 70;
+	}
 
+	cameraPos.x = pos.x + distance * cos(XMConvertToRadians(cameraRotY)) * cos(XMConvertToRadians(cameraRotX));
+	cameraPos.z = pos.z + distance * sin(XMConvertToRadians(cameraRotY)) * cos(XMConvertToRadians(cameraRotX));
+
+	cameraPos.y = pos.y + 2 + distance * sin(XMConvertToRadians(cameraRotX));
+
+	//キーボード操作
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) ||
 		input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
 	{
 		if (input->PushKey(DIK_UP))
 		{
-			cameraPos.y -= 0.1;
+			cameraRotX--;
 		}
 		else if (input->PushKey(DIK_DOWN))
 		{
-			cameraPos.y += 0.1;
+			cameraRotX++;
 		}
 		if (input->PushKey(DIK_LEFT))
 		{
@@ -252,6 +263,14 @@ void Player::ControlCamera()
 		{
 			cameraRotY--;
 		}
+	}
+
+	if (isInGame ||
+		!isInGame && input->PushMouse(MOUSE_RIGHT))
+	{
+		//マウス操作
+		cameraRotX += input->GetMouseMovement().y * 0.1f;		//上下移動
+		cameraRotY -= input->GetMouseMovement().x * 0.1f * 5;	//左右移動
 	}
 
 	ObjectOBJ::GetCamera()->SetEye(cameraPos);
@@ -264,7 +283,7 @@ void Player::Attack()
 	cameraPos = ObjectOBJ::GetCamera()->GetEye();
 
 	// 攻撃
-	if (input->PushKey(DIK_SPACE))
+	if (input->PushButton(Button_A_Cross) || input->PushMouse(MOUSE_LEFT))
 	{
 		if (attackLevel < 3 && attackCount < 8.0f && weapon)
 		{
@@ -288,7 +307,7 @@ void Player::Attack()
 			pos.z += move.m128_f32[2] * 0.8f;
 		}
 
-		// カウント0で存在フラグをfalseにする
+		// カウント0で攻撃中フラグをfalseにする
 		if (attackCount < -10)
 		{
 			attackFlag = false;
@@ -307,6 +326,11 @@ void Player::Attack()
 			weapon->SetPosition(wPos);
 			weapon->SetRotation(wRot);
 			weapon->Update();
+		}
+
+		if ((int)attackCount % 5 == 0)
+		{
+			CollisionManager::GetInstance()->CheckAllCollision(weapon->GetSphereCollider());
 		}
 	}
 	else

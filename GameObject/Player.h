@@ -116,6 +116,11 @@ public:
 	///// </summary>
 	void SetWeapon(Weapon* weapon);
 
+	/// <summary>
+	/// ゲーム本編か否かを設定
+	/// </summary>
+	void SetInGameFlag(bool flag) { isInGame = flag; };
+
 	Weapon* GetWeapon() { return weapon; }
 
 private:
@@ -138,6 +143,7 @@ private:
 	// カメラ
 	XMFLOAT3 cameraPos{};
 	XMFLOAT3 cameraRot{};
+	float cameraRotX = 0;
 	float cameraRotY = -90;
 	float distance = 10;
 
@@ -153,4 +159,7 @@ private:
 	bool attackFlag = false;
 	int attackLevel = 0;
 	float attackCount = 0;
+
+	// ゲーム本編か否か
+	bool isInGame = true;
 };
