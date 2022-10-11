@@ -143,6 +143,17 @@ bool Input::TriggerMouse(MouseButton button)
 	return false;
 }
 
+XMFLOAT3 Input::GetMouseMovement()
+{
+	XMFLOAT3 move = {
+		(float)mouseState.lX,
+		(float)mouseState.lY,
+		(float)mouseState.lZ
+	};
+
+	return move;
+}
+
 bool Input::ReleaseMouse(MouseButton button)
 {
 	if (mouseStatePre.rgbButtons[button] && !mouseState.rgbButtons[button]) {
@@ -199,9 +210,9 @@ int Input::CheckCrossButton(DIJOYSTATE2 joyState)
 		isPushCrossButton[i] = false;
 	}
 
-	if (joyState.rgdwPOV[0] == 0xFFFFFFFF) return NONE;//無効な値であればNONE(何も押されていない状態)を返す
+	if (joyState.rgdwPOV[0] == 0xFFFFFFFF) return INPUT_NONE;//無効な値であればNONE(何も押されていない状態)を返す
 
-	CrossButton button = CrossButton::NONE;
+	CrossButton button = CrossButton::INPUT_NONE;
 
 	float rad = XMConvertToRadians(joyState.rgdwPOV[0] / 100.0f);
 	float x = sin(rad);
@@ -229,7 +240,7 @@ int Input::CheckCrossButton(DIJOYSTATE2 joyState)
 		button = DOWN;
 	}
 
-	if (button == NONE) return button;//4つのフラグが全てfalseならNONE(何も押されていない状態)を返す
+	if (button == INPUT_NONE) return button;//4つのフラグが全てfalseならNONE(何も押されていない状態)を返す
 
 	//斜め方向の入力を判別
 	if (isPushCrossButton[UP])

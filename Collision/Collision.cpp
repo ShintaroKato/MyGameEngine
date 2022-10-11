@@ -12,7 +12,7 @@ bool Collision::CheckShpere2Sphere(const Sphere& sphere1, const Sphere& sphere2,
 		*inter = (sphere2.center + sphere1.center) / 2;
 	}
 
-	if (x * x + y * y + z * z <= r * r)
+	if (sqrtf(x * x + y * y + z * z) <= r)
 	{
 		return true;
 	}

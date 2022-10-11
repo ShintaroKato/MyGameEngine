@@ -7,12 +7,22 @@
 #include "Text.h"
 #include "ObjectOBJ.h"
 #include "ObjectFBX.h"
+#include "UI/Button.h"
 #include "GameObject.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "Weapon.h"
 #include "TouchableObject.h"
 #define OBJECT_MAX 100
+
+enum SpriteNo
+{
+	debug_font,
+	title,
+	button_r,
+	button_g,
+	button_b,
+};
 
 class SceneBase
 {
@@ -32,7 +42,7 @@ protected: // íËêî
 	static const int CUBE_RED_MAX = 10;
 	static const int CUBE_GREEN_MAX = 10;
 	static const int CUBE_BLUE_MAX = 10;
-	static const int ENEMY_MAX = 5;
+	static const int ENEMY_MAX = 20;
 	static const int WEAPON_MAX = 1;
 
 public:
@@ -80,6 +90,10 @@ protected:
 	Text* text;
 
 	Sprite* spriteTitle = nullptr;
+
+	Button* buttonRed = nullptr;
+	Button* buttonGreen = nullptr;
+	Button* buttonBlue = nullptr;
 
 	ModelOBJ* modelSkydome = nullptr;
 	ModelOBJ* modelGround = nullptr;

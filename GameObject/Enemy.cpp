@@ -109,6 +109,8 @@ void Enemy::Spawn()
 {
 	if (aliveFlag == false)
 	{
+		HP = 20.0f;
+
 		float rad = XMConvertToRadians(rand() % 360);
 		float distance = 50;
 
@@ -136,15 +138,10 @@ void Enemy::Move()
 	XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rotation.y));
 	move = XMVector3TransformNormal(move, matRot);
 
-	float dist = sqrtf(
-		(pos.x - target.x) * (pos.x - target.x) +
-		(pos.z - target.z) * (pos.z - target.z)
-	);
 	float nearLimit = 5.5f;
-	float farLimit = 6.0f;
 
 	//‚ ‚é’ö“x‚Ì‹——£‚ð•Û‚¿‘±‚¯‚éˆ—
-	if (dist > nearLimit && dist < farLimit);
+	if (abs(pos.x - target.x) < nearLimit && abs(pos.z - target.z) < nearLimit);
 	else
 	{
 		pos.x += move.m128_f32[0];
@@ -162,14 +159,13 @@ void Enemy::Attack()
 {
 }
 
-void Enemy::Hit(BaseCollider* collider)
+void Enemy::Hit()
 {
-	if (CollisionManager::GetInstance()->CheckCollision(this->ObjectOBJ::collider, collider))
+	HP -= 100.0f;
+
+	if (HP <= 0)
 	{
-		if (collider->GetAttribute() == COLLISION_ATTR_ALLIES_WEAPON)
-		{
-			aliveFlag = false;
-		}
+		aliveFlag = false;
 	}
 }
 
@@ -187,9 +183,9 @@ XMFLOAT3 Enemy::GetPosition()
 
 void Enemy::OnCollision(const CollisionInfo& info)
 {
-	if (info.collider->GetAttribute() == COLLISION_ATTR_ALLIES_WEAPON)
+	if (info.collider->GetAttribute() == COLLISION_ATTR_WEAPONS + COLLISION_ATTR_ALLIES)
 	{
-		aliveFlag = false;
+		Hit();
 	}
 }
 

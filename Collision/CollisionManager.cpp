@@ -33,6 +33,36 @@ void CollisionManager::CheckAllCollision()
 	}
 }
 
+void CollisionManager::CheckAllCollision(BaseCollider* col)
+{
+	std::forward_list<BaseCollider*>::iterator it;
+
+	//全ての組み合わせについて総当たりチェック
+	it = colliders.begin();
+	for (; it != colliders.end(); ++it)
+	{
+		BaseCollider* colB = *it;
+
+		CheckCollision(col, colB);
+	}
+}
+
+void CollisionManager::CheckAllCollision(BaseCollider* col, unsigned short attr)
+{
+	std::forward_list<BaseCollider*>::iterator it;
+
+	//全ての組み合わせについて総当たりチェック
+	it = colliders.begin();
+	for (; it != colliders.end(); ++it)
+	{
+		BaseCollider* colB = *it;
+
+		if (colB->GetAttribute() != attr) continue;
+
+		CheckCollision(col, colB);
+	}
+}
+
 bool CollisionManager::CheckCollision(BaseCollider* colA, BaseCollider* colB)
 {
 	//ともに球
@@ -115,6 +145,18 @@ void CollisionManager::CheckSetObject(BaseCollider* colA, BaseCollider* colB, XM
 	{
 		colA->OnCollision(CollisionInfo(colB->GetObjectFBX(), colB, inter));
 		colB->OnCollision(CollisionInfo(colA->GetObjectFBX(), colA, inter));
+
+		return;
+	}
+	if (!colA->fbx && !colA->obj && colB->obj)
+	{
+		colA->OnCollision(CollisionInfo(colB->GetObjectOBJ(), colB, inter));
+
+		return;
+	}
+	if (!colA->fbx && !colA->obj && colB->fbx)
+	{
+		colA->OnCollision(CollisionInfo(colB->GetObjectFBX(), colB, inter));
 
 		return;
 	}

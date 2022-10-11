@@ -8,7 +8,7 @@ enum SceneNum
 	TITLE,
 	EDIT,
 	GAME,
-	NONE
+	SCENE_NONE
 };
 
 class SceneManager

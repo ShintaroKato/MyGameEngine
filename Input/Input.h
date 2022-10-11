@@ -60,7 +60,7 @@ enum CrossButton
 	DOWN_LEFT,
 	UP_RIGHT,
 	DOWN_RIGHT,
-	NONE,
+	INPUT_NONE,
 };
 
 enum MouseButton
@@ -152,4 +152,8 @@ public:
 	XMVECTOR CalcScreenToWorld(XMFLOAT2 scrPos, float fZ, XMMATRIX view, XMMATRIX prj);
 	XMVECTOR CalcScreenToXZ(XMFLOAT2 scrPos, XMMATRIX view, XMMATRIX prj);
 
+	/// <summary>
+	/// ƒ}ƒEƒX‚ÌˆÚ“®—Ê‚ðŽæ“¾
+	/// </summary>
+	XMFLOAT3 GetMouseMovement();
 };

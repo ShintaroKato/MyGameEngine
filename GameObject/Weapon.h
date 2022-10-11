@@ -69,6 +69,8 @@ public:
 	/// </summary>
 	void SetScale(XMFLOAT3 scale);
 
+	SphereCollider* GetSphereCollider() { return this->sphereColl; };
+
 private:
 	// ç¿ïW
 	XMFLOAT3 pos{};

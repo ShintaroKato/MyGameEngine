@@ -25,18 +25,22 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	ObjectFBX::SetDevice(this->dxCommon->GetDev());
 
 	// スプライト共通テクスチャ読み込み
-	spriteCommon->LoadTexture(0, "debugfont.png");
-	spriteCommon->LoadTexture(1, "title_transparent.png");
-	spriteCommon->LoadTexture(2, "256x256Red.png");
-	spriteCommon->LoadTexture(3, "256x256Green.png");
-	spriteCommon->LoadTexture(4, "256x256Blue.png");
+	spriteCommon->LoadTexture(debug_font, "debugfont.png");
+	spriteCommon->LoadTexture(title, "title_transparent.png");
+	spriteCommon->LoadTexture(button_r, "256x256Red.png");
+	spriteCommon->LoadTexture(button_g, "256x256Green.png");
+	spriteCommon->LoadTexture(button_b, "256x256Blue.png");
 
 	// テキスト
 	text = Text::GetInstance();
-	text->Initialize(spriteCommon, 0);
+	text->Initialize(spriteCommon, debug_font);
 
 	// スプライト
-	spriteTitle = Sprite::Create(spriteCommon, 1, { 0,0 }, { 0,0 });
+	spriteTitle = Sprite::Create(spriteCommon, title, { 0,0 }, { 0,0 });
+	buttonRed = Button::Create(spriteCommon, button_r, { 0,0 }, { 0,0 });
+	buttonGreen = Button::Create(spriteCommon, button_g, { 0,0 }, { 0,0 });
+	buttonBlue = Button::Create(spriteCommon, button_b, { 0,0 }, { 0,0 });
+
 	spriteTitle->Update();
 
 	// .objからモデルデータ読み込み
@@ -95,9 +99,9 @@ void SceneBase::Update()
 	player->Update();
 	for (int i = 0; i < 10; i++)
 	{
-		objCubeRed[i]->Update();
-		objCubeGreen[i]->Update();
-		objCubeBlue[i]->Update();
+		if (objCubeRed[i]->GetUsedFlag()) objCubeRed[i]->Update();
+		if (objCubeGreen[i]->GetUsedFlag()) objCubeGreen[i]->Update();
+		if (objCubeBlue[i]->GetUsedFlag()) objCubeBlue[i]->Update();
 	}
 	objCastle->Update();
 

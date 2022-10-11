@@ -99,14 +99,22 @@ void MeshCollider::ConstructTriangle(ModelFBX* model)
 
 void MeshCollider::Update()
 {
-	if(obj) invMatWorld = GetObjectOBJ()->GetInvMatWorld();
-	if(fbx) invMatWorld = GetObjectFBX()->GetInvMatWorld();
+	if (obj)
+	{
+		matWorld = GetObjectOBJ()->GetMatWorld();
+		invMatWorld = GetObjectOBJ()->GetInvMatWorld();
+	}
+	if (fbx)
+	{
+		matWorld = GetObjectFBX()->GetMatWorld();
+		invMatWorld = GetObjectFBX()->GetInvMatWorld();
+	}
 }
 
 bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR* inter)
 {
 	// オブジェクトのローカル座標系での球を得る（半径はXスケールを参照)
-	Sphere localSphere;
+	Sphere localSphere = sphere;
 	localSphere.center = XMVector3Transform(sphere.center, invMatWorld);
 	localSphere.radius *= XMVector3Length(invMatWorld.r[0]).m128_f32[0];
 
@@ -117,8 +125,6 @@ bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR*
 
 		if (Collision::CheckSphere2Triangle(localSphere, triangle, inter)) {
 			if (inter) {
-				const XMMATRIX& matWorld = GetObjectOBJ()->GetMatWorld();
-
 				*inter = XMVector3Transform(*inter, matWorld);
 			}
 			return true;

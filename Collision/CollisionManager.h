@@ -36,6 +36,8 @@ public: //メンバ関数
 	/// 全ての衝突チェック
 	/// </summary>
 	void CheckAllCollision();
+	void CheckAllCollision(BaseCollider* col);
+	void CheckAllCollision(BaseCollider* col, unsigned short attr);
 
 	/// <summary>
 	///

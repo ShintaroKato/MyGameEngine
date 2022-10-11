@@ -8,7 +8,7 @@ void SceneManager::SceneChange()
 {
 	scene++;
 
-	if (scene >= NONE)
+	if (scene >= SCENE_NONE)
 	{
 		scene = TITLE;
 	}

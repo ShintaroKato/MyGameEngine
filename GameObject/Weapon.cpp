@@ -76,13 +76,13 @@ bool Weapon::Initialize()
 void Weapon::SetParent(ObjectOBJ* obj)
 {
 	this->obj = obj;
-	sphereColl->SetAttribute(obj->GetCollider()->GetAttribute() + 0b1);
+	sphereColl->SetAttribute(COLLISION_ATTR_WEAPONS + obj->GetCollider()->GetAttribute());
 }
 
 void Weapon::SetParent(ObjectFBX* fbx)
 {
 	this->fbx = fbx;
-	sphereColl->SetAttribute(fbx->GetCollider()->GetAttribute() + 0b1);
+	sphereColl->SetAttribute(COLLISION_ATTR_WEAPONS + fbx->GetCollider()->GetAttribute());
 }
 
 void Weapon::Update()
@@ -114,6 +114,7 @@ void Weapon::Update()
 
 void Weapon::OnCollision(const CollisionInfo& info)
 {
+
 }
 
 void Weapon::SetPosition(XMFLOAT3 pos)

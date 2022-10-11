@@ -17,6 +17,8 @@ void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 		objCubeRed[i]->PositionFix();
 		objCubeGreen[i]->PositionFix();
 		objCubeBlue[i]->PositionFix();
+
+
 	}
 	objCastle->ObjectOBJ::SetPosition(tmp[99]);
 	objCastle->PositionFix();
@@ -70,13 +72,12 @@ void SceneTitle::Draw()
 	objSkydome->Draw();
 	objGround->ObjectOBJ::Draw();
 
-	objCubeRed[0]->ObjectOBJ::Draw();
-	objCubeGreen[0]->ObjectOBJ::Draw();
-	objCubeBlue[0]->ObjectOBJ::Draw();
-
-	objCubeRed[1]->ObjectOBJ::Draw();
-	objCubeGreen[1]->ObjectOBJ::Draw();
-	objCubeBlue[1]->ObjectOBJ::Draw();
+	for (int i = 0; i < 10; i++)
+	{
+		if (objCubeRed[i]->GetUsedFlag()) objCubeRed[i]->ObjectOBJ::Draw();
+		if (objCubeGreen[i]->GetUsedFlag()) objCubeGreen[i]->ObjectOBJ::Draw();
+		if (objCubeBlue[i]->GetUsedFlag()) objCubeBlue[i]->ObjectOBJ::Draw();
+	}
 
 	objCastle->ObjectOBJ::Draw();
 

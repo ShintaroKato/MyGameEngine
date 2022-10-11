@@ -59,11 +59,6 @@ void SceneInGame::Update()
 		tmp[99] = objCastle->ObjectOBJ::GetPosition();
 	}
 
-	for (int i = 0; i < ENEMY_MAX; i++)
-	{
-		enemy[i]->Hit(player->GetWeapon()->ObjectOBJ::GetCollider());
-	}
-
 	camera->SetTarget(player->GetPosition());
 
 	SceneBase::Update();
@@ -94,13 +89,12 @@ void SceneInGame::Draw()
 	objSkydome->Draw();
 	objGround->ObjectOBJ::Draw();
 
-	objCubeRed[0]->ObjectOBJ::Draw();
-	objCubeGreen[0]->ObjectOBJ::Draw();
-	objCubeBlue[0]->ObjectOBJ::Draw();
-
-	objCubeRed[1]->ObjectOBJ::Draw();
-	objCubeGreen[1]->ObjectOBJ::Draw();
-	objCubeBlue[1]->ObjectOBJ::Draw();
+	for (int i = 0; i < 10; i++)
+	{
+		if (objCubeRed[i]->GetUsedFlag()) objCubeRed[i]->ObjectOBJ::Draw();
+		if (objCubeGreen[i]->GetUsedFlag()) objCubeGreen[i]->ObjectOBJ::Draw();
+		if (objCubeBlue[i]->GetUsedFlag()) objCubeBlue[i]->ObjectOBJ::Draw();
+	}
 
 	objCastle->ObjectOBJ::Draw();
 

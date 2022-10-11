@@ -52,5 +52,6 @@ private:
 	ModelFBX* fbx = nullptr;
 	std::vector<Triangle>triangles;
 	// ワールド行列の逆行列
+	DirectX::XMMATRIX matWorld;
 	DirectX::XMMATRIX invMatWorld;
 };

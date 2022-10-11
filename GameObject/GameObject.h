@@ -56,11 +56,19 @@ public:
 	/// <summary>
 	/// 座標を固定された状態にする
 	/// </summary>
-	void PositionFix() { fix = true; }
+	void PositionFix()
+	{
+		isInGame = true;
+		ObjectOBJ::SetCollider(meshColl);
+		ObjectFBX::SetCollider(meshColl);
+	}
 
 	BaseCollider* GetCollider() { return meshColl; }
 
 	XMFLOAT3 GetPosition();
+
+	bool GetUsedFlag() { return used; }
+	void SetUsedFlag(bool flag) { if(!isDrag) used = flag; }
 
 	void SetPosition(const XMFLOAT3& pos);
 
@@ -70,17 +78,25 @@ public:
 	/// <param name="info">衝突情報</param>
 	void OnCollision(const CollisionInfo& info) override;
 
+	/// <summary>
+	/// 他のGameObjectと重なるのを防ぐ
+	/// </summary>
+	void Rejection(const CollisionInfo& info);
+
 private:
 	// 座標
 	XMFLOAT3 pos{};
 	// 半径
 	float radius = 5.0f;
 	// 掴まれているか否か
-	bool isDrag0 = false;
-	static bool isDrag1;
-	// 位置固定
-	bool fix = false;
+	bool isDrag = false;
+	static bool isDragStatic;
+	// 使用されているか否か
+	bool used = false;
+	// ゲーム本編か否か
+	bool isInGame = false;
 	// コライダー
 	Sphere sphere{};
 	MeshCollider* meshColl = nullptr;
+	SphereCollider* sphereColl = nullptr;
 };

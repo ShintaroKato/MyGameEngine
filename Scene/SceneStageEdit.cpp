@@ -13,6 +13,18 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 {
 	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
 
+	buttonRed->SetPosition({ 20,20 });
+	buttonRed->SetSize({ 64,64 });
+	buttonRed->Update();
+
+	buttonGreen->SetPosition({ 20,20 + 64});
+	buttonGreen->SetSize({ 64,64});
+	buttonGreen->Update();
+
+	buttonBlue->SetPosition({ 20,20 + 64 * 2 });
+	buttonBlue->SetSize({ 64,64 });
+	buttonBlue->Update();
+
 	for (int i = 0; i < CUBE_RED_MAX; i++)
 	{
 		objCubeRed[i]->ObjectOBJ::SetPosition(tmp[i]);
@@ -26,6 +38,7 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 
 	player->SetAllive(false);
 	player->SetCameraDistance(80);
+	player->SetInGameFlag(false);
 
 	camera->SetTarget(player->GetPosition());
 	camera->SetEye({ 0,50,-100 });
@@ -48,18 +61,31 @@ void SceneStageEdit::Update()
 
 	camera->SetTarget(player->GetPosition());
 
-	if (input->TriggerKey(DIK_R))
+	for (int i = 0; i < 10; i++)
 	{
-		objCubeRed[0]->SetPosition({ 25,0,50 });
-		objCubeGreen[0]->SetPosition({ -25,0,50 });
-		objCubeBlue[0]->SetPosition({ 25,0,-25 });
-
-		objCubeRed[1]->SetPosition({ 50,0,25 });
-		objCubeGreen[1]->SetPosition({ -50,0,25 });
-		objCubeBlue[1]->SetPosition({ -25,0,-25 });
-
-		objCastle->SetPosition({ 0,0,0 });
+		if (buttonRed->Click(MOUSE_LEFT) && !objCubeRed[i]->GetUsedFlag())
+		{
+			objCubeRed[i]->SetUsedFlag(true);
+			buttonRed->SetClickFlag(false);
+			break;
+		}
+		if (buttonGreen->Click(MOUSE_LEFT) && !objCubeGreen[i]->GetUsedFlag())
+		{
+			objCubeGreen[i]->SetUsedFlag(true);
+			buttonGreen->SetClickFlag(false);
+			break;
+		}
+		if (buttonBlue->Click(MOUSE_LEFT) && !objCubeBlue[i]->GetUsedFlag())
+		{
+			objCubeBlue[i]->SetUsedFlag(true);
+			buttonBlue->SetClickFlag(false);
+			break;
+		}
 	}
+
+	buttonRed->Update();
+	buttonGreen->Update();
+	buttonBlue->Update();
 
 	SceneBase::Update();
 }
@@ -88,13 +114,12 @@ void SceneStageEdit::Draw()
 	objSkydome->Draw();
 	objGround->ObjectOBJ::Draw();
 
-	objCubeRed[0]->ObjectOBJ::Draw();
-	objCubeGreen[0]->ObjectOBJ::Draw();
-	objCubeBlue[0]->ObjectOBJ::Draw();
-
-	objCubeRed[1]->ObjectOBJ::Draw();
-	objCubeGreen[1]->ObjectOBJ::Draw();
-	objCubeBlue[1]->ObjectOBJ::Draw();
+	for (int i = 0; i < 10; i++)
+	{
+		if (objCubeRed[i]->GetUsedFlag()) objCubeRed[i]->ObjectOBJ::Draw();
+		if (objCubeGreen[i]->GetUsedFlag()) objCubeGreen[i]->ObjectOBJ::Draw();
+		if (objCubeBlue[i]->GetUsedFlag()) objCubeBlue[i]->ObjectOBJ::Draw();
+	}
 
 	objCastle->ObjectOBJ::Draw();
 
@@ -112,6 +137,9 @@ void SceneStageEdit::Draw()
 	// スプライト描画前処理
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
+	buttonRed->Draw();
+	buttonGreen->Draw();
+	buttonBlue->Draw();
 	// スプライト描画
 	//spriteBG->Draw();
 	// テキスト描画
