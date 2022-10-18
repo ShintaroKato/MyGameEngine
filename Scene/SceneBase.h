@@ -22,6 +22,9 @@ enum SpriteNo
 	button_r,
 	button_g,
 	button_b,
+	button_title,
+	button_start,
+	button_edit,
 };
 
 class SceneBase
@@ -47,6 +50,7 @@ protected: // íËêî
 
 public:
 	static XMFLOAT3 tmp[OBJECT_MAX];
+	static bool tmpFlag[OBJECT_MAX];
 
 public:
 	/// <summary>
@@ -94,9 +98,13 @@ protected:
 	Button* buttonRed = nullptr;
 	Button* buttonGreen = nullptr;
 	Button* buttonBlue = nullptr;
+	Button* buttonTitle = nullptr;
+	Button* buttonStart = nullptr;
+	Button* buttonEdit = nullptr;
 
 	ModelOBJ* modelSkydome = nullptr;
 	ModelOBJ* modelGround = nullptr;
+	ModelOBJ* modelGroundGrid = nullptr;
 	ModelOBJ* modelPlayer = nullptr;
 	ModelOBJ* modelEnemy = nullptr;
 	ModelOBJ* modelCubeRed = nullptr;
@@ -108,7 +116,7 @@ protected:
 
 	ObjectOBJ* objWall = nullptr;
 	ObjectOBJ* objSkydome = nullptr;
-	TouchableObject* objGround = nullptr;
+	TouchableObject* objGroundGrid = nullptr;
 
 	GameObject* objCubeRed[CUBE_RED_MAX]{};
 	GameObject* objCubeGreen[CUBE_GREEN_MAX]{};

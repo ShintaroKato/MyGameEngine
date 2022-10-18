@@ -13,15 +13,18 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 {
 	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
 
-	buttonRed->SetPosition({ 20,20 });
+	buttonTitle->SetPosition({ 0,0 });
+	buttonTitle->SetSize({ 128,64 });
+
+	buttonRed->SetPosition({ 20,20 + 64 });
 	buttonRed->SetSize({ 64,64 });
 	buttonRed->Update();
 
-	buttonGreen->SetPosition({ 20,20 + 64});
-	buttonGreen->SetSize({ 64,64});
+	buttonGreen->SetPosition({ 20,20 + 64 * 2});
+	buttonGreen->SetSize({ 64,64 });
 	buttonGreen->Update();
 
-	buttonBlue->SetPosition({ 20,20 + 64 * 2 });
+	buttonBlue->SetPosition({ 20,20 + 64 * 3 });
 	buttonBlue->SetSize({ 64,64 });
 	buttonBlue->Update();
 
@@ -34,7 +37,7 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 	objCastle->ObjectOBJ::SetPosition(tmp[99]);
 
 	objSkydome->SetScale({ 5,5,5 });
-	objGround->ObjectOBJ::SetScale({ 5,5,5 });
+	objGroundGrid->ObjectOBJ::SetScale({ 5,5,5 });
 
 	player->SetAllive(false);
 	player->SetCameraDistance(80);
@@ -46,7 +49,7 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 
 void SceneStageEdit::Update()
 {
-	if (input->TriggerKey(DIK_ESCAPE))
+	if (input->TriggerKey(DIK_ESCAPE) || buttonTitle->Click(MOUSE_LEFT))
 	{
 		SceneManager::SetScene(TITLE);
 
@@ -55,8 +58,13 @@ void SceneStageEdit::Update()
 			tmp[i] = objCubeRed[i]->ObjectOBJ::GetPosition();
 			tmp[i + 10] = objCubeGreen[i]->ObjectOBJ::GetPosition();
 			tmp[i + 20] = objCubeBlue[i]->ObjectOBJ::GetPosition();
+
+			tmpFlag[i] = objCubeRed[i]->GetUsedFlag();
+			tmpFlag[i + 10] = objCubeGreen[i]->GetUsedFlag();
+			tmpFlag[i + 20] = objCubeBlue[i]->GetUsedFlag();
 		}
 		tmp[99] = objCastle->ObjectOBJ::GetPosition();
+		tmpFlag[99] = objCastle->GetUsedFlag();
 	}
 
 	camera->SetTarget(player->GetPosition());
@@ -83,6 +91,7 @@ void SceneStageEdit::Update()
 		}
 	}
 
+	buttonTitle->Update();
 	buttonRed->Update();
 	buttonGreen->Update();
 	buttonBlue->Update();
@@ -112,7 +121,7 @@ void SceneStageEdit::Draw()
 	ObjectOBJ::PreDraw(dxCommon->GetCmdList());
 
 	objSkydome->Draw();
-	objGround->ObjectOBJ::Draw();
+	objGroundGrid->ObjectOBJ::Draw();
 
 	for (int i = 0; i < 10; i++)
 	{
@@ -137,6 +146,7 @@ void SceneStageEdit::Draw()
 	// スプライト描画前処理
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
+	buttonTitle->Draw();
 	buttonRed->Draw();
 	buttonGreen->Draw();
 	buttonBlue->Draw();

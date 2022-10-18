@@ -15,19 +15,29 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 
 	for (int i = 0; i < CUBE_RED_MAX; i++)
 	{
-		objCubeRed[i]->ObjectOBJ::SetPosition(tmp[i]);
-		objCubeGreen[i]->ObjectOBJ::SetPosition(tmp[i + 10]);
-		objCubeBlue[i]->ObjectOBJ::SetPosition(tmp[i + 20]);
+		objCubeRed[i]->SetUsedFlag(tmpFlag[i]);
+		objCubeGreen[i]->SetUsedFlag(tmpFlag[i + 10]);
+		objCubeBlue[i]->SetUsedFlag(tmpFlag[i + 20]);
 
+		objCubeRed[i]->SetInGameFlag(tmpFlag[i]);
+		objCubeGreen[i]->SetInGameFlag(tmpFlag[i + 10]);
+		objCubeBlue[i]->SetInGameFlag(tmpFlag[i + 20]);
+
+		objCubeRed[i]->SetPosition(tmp[i]);
+		objCubeGreen[i]->SetPosition(tmp[i + 10]);
+		objCubeBlue[i]->SetPosition(tmp[i + 20]);
+		
 		objCubeRed[i]->PositionFix();
 		objCubeGreen[i]->PositionFix();
 		objCubeBlue[i]->PositionFix();
 	}
-	objCastle->ObjectOBJ::SetPosition(tmp[99]);
+	objCastle->SetUsedFlag(tmpFlag[99]);
+	objCastle->SetInGameFlag(tmpFlag[99]);
+	objCastle->SetPosition(tmp[99]);
 	objCastle->PositionFix();
 
 	objSkydome->SetScale({ 5,5,5 });
-	objGround->ObjectOBJ::SetScale({ 5,5,5 });
+	objGroundGrid->ObjectOBJ::SetScale({ 5,5,5 });
 
 	player->SetPosition({ 0, 0, 0 });
 	player->Update();
@@ -87,7 +97,7 @@ void SceneInGame::Draw()
 
 	//objSphere->Draw();
 	objSkydome->Draw();
-	objGround->ObjectOBJ::Draw();
+	objGroundGrid->ObjectOBJ::Draw();
 
 	for (int i = 0; i < 10; i++)
 	{
