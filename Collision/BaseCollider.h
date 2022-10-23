@@ -75,4 +75,3 @@ protected:
 	// “–‚½‚è”»’è‘®«
 	unsigned short attribute = 0b1111'1111'1111'1111;
 };
-

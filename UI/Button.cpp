@@ -21,10 +21,14 @@ bool Button::Click(MouseButton mouseButton)
 	XMFLOAT2 mouse = input->GetMousePos2();
 
 	if (input->TriggerMouse(mouseButton) &&
-		mouse.x <= position.x + size.x && mouse.x >= position.x &&
-		mouse.y <= position.y + size.y && mouse.y >= position.y)
+		mouse.x <= position.x + size.x * (1 - anchorpoint.x) && mouse.x >= position.x - size.x * anchorpoint.x &&
+		mouse.y <= position.y + size.y * (1 - anchorpoint.y) && mouse.y >= position.y - size.y * anchorpoint.y)
 	{
 		click = true;
+	}
+	else
+	{
+		click = false;
 	}
 
 	return click;

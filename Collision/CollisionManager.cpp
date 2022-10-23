@@ -57,6 +57,7 @@ void CollisionManager::CheckAllCollision(BaseCollider* col, unsigned short attr)
 	{
 		BaseCollider* colB = *it;
 
+		if (col == colB) continue;
 		if (colB->GetAttribute() != attr) continue;
 
 		CheckCollision(col, colB);
@@ -71,11 +72,12 @@ bool CollisionManager::CheckCollision(BaseCollider* colA, BaseCollider* colB)
 	{
 		Sphere* sphereA = dynamic_cast<Sphere*>(colA);
 		Sphere* sphereB = dynamic_cast<Sphere*>(colB);
-		DirectX::XMVECTOR inter;
+		XMVECTOR inter;
+		XMVECTOR reject;
 
-		if (Collision::CheckShpere2Sphere(*sphereA, *sphereB, &inter))
+		if (Collision::CheckShpere2Sphere(*sphereA, *sphereB, &inter, &reject))
 		{
-			CheckSetObject(colA, colB, inter);
+			CheckSetObject(colA, colB, inter, reject);
 
 			return true;
 		}
@@ -86,7 +88,7 @@ bool CollisionManager::CheckCollision(BaseCollider* colA, BaseCollider* colB)
 	{
 		MeshCollider* meshCollider = dynamic_cast<MeshCollider*>(colA);
 		Sphere* sphere = dynamic_cast<Sphere*>(colB);
-		DirectX::XMVECTOR inter;
+		XMVECTOR inter;
 
 		if (meshCollider->CheckCollisionSphere(*sphere, &inter))
 		{
@@ -101,7 +103,7 @@ bool CollisionManager::CheckCollision(BaseCollider* colA, BaseCollider* colB)
 	{
 		Sphere* sphere = dynamic_cast<Sphere*>(colA);
 		MeshCollider* meshCollider = dynamic_cast<MeshCollider*>(colB);
-		DirectX::XMVECTOR inter;
+		XMVECTOR inter;
 
 		if (meshCollider->CheckCollisionSphere(*sphere, &inter))
 		{
@@ -114,49 +116,49 @@ bool CollisionManager::CheckCollision(BaseCollider* colA, BaseCollider* colB)
 	return false;
 }
 
-void CollisionManager::CheckSetObject(BaseCollider* colA, BaseCollider* colB, XMVECTOR inter)
+void CollisionManager::CheckSetObject(BaseCollider* colA, BaseCollider* colB, XMVECTOR inter, XMVECTOR reject)
 {
 	// AとBともにOBJ
 	if (colA->obj && colB->obj)
 	{
-		colA->OnCollision(CollisionInfo(colB->GetObjectOBJ(), colB, inter));
-		colB->OnCollision(CollisionInfo(colA->GetObjectOBJ(), colA, inter));
+		colA->OnCollision(CollisionInfo(colB->GetObjectOBJ(), colB, inter, reject));
+		colB->OnCollision(CollisionInfo(colA->GetObjectOBJ(), colA, inter, reject));
 
 		return;
 	}
 	// AがOBJ、BがFBX
 	if (colA->obj && colB->fbx)
 	{
-		colA->OnCollision(CollisionInfo(colB->GetObjectFBX(), colB, inter));
-		colB->OnCollision(CollisionInfo(colA->GetObjectOBJ(), colA, inter));
+		colA->OnCollision(CollisionInfo(colB->GetObjectFBX(), colB, inter, reject));
+		colB->OnCollision(CollisionInfo(colA->GetObjectOBJ(), colA, inter, reject));
 
 		return;
 	}
 	// AがFBX、BがOBJ
 	if (colA->fbx && colB->obj)
 	{
-		colA->OnCollision(CollisionInfo(colB->GetObjectOBJ(), colB, inter));
-		colB->OnCollision(CollisionInfo(colA->GetObjectFBX(), colA, inter));
+		colA->OnCollision(CollisionInfo(colB->GetObjectOBJ(), colB, inter, reject));
+		colB->OnCollision(CollisionInfo(colA->GetObjectFBX(), colA, inter, reject));
 
 		return;
 	}
 	// AとBともにFBX
 	if (colA->fbx && colB->fbx)
 	{
-		colA->OnCollision(CollisionInfo(colB->GetObjectFBX(), colB, inter));
-		colB->OnCollision(CollisionInfo(colA->GetObjectFBX(), colA, inter));
+		colA->OnCollision(CollisionInfo(colB->GetObjectFBX(), colB, inter, reject));
+		colB->OnCollision(CollisionInfo(colA->GetObjectFBX(), colA, inter, reject));
 
 		return;
 	}
 	if (!colA->fbx && !colA->obj && colB->obj)
 	{
-		colA->OnCollision(CollisionInfo(colB->GetObjectOBJ(), colB, inter));
+		colA->OnCollision(CollisionInfo(colB->GetObjectOBJ(), colB, inter, reject));
 
 		return;
 	}
 	if (!colA->fbx && !colA->obj && colB->fbx)
 	{
-		colA->OnCollision(CollisionInfo(colB->GetObjectFBX(), colB, inter));
+		colA->OnCollision(CollisionInfo(colB->GetObjectFBX(), colB, inter, reject));
 
 		return;
 	}
@@ -186,7 +188,7 @@ bool CollisionManager::Raycast(const Ray& ray, unsigned short attribute, Raycast
 		BaseCollider* colA = *it;
 
 		//属性が合わなければスキップ
-		if (!(colA->attribute & attribute))
+		if (colA->attribute != attribute)
 		{
 			continue;
 		}

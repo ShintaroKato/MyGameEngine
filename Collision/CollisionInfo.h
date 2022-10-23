@@ -2,6 +2,8 @@
 
 #include <DirectXMath.h>
 
+using namespace DirectX;
+
 class ObjectOBJ;
 class ObjectFBX;
 class BaseCollider;
@@ -12,16 +14,18 @@ class BaseCollider;
 struct CollisionInfo
 {
 public:
-	CollisionInfo(ObjectOBJ* obj, BaseCollider* collider, const DirectX::XMVECTOR& inter) {
+	CollisionInfo(ObjectOBJ* obj, BaseCollider* collider, const XMVECTOR& inter, const XMVECTOR& reject) {
 		this->obj = obj;
 		this->collider = collider;
 		this->inter = inter;
+		this->reject = reject;
 	}
 
-	CollisionInfo(ObjectFBX* fbx, BaseCollider* collider, const DirectX::XMVECTOR& inter) {
+	CollisionInfo(ObjectFBX* fbx, BaseCollider* collider, const XMVECTOR& inter, const XMVECTOR& reject) {
 		this->fbx = fbx;
 		this->collider = collider;
 		this->inter = inter;
+		this->reject = reject;
 	}
 
 	// 衝突相手のオブジェクト
@@ -30,6 +34,8 @@ public:
 	// 衝突相手のコライダー
 	BaseCollider* collider = nullptr;
 	// 衝突点
-	DirectX::XMVECTOR inter;
+	XMVECTOR inter;
+	// 押し出し用
+	XMVECTOR reject;
 };
 

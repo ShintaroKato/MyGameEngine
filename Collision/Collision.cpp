@@ -1,19 +1,29 @@
 #include "Collision.h"
 
-bool Collision::CheckShpere2Sphere(const Sphere& sphere1, const Sphere& sphere2, XMVECTOR* inter)
+bool Collision::CheckShpere2Sphere(const Sphere& sphere1, const Sphere& sphere2, XMVECTOR* inter, XMVECTOR* reject)
 {
 	float x = sphere2.center.m128_f32[0] - sphere1.center.m128_f32[0];
 	float y = sphere2.center.m128_f32[1] - sphere1.center.m128_f32[1];
 	float z = sphere2.center.m128_f32[2] - sphere1.center.m128_f32[2];
 	float r = sphere1.radius + sphere2.radius;
 
-	if (inter)
-	{
-		*inter = (sphere2.center + sphere1.center) / 2;
-	}
+	float dist = sqrtf(x * x + y * y + z * z);
 
-	if (sqrtf(x * x + y * y + z * z) <= r)
+	if (dist <= r)
 	{
+		if (inter)
+		{
+			*inter = (sphere2.center + sphere1.center) / 2;
+		}
+
+		// 押し出すベクトルを計算
+		if (reject)
+		{
+			float rejectLen = r - sqrtf(dist);
+			*reject = XMVector3Normalize(sphere1.center - sphere2.center);
+			*reject *= rejectLen;
+		}
+
 		return true;
 	}
 	return false;
@@ -108,7 +118,7 @@ void Collision::ClosestPtPoint2Triangle(const XMVECTOR& point, const Triangle& t
 	*closest = triangle.p0 + p0_p1 * v + p0_p2 * w;
 }
 
-bool Collision::CheckSphere2Triangle(const Sphere& sphere, const Triangle& triangle, XMVECTOR* inter)
+bool Collision::CheckSphere2Triangle(const Sphere& sphere, const Triangle& triangle, XMVECTOR* inter, XMVECTOR* reject)
 {
 	XMVECTOR p;
 	// 球の中心に対する最近接点である三角形上にある点ｐを見つける
@@ -120,11 +130,20 @@ bool Collision::CheckSphere2Triangle(const Sphere& sphere, const Triangle& trian
 	v = XMVector3Dot(v, v);
 	// 球と三角形の距離が半径以下なら当っていない
 	if (v.m128_f32[0] > sphere.radius * sphere.radius) 	return false;
-	//擬似交点を計算
+	// 擬似交点を計算
 	if (inter)
 	{
 		// 三角形上の最近接点ｐを擬似交点とする
 		*inter = p;
+	}
+
+	// 押し出すベクトルを計算
+	if (reject)
+	{
+		float ds = XMVector3Dot(sphere.center, triangle.normal).m128_f32[0];
+		float dt = XMVector3Dot(triangle.p0, triangle.normal).m128_f32[0];
+		float rejectLen = dt - ds + sphere.radius;
+		*reject = triangle.normal * rejectLen;
 	}
 
 	return true;

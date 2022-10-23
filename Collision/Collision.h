@@ -10,7 +10,7 @@ public:
 /// <param name="sphere1">‹…‚P</param>
 /// <param name="sphere2">‹…‚Q</param>
 /// <returns>Œğ·‚µ‚Ä‚¢‚é‚©”Û‚©</returns>
-	static bool CheckShpere2Sphere(const Sphere& sphere1, const Sphere& sphere2, XMVECTOR* inter);
+	static bool CheckShpere2Sphere(const Sphere& sphere1, const Sphere& sphere2, XMVECTOR* inter = nullptr, XMVECTOR* reject = nullptr);
 	/// <summary>
 	/// “–‚½‚è”»’èi‹…‚Æ•½–Êj
 	/// </summary>
@@ -30,7 +30,7 @@ public:
 		const Triangle& triangle, XMVECTOR* closest);
 
 	static bool CheckSphere2Triangle(const Sphere& sphere, const Triangle& triangle,
-		XMVECTOR* inter = nullptr);
+		XMVECTOR* inter = nullptr, XMVECTOR* reject = nullptr);
 
 	/// <summary>
 	/// ƒŒƒC‚Æ•½–Ê‚Ì“–‚½‚è”»’è

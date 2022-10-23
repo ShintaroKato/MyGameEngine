@@ -48,7 +48,7 @@ public: //メンバ関数
 	/// <summary>
 	/// セットされているオブジェクトを判別
 	/// </summary>
-	void CheckSetObject(BaseCollider* colA, BaseCollider* colB, XMVECTOR inter);
+	void CheckSetObject(BaseCollider* colA, BaseCollider* colB, XMVECTOR inter, XMVECTOR reject = {});
 
 	/// <summary>
 	/// レイキャスト
