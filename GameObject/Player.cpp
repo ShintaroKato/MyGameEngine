@@ -153,6 +153,8 @@ void Player::Move()
 		pos.y += move.m128_f32[1];
 		pos.z += move.m128_f32[2];
 	}
+
+	CollisionManager::GetInstance()->CheckAllCollision(sphereColl, COLLISION_ATTR_OBJECT_MESH);
 }
 
 void Player::Jump()
@@ -192,7 +194,7 @@ void Player::Jump()
 		const float adsDistance = 0.2f;
 		// Ú’n‚ðˆÛŽ
 		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, sphereColl->GetRadius() * 2.0f + adsDistance) ||
-			CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJECT, &raycastHit, sphereColl->GetRadius() * 2.0f + adsDistance))
+			CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJECT_MESH, &raycastHit, sphereColl->GetRadius() * 2.0f + adsDistance))
 		{
 			onGround = true;
 			sphereColl->center.m128_f32[1] = raycastHit.distance - sphereColl->GetRadius();
@@ -209,7 +211,7 @@ void Player::Jump()
 	else if (fallVel.m128_f32[1] <= 0.0f)
 	{
 		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, sphereColl->GetRadius() * 2.0f) ||
-			CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJECT, &raycastHit, sphereColl->GetRadius() * 2.0f))
+			CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJECT_MESH, &raycastHit, sphereColl->GetRadius() * 2.0f))
 		{
 			// ’…’n
 			onGround = true;
@@ -283,7 +285,7 @@ void Player::Attack()
 	cameraPos = ObjectOBJ::GetCamera()->GetEye();
 
 	// UŒ‚
-	if (input->PushButton(Button_A_Cross) || input->PushMouse(MOUSE_LEFT))
+	if (input->TriggerButton(Button_A_Cross) || input->TriggerMouse(MOUSE_LEFT))
 	{
 		if (attackLevel < 3 && attackCount < 8.0f && weapon)
 		{
@@ -371,7 +373,18 @@ XMFLOAT3 Player::GetPosition()
 
 void Player::OnCollision(const CollisionInfo& info)
 {
+	if (info.collider->GetAttribute() == COLLISION_ATTR_OBJECT_MESH)
+	{
+		Rejection(info);
+	}
+}
 
+void Player::Rejection(const CollisionInfo& info)
+{
+	pos.x += info.reject.m128_f32[0] / 2;
+	pos.z += info.reject.m128_f32[2] / 2;
+
+	SetPosition(pos);
 }
 
 void Player::SetPosition(XMFLOAT3 pos)
@@ -385,12 +398,12 @@ void Player::SetPosition(XMFLOAT3 pos)
 	if (ObjectOBJ::model)
 	{
 		ObjectOBJ::SetPosition(pos);
-		ObjectOBJ::SetCollider(sphereColl);
+		ObjectOBJ::collider = sphereColl;
 	}
 	if (ObjectFBX::model)
 	{
 		ObjectFBX::SetPosition(pos);
-		ObjectFBX::SetCollider(sphereColl);
+		ObjectFBX::collider = sphereColl;
 	}
 }
 

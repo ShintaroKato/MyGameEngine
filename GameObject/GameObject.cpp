@@ -67,24 +67,27 @@ bool GameObject::Initialize()
 	meshColl = new MeshCollider();
 	sphereColl = new SphereCollider();
 
+	//meshColl->SetAttribute(COLLISION_ATTR_OBJECT_SPHERE);
+	//sphereColl->SetAttribute(COLLISION_ATTR_OBJECT_MESH);
+	//sphereColl->SetSphere(sphere);
+	//sphereColl->SetRadius(sphere.radius);
+
 	SetPosition(pos);
-	meshColl->SetAttribute(COLLISION_ATTR_OBJECT);
-	sphereColl->SetAttribute(COLLISION_ATTR_OBJECT);
-	sphereColl->SetSphere(sphere);
 
 	return true;
 }
 
 void GameObject::Update()
 {
+	if (!used) pos.y = 10000;
+
 	Drag();
 	Move();
 
+	SetPosition(pos);
+
 	ObjectOBJ::Update();
 	ObjectFBX::Update();
-
-	 if(ObjectOBJ::model) ObjectOBJ::collider->Update();
-	 if(ObjectFBX::model) ObjectFBX::collider->Update();
 }
 
 bool GameObject::Hit()
@@ -95,23 +98,17 @@ bool GameObject::Hit()
 void GameObject::Drag()
 {
 	if(isInGame) return;
+	if (!used) return;
 
 	Input* input = Input::GetInstance();
 
+	if (input->PushMouse(MOUSE_LEFT) && isDrag)
+	{
+
+	}
+
 	if (input->ReleaseMouse(MOUSE_LEFT) && isDrag)
 	{
-		CollisionManager::GetInstance()->CheckAllCollision(sphereColl, COLLISION_ATTR_OBJECT);
-
-		if (pos.x < -60) pos.x = -60;
-		if (pos.x > 60) pos.x = 60;
-
-		if (pos.z < -60) pos.z = -60;
-		if (pos.z > 60) pos.z = 60;
-
-		if (pos.y > 0) pos.y = 0;
-
-		SetPosition(pos);
-
 		isDrag = false;
 		isDragStatic = false;
 
@@ -139,37 +136,81 @@ void GameObject::Drag()
 	if (isDrag)
 	{
 		pos = { vec.m128_f32[0], vec.m128_f32[1], vec.m128_f32[2] };
-		SetPosition(pos);
+
 	}
 }
 
 void GameObject::Move()
 {
-	if(!isDrag) return;
+	if (pos.x < -60) pos.x = -60;
+	if (pos.x > 60) pos.x = 60;
 
-	SetPosition(pos);
+	if (pos.z < -60) pos.z = -60;
+	if (pos.z > 60) pos.z = 60;
+
+	if (pos.y > 0) pos.y = 0;
+
+	CollisionManager::GetInstance()->CheckAllCollision(sphereColl, COLLISION_ATTR_OBJECT_SPHERE);
 }
 
-void GameObject::SetPosition(const XMFLOAT3& pos)
+void GameObject::SetPosition(const XMFLOAT3& position)
 {
-	// コライダーの追加
-	sphere.center = { pos.x, pos.y + radius, pos.z,0 };
-	sphere.radius = radius;
+	this->pos = position;
 
-	sphereColl->SetSphere(sphere);
+	// コライダーの追加
+	sphere.center = { pos.x, pos.y + 5.0f, pos.z,0 };
+	sphere.radius = radius;
 
 	if (ObjectOBJ::model)
 	{
-		meshColl->ConstructTriangle(ObjectOBJ::model);
 		ObjectOBJ::SetPosition(pos);
-		ObjectOBJ::SetCollider(sphereColl);
+
+		if (isInGame)
+		{
+			meshColl->ConstructTriangle(ObjectOBJ::model);
+			meshColl->SetAttribute(COLLISION_ATTR_OBJECT_MESH);
+
+			if (!used) meshColl->SetAttribute(COLLISION_ATTR_OBJECT_NONE);
+
+			ObjectOBJ::SetCollider(meshColl);
+		}
+		else
+		{
+			sphereColl->SetSphere(sphere);
+			sphereColl->SetAttribute(COLLISION_ATTR_OBJECT_SPHERE);
+
+			if (!used)
+			{
+				sphereColl->SetAttribute(COLLISION_ATTR_OBJECT_NONE);
+			}
+
+			ObjectOBJ::SetCollider(sphereColl);
+		}
 	}
 	if (ObjectFBX::model)
 	{
-		meshColl->ConstructTriangle(ObjectFBX::model);
 		ObjectFBX::SetPosition(pos);
-		if (!isInGame) ObjectFBX::SetCollider(sphereColl);
+
+		if (isInGame)
+		{
+			meshColl->ConstructTriangle(ObjectFBX::model);
+			meshColl->SetAttribute(COLLISION_ATTR_OBJECT_MESH);
+
+			if (!used) meshColl->SetAttribute(COLLISION_ATTR_OBJECT_NONE);
+
+			ObjectFBX::SetCollider(meshColl);
+		}
+		else
+		{
+			sphereColl->SetSphere(sphere);
+			sphereColl->SetAttribute(COLLISION_ATTR_OBJECT_SPHERE);
+
+			if (!used) sphereColl->SetAttribute(COLLISION_ATTR_OBJECT_NONE);
+
+			ObjectOBJ::SetCollider(sphereColl);
+		}
 	}
+
 }
 
 XMFLOAT3 GameObject::GetPosition()
@@ -186,7 +227,7 @@ XMFLOAT3 GameObject::GetPosition()
 
 void GameObject::OnCollision(const CollisionInfo& info)
 {
-	if (info.collider->GetAttribute() == COLLISION_ATTR_OBJECT)
+	if (info.collider->GetAttribute() == COLLISION_ATTR_OBJECT_SPHERE && isDrag)
 	{
 		Rejection(info);
 	}
@@ -194,14 +235,6 @@ void GameObject::OnCollision(const CollisionInfo& info)
 
 void GameObject::Rejection(const CollisionInfo& info)
 {
-	XMVECTOR vec = {
-		info.inter.m128_f32[0] / 2,
-		info.inter.m128_f32[1] / 2,
-		info.inter.m128_f32[2] / 2
-	};
-
-	pos.x -= vec.m128_f32[0];
-	pos.z -= vec.m128_f32[2];
-
-	SetPosition(pos);
+	pos.x += info.reject.m128_f32[0] / 2;
+	pos.z += info.reject.m128_f32[2] / 2;
 }

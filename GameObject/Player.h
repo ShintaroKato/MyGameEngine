@@ -86,6 +86,8 @@ public:
 	/// <param name="info">Õ“Ëî•ñ</param>
 	void OnCollision(const CollisionInfo& info) override;
 
+	void Rejection(const CollisionInfo& info);
+
 	/// <summary>
 	/// À•W‚ğİ’è
 	/// </summary>
@@ -119,7 +121,12 @@ public:
 	/// <summary>
 	/// ƒQ[ƒ€–{•Ò‚©”Û‚©‚ğİ’è
 	/// </summary>
-	void SetInGameFlag(bool flag) { isInGame = flag; };
+	void SetInGameFlag(bool flag)
+	{
+		isInGame = flag;
+		cameraRotY = 0;
+		cameraRotX = 30;
+	};
 
 	Weapon* GetWeapon() { return weapon; }
 

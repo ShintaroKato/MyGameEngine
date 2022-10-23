@@ -71,6 +71,9 @@ public:
 
 	SphereCollider* GetSphereCollider() { return this->sphereColl; };
 
+	// 攻撃力を取得
+	float GetPower() { return power; }
+
 private:
 	// 座標
 	XMFLOAT3 pos{};
@@ -86,4 +89,7 @@ private:
 	// コライダー
 	Sphere sphere{};
 	SphereCollider* sphereColl = nullptr;
+
+	// 攻撃力
+	float power = 10.0f;
 };

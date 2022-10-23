@@ -128,12 +128,12 @@ void Weapon::SetPosition(XMFLOAT3 pos)
 	if (ObjectOBJ::model)
 	{
 		ObjectOBJ::SetPosition(pos);
-		ObjectOBJ::SetCollider(sphereColl);
+		ObjectOBJ::collider = sphereColl;
 	}
 	if (ObjectFBX::model)
 	{
 		ObjectFBX::SetPosition(pos);
-		ObjectFBX::SetCollider(sphereColl);
+		ObjectFBX::collider = sphereColl;
 	}
 }
 

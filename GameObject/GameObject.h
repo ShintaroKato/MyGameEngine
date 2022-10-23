@@ -59,8 +59,6 @@ public:
 	void PositionFix()
 	{
 		isInGame = true;
-		ObjectOBJ::SetCollider(meshColl);
-		ObjectFBX::SetCollider(meshColl);
 	}
 
 	BaseCollider* GetCollider() { return meshColl; }
@@ -68,9 +66,15 @@ public:
 	XMFLOAT3 GetPosition();
 
 	bool GetUsedFlag() { return used; }
-	void SetUsedFlag(bool flag) { if(!isDrag) used = flag; }
+	void SetUsedFlag(bool flag)
+	{
+		if(!isDrag) used = flag;
+		SetPosition(pos);
+	}
 
-	void SetPosition(const XMFLOAT3& pos);
+	void SetPosition(const XMFLOAT3& position);
+
+	void SetRadius(float radius) { this->radius = radius; }
 
 	/// <summary>
 	/// 衝突時コールバック関数
