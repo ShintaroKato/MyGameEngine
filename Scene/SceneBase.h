@@ -91,7 +91,7 @@ protected:
 	/// ゲームシーン用
 	/// </summary>
 
-	Text* text;
+	Text* text = nullptr;
 
 	Sprite* spriteTitle = nullptr;
 
@@ -127,4 +127,6 @@ protected:
 	Player* player = nullptr;
 	Enemy* enemy[ENEMY_MAX]{};
 	Weapon* weapon[WEAPON_MAX]{};
+
+	bool initialized = false;
 };

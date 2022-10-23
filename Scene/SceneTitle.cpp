@@ -6,30 +6,35 @@ SceneTitle::SceneTitle()
 
 void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
 {
-	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
+	if (!initialized)
+	{
+		SceneBase::Initialize(dxCommon, sprCommon, input, audio);
+		initialized = true;
+	}
 
 	for (int i = 0; i < CUBE_RED_MAX; i++)
 	{
-		objCubeRed[i]->ObjectOBJ::SetPosition(tmp[i]);
-		objCubeGreen[i]->ObjectOBJ::SetPosition(tmp[i + 10]);
-		objCubeBlue[i]->ObjectOBJ::SetPosition(tmp[i + 20]);
+		objCubeRed[i]->PositionFix();
+		objCubeGreen[i]->PositionFix();
+		objCubeBlue[i]->PositionFix();
+
+		objCubeRed[i]->SetPosition(tmp[i]);
+		objCubeGreen[i]->SetPosition(tmp[i + 10]);
+		objCubeBlue[i]->SetPosition(tmp[i + 20]);
 
 		objCubeRed[i]->SetUsedFlag(tmpFlag[i]);
 		objCubeGreen[i]->SetUsedFlag(tmpFlag[i + 10]);
 		objCubeBlue[i]->SetUsedFlag(tmpFlag[i + 20]);
-
-		objCubeRed[i]->PositionFix();
-		objCubeGreen[i]->PositionFix();
-		objCubeBlue[i]->PositionFix();
 	}
-	objCastle->ObjectOBJ::SetPosition(tmp[99]);
-	objCastle->SetUsedFlag(tmpFlag[99]);
 	objCastle->PositionFix();
+	objCastle->SetPosition(tmp[99]);
+	objCastle->SetUsedFlag(tmpFlag[99]);
 
 	objSkydome->SetScale({ 5,5,5 });
 	objGroundGrid->ObjectOBJ::SetScale({ 5,5,5 });
 
 	player->SetAllive(false);
+	player->SetInGameFlag(false);
 	player->SetCameraDistance(80);
 
 	camera->SetTarget(player->GetPosition());
@@ -42,6 +47,8 @@ void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 	buttonEdit->SetPosition({ WinApp::window_width / 2,WinApp::window_height - 256 + 64 + 20 });
 	buttonEdit->SetSize({ 128,64 });
 	buttonEdit->SetAnchorPoint({ 0.5f,0.5f });
+
+	ShowCursor(true);
 
 	SceneBase::Update();
 }

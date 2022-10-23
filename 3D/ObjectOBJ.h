@@ -140,19 +140,19 @@ public: // メンバ関数
 	/// 座標の設定
 	/// </summary>
 	/// <param name="position">座標</param>
-	void SetPosition(XMFLOAT3 position) { this->position = position; }
+	void SetPosition(const XMFLOAT3& position) { this->position = position; }
 
 	/// <summary>
 	/// 回転の設定
 	/// </summary>
 	/// <param name="rotation">回転</param>
-	void SetRotation(XMFLOAT3 rotation) { this->rotation = rotation; }
+	void SetRotation(const XMFLOAT3& rotation) { this->rotation = rotation; }
 
 	/// <summary>
 	/// スケールの設定
 	/// </summary>
 	/// <param name="scale">スケール</param>
-	void SetScale(XMFLOAT3 scale) { this->scale = scale; }
+	void SetScale(const XMFLOAT3& scale) { this->scale = scale; }
 
 	/// <summary>
 	/// モデルの設定

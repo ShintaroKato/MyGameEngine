@@ -11,7 +11,11 @@ SceneStageEdit::~SceneStageEdit()
 
 void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
 {
-	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
+	if (!initialized)
+	{
+		SceneBase::Initialize(dxCommon, sprCommon, input, audio);
+		initialized = true;
+	}
 
 	buttonTitle->SetPosition({ 0,0 });
 	buttonTitle->SetSize({ 128,64 });
@@ -30,11 +34,16 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 
 	for (int i = 0; i < CUBE_RED_MAX; i++)
 	{
-		objCubeRed[i]->ObjectOBJ::SetPosition(tmp[i]);
-		objCubeGreen[i]->ObjectOBJ::SetPosition(tmp[i + 10]);
-		objCubeBlue[i]->ObjectOBJ::SetPosition(tmp[i + 20]);
+		objCubeRed[i]->SetPosition(tmp[i]);
+		objCubeGreen[i]->SetPosition(tmp[i + 10]);
+		objCubeBlue[i]->SetPosition(tmp[i + 20]);
+
+		objCubeRed[i]->SetUsedFlag(tmpFlag[i]);
+		objCubeGreen[i]->SetUsedFlag(tmpFlag[i + 10]);
+		objCubeBlue[i]->SetUsedFlag(tmpFlag[i + 20]);
 	}
-	objCastle->ObjectOBJ::SetPosition(tmp[99]);
+	objCastle->SetPosition(tmp[99]);
+	objCastle->SetUsedFlag(true);
 
 	objSkydome->SetScale({ 5,5,5 });
 	objGroundGrid->ObjectOBJ::SetScale({ 5,5,5 });
@@ -45,6 +54,8 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 
 	camera->SetTarget(player->GetPosition());
 	camera->SetEye({ 0,50,-100 });
+
+	ShowCursor(true);
 }
 
 void SceneStageEdit::Update()

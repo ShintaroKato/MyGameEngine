@@ -115,6 +115,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		edit,
 		game,
 	};
+
 	for (int i = 0; i < _countof(scene); i++)
 	{
 		scene[i]->Initialize(dxCommon, spriteCommon, input, audio);
@@ -131,10 +132,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			break;
 		}
 
+		int sceneNum = SceneManager::GetScene();
+
 		// 初期化
 		if (!SceneManager::GetInitFlag())
 		{
-			scene[SceneManager::GetScene()]->Initialize(dxCommon, spriteCommon, input, audio);
+			scene[sceneNum]->Initialize(dxCommon, spriteCommon, input, audio);
 			SceneManager::ChangeLoaded();
 		}
 
@@ -142,7 +145,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		input->Update();
 
 		// シーン更新
-		scene[SceneManager::GetScene()]->Update();
+		scene[sceneNum]->Update();
 		postEffectScene->Update();
 
 		//描画
@@ -156,10 +159,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 
 		dxCommon->PreDraw();
-		// シーン描画
-		scene[SceneManager::GetScene()]->Draw();
 
-		if (!SceneManager::GetInitFlag())
+		// シーン描画
+		if (SceneManager::GetInitFlag())
+		{
+			scene[sceneNum]->Draw();
+		}
+		else
 		{
 			postEffect->Draw();
 		}
