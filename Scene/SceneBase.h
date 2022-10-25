@@ -25,6 +25,7 @@ enum SpriteNo
 	button_title,
 	button_start,
 	button_edit,
+	cursor,
 };
 
 class SceneBase
@@ -94,6 +95,7 @@ protected:
 	Text* text = nullptr;
 
 	Sprite* spriteTitle = nullptr;
+	Sprite* spriteCursor = nullptr;
 
 	Button* buttonRed = nullptr;
 	Button* buttonGreen = nullptr;

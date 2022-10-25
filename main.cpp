@@ -143,6 +143,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		// 更新
 		input->Update();
+		ShowCursor(FALSE);
 
 		// シーン更新
 		scene[sceneNum]->Update();

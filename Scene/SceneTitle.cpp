@@ -48,13 +48,13 @@ void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 	buttonEdit->SetSize({ 128,64 });
 	buttonEdit->SetAnchorPoint({ 0.5f,0.5f });
 
-	ShowCursor(true);
-
 	SceneBase::Update();
 }
 
 void SceneTitle::Update()
 {
+	spriteCursor->SetPosition(input->GetMousePos2());
+
 	if (input->TriggerKey(DIK_1) || buttonEdit->Click(MOUSE_LEFT))
 	{
 		SceneManager::SetScene(EDIT);
@@ -64,8 +64,20 @@ void SceneTitle::Update()
 		SceneManager::SetScene(GAME);
 	}
 
+	if (input->PushMouse(MOUSE_RIGHT))
+	{
+		player->SetCameraMoveFlag(true);
+	}
+	else
+	{
+		player->SetCameraMoveFlag(false);
+	}
+
 	buttonEdit->Update();
 	buttonStart->Update();
+
+	spriteCursor->Update();
+
 
 	SceneBase::Update();
 }
@@ -116,12 +128,12 @@ void SceneTitle::Draw()
 	// スプライト描画前処理
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
-	// スプライト描画
-	spriteTitle->Draw();
-
 	buttonEdit->Draw();
 	buttonStart->Draw();
 
+	// スプライト描画
+	spriteTitle->Draw();
+	spriteCursor->Draw();
 	// テキスト描画
 	//text->DrawAll(dxCommon->GetCmdList());
 

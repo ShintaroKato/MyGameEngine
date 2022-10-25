@@ -54,12 +54,12 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 
 	camera->SetTarget(player->GetPosition());
 	camera->SetEye({ 0,50,-100 });
-
-	ShowCursor(true);
 }
 
 void SceneStageEdit::Update()
 {
+	spriteCursor->SetPosition(input->GetMousePos2());
+
 	if (input->TriggerKey(DIK_ESCAPE) || buttonTitle->Click(MOUSE_LEFT))
 	{
 		SceneManager::SetScene(TITLE);
@@ -79,6 +79,15 @@ void SceneStageEdit::Update()
 	}
 
 	camera->SetTarget(player->GetPosition());
+
+	if (input->PushMouse(MOUSE_RIGHT))
+	{
+		player->SetCameraMoveFlag(true);
+	}
+	else
+	{
+		player->SetCameraMoveFlag(false);
+	}
 
 	for (int i = 0; i < 10; i++)
 	{
@@ -106,6 +115,7 @@ void SceneStageEdit::Update()
 	buttonRed->Update();
 	buttonGreen->Update();
 	buttonBlue->Update();
+	spriteCursor->Update();
 
 	SceneBase::Update();
 }
@@ -162,7 +172,7 @@ void SceneStageEdit::Draw()
 	buttonGreen->Draw();
 	buttonBlue->Draw();
 	// スプライト描画
-	//spriteBG->Draw();
+	spriteCursor->Draw();
 	// テキスト描画
 	text->DrawAll();
 

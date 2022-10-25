@@ -34,6 +34,7 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	spriteCommon->LoadTexture(button_title, "button_title.png");
 	spriteCommon->LoadTexture(button_start, "button_start.png");
 	spriteCommon->LoadTexture(button_edit, "button_edit.png");
+	spriteCommon->LoadTexture(cursor, "cursor.png");
 
 	// テキスト
 	text = Text::GetInstance();
@@ -47,8 +48,8 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	buttonTitle = Button::Create(spriteCommon, button_title, { 0,0 }, { 0,0 });
 	buttonStart = Button::Create(spriteCommon, button_start, { 0,0 }, { 0,0 });
 	buttonEdit = Button::Create(spriteCommon, button_edit, { 0,0 }, { 0,0 });
-
-	spriteTitle->Update();
+	spriteCursor = Sprite::Create(spriteCommon, cursor, { 0,0 }, { 0,0 });
+	spriteCursor->SetSize({ 32,32 });
 
 	// .objからモデルデータ読み込み
 	modelSkydome = ModelOBJ::LoadObj("skydome");

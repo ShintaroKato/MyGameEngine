@@ -17,6 +17,9 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 		initialized = true;
 	}
 
+	buttonTitle->SetPosition({ 0,0 });
+	buttonTitle->SetSize({ 128,64 });
+
 	for (int i = 0; i < CUBE_RED_MAX; i++)
 	{
 		objCubeRed[i]->PositionFix();
@@ -50,17 +53,33 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 		enemy[i]->SetInGame(true);
 	}
 
-	ShowCursor(false);
 
 	SceneBase::Update();
 }
 
 void SceneInGame::Update()
 {
-	// マウスカーソルの座標を画面中央に固定
-	SetCursorPos(WinApp::window_width / 2, WinApp::window_height / 2);
+	cursorON = false;
 
-	if (input->TriggerKey(DIK_ESCAPE))
+	if (input->PushKey(DIK_LALT) || input->PushKey(DIK_RALT))
+	{
+		cursorON = true;
+	}
+
+	if(!cursorON)
+	{
+		// マウスカーソルの座標を画面中央に固定
+		SetCursorPos(WinApp::window_width / 2, WinApp::window_height / 2);
+		player->SetCameraMoveFlag(true);
+	}
+	else
+	{
+		spriteCursor->SetPosition(input->GetMousePos2());
+		spriteCursor->Update();
+		player->SetCameraMoveFlag(false);
+	}
+
+	if (input->TriggerKey(DIK_ESCAPE) || buttonTitle->Click(MOUSE_LEFT))
 	{
 		SceneManager::SetScene(TITLE);
 
@@ -70,6 +89,7 @@ void SceneInGame::Update()
 			tmp[i + 10] = objCubeGreen[i]->ObjectOBJ::GetPosition();
 			tmp[i + 20] = objCubeBlue[i]->ObjectOBJ::GetPosition();
 		}
+
 		tmp[99] = objCastle->ObjectOBJ::GetPosition();
 	}
 
@@ -138,8 +158,11 @@ void SceneInGame::Draw()
 	// スプライト描画前処理
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
+	buttonTitle->Draw();
+
 	// スプライト描画
 	//spriteBG->Draw();
+	if (cursorON) spriteCursor->Draw();
 
 	spriteCommon->PostDraw();
 
