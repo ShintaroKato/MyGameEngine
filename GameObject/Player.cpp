@@ -267,8 +267,7 @@ void Player::ControlCamera()
 		}
 	}
 
-	if (isInGame ||
-		!isInGame && input->PushMouse(MOUSE_RIGHT))
+	if (cameraMoveOn)
 	{
 		//ƒ}ƒEƒX‘€ì
 		cameraRotX += input->GetMouseMovement().y * 0.1f;		//ã‰ºˆÚ“®

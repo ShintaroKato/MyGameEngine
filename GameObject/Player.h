@@ -126,7 +126,9 @@ public:
 		isInGame = flag;
 		cameraRotY = 0;
 		cameraRotX = 30;
-	};
+	}
+
+	void SetCameraMoveFlag(bool flag) { cameraMoveOn = flag; }
 
 	Weapon* GetWeapon() { return weapon; }
 
@@ -153,6 +155,8 @@ private:
 	float cameraRotX = 0;
 	float cameraRotY = -90;
 	float distance = 10;
+	// ÉJÉÅÉâëÄçÏONÅEOFF
+	bool cameraMoveOn = true;
 
 	// HP
 	float HP = 20.0f;
