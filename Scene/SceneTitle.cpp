@@ -8,21 +8,11 @@ void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 {
 	for (int i = 0; i < CUBE_RED_MAX; i++)
 	{
-		objCubeRed[i]->PositionFix();
-		objCubeGreen[i]->PositionFix();
-		objCubeBlue[i]->PositionFix();
-
-		objCubeRed[i]->SetPosition(tmp[i]);
-		objCubeGreen[i]->SetPosition(tmp[i + 10]);
-		objCubeBlue[i]->SetPosition(tmp[i + 20]);
-
-		objCubeRed[i]->SetUsedFlag(tmpFlag[i]);
-		objCubeGreen[i]->SetUsedFlag(tmpFlag[i + 10]);
-		objCubeBlue[i]->SetUsedFlag(tmpFlag[i + 20]);
+		SceneBase::LoadStage(objCubeRed[i]);
+		SceneBase::LoadStage(objCubeGreen[i]);
+		SceneBase::LoadStage(objCubeBlue[i]);
 	}
-	objCastle->PositionFix();
-	objCastle->SetPosition(tmp[99]);
-	objCastle->SetUsedFlag(tmpFlag[99]);
+	SceneBase::LoadStage(objCastle);
 
 	objSkydome->SetScale({ 5,5,5 });
 	objGroundGrid->ObjectOBJ::SetScale({ 5,5,5 });
@@ -52,10 +42,26 @@ void SceneTitle::Update()
 	if (input->TriggerKey(DIK_1) || buttonEdit->Click(MOUSE_LEFT))
 	{
 		SceneManager::SetScene(EDIT);
+
+		for (int i = 0; i < CUBE_RED_MAX; i++)
+		{
+			SceneBase::SaveStage(objCubeRed[i]);
+			SceneBase::SaveStage(objCubeGreen[i]);
+			SceneBase::SaveStage(objCubeBlue[i]);
+		}
+		SceneBase::SaveStage(objCastle);
 	}
 	if (input->TriggerKey(DIK_2) || buttonStart->Click(MOUSE_LEFT))
 	{
 		SceneManager::SetScene(GAME);
+
+		for (int i = 0; i < CUBE_RED_MAX; i++)
+		{
+			SceneBase::SaveStage(objCubeRed[i]);
+			SceneBase::SaveStage(objCubeGreen[i]);
+			SceneBase::SaveStage(objCubeBlue[i]);
+		}
+		SceneBase::SaveStage(objCastle);
 	}
 
 	if (input->PushMouse(MOUSE_RIGHT))

@@ -14,6 +14,7 @@
 #include "Enemy.h"
 #include "Weapon.h"
 #include "TouchableObject.h"
+#include "GameManager.h"
 #define OBJECT_MAX 100
 
 enum SpriteNo
@@ -28,6 +29,16 @@ enum SpriteNo
 	button_edit,
 	cursor,
 	number,
+};
+
+// オブジェクトのデータを保存するための構造体
+struct ObjectTmpData
+{
+	XMFLOAT3 pos;
+	bool isUsed;
+	std::string tag;
+
+	bool isSaved = false;
 };
 
 class SceneBase
@@ -52,8 +63,7 @@ protected: // 定数
 	static const int WEAPON_MAX = 1;
 
 public:
-	static XMFLOAT3 tmp[OBJECT_MAX];
-	static bool tmpFlag[OBJECT_MAX];
+	static ObjectTmpData tmp[OBJECT_MAX];
 
 public:
 	/// <summary>
@@ -72,14 +82,20 @@ public:
 	virtual void Draw() {};
 
 	/// <summary>
+	///	ゲームマネージャーをセット
+	/// </summary>
+	/// <param name="gameManager">ゲームマネージャー</param>
+	void SetGameManager(GameManager* gameManager) { gManager = gameManager; }
+
+	/// <summary>
 	/// 作成したステージを保存
 	/// </summary>
-	void SaveStage();
+	static void SaveStage(GameObject* gameObject);
 
 	/// <summary>
 	/// 作成したステージを読み込み
 	/// </summary>
-	void LoadStage();
+	static void LoadStage(GameObject* gameObject);
 
 protected:
 
@@ -124,11 +140,13 @@ protected:
 	ObjectOBJ* objSkydome = nullptr;
 	TouchableObject* objGroundGrid = nullptr;
 
-	GameObject* objCubeRed[CUBE_RED_MAX]{};
-	GameObject* objCubeGreen[CUBE_GREEN_MAX]{};
-	GameObject* objCubeBlue[CUBE_BLUE_MAX]{};
+	static GameObject* objCubeRed[CUBE_RED_MAX];
+	static GameObject* objCubeGreen[CUBE_GREEN_MAX];
+	static GameObject* objCubeBlue[CUBE_BLUE_MAX];
 
-	GameObject* objCastle = nullptr;
+	static GameObject* objCastle;
+
+	GameManager* gManager = nullptr;
 
 	Player* player = nullptr;
 	Enemy* enemy[ENEMY_MAX]{};

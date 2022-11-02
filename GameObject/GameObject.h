@@ -87,11 +87,21 @@ public:
 	/// </summary>
 	void Rejection(const CollisionInfo& info);
 
+	/// <summary>
+	/// タグを取得
+	/// </summary>
+	std::string GetTag() { return tag; }
+
+	/// <summary>
+	/// タグをセット
+	/// </summary>
+	void SetTag(std::string tag) { this->tag = tag; }
+
 private:
 	// 座標
 	XMFLOAT3 pos{};
 	// 半径
-	float radius = 5.0f;
+	float radius = 4.0f;
 	// 掴まれているか否か
 	bool isDrag = false;
 	static bool isDragStatic;
@@ -103,4 +113,13 @@ private:
 	Sphere sphere{};
 	MeshCollider* meshColl = nullptr;
 	SphereCollider* sphereColl = nullptr;
+	// オブジェクトの種類を判別するためのタグ
+	std::string tag = "default";
+
+	// 耐久値
+	const float HPMax = 20.0f;
+	float HP = HPMax;
+	float HPRate = HP / HPMax;
+
+	bool aliveFlag = true;
 };

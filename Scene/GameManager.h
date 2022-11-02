@@ -16,7 +16,7 @@ public:
 
 private:
 	// §ŒÀŠÔ
-	int timerMax = 120 * 60;
+	int timerMax = 10 * 60;
 	int timer = timerMax;
 	// ƒXƒRƒA
 	int score = 0;

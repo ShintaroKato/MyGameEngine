@@ -12,26 +12,13 @@ SceneInGame::~SceneInGame()
 
 void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
 {
-	buttonTitle->SetPosition({ 0,0 });
-	buttonTitle->SetSize({ 128,64 });
-
 	for (int i = 0; i < CUBE_RED_MAX; i++)
 	{
-		objCubeRed[i]->PositionFix();
-		objCubeGreen[i]->PositionFix();
-		objCubeBlue[i]->PositionFix();
-
-		objCubeRed[i]->SetUsedFlag(tmpFlag[i]);
-		objCubeGreen[i]->SetUsedFlag(tmpFlag[i + 10]);
-		objCubeBlue[i]->SetUsedFlag(tmpFlag[i + 20]);
-
-		objCubeRed[i]->SetPosition(tmp[i]);
-		objCubeGreen[i]->SetPosition(tmp[i + 10]);
-		objCubeBlue[i]->SetPosition(tmp[i + 20]);
+		SceneBase::LoadStage(objCubeRed[i]);
+		SceneBase::LoadStage(objCubeGreen[i]);
+		SceneBase::LoadStage(objCubeBlue[i]);
 	}
-	objCastle->PositionFix();
-	objCastle->SetUsedFlag(true);
-	objCastle->SetPosition(tmp[99]);
+	SceneBase::LoadStage(objCastle);
 
 	objSkydome->SetScale({ 5,5,5 });
 	objGroundGrid->ObjectOBJ::SetScale({ 5,5,5 });
@@ -39,8 +26,8 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	player->SetPosition({ 0, 0, 0 });
 	player->Update();
 
-	camera->SetEye({ 0,2,5 });
 	camera->SetTarget(player->GetPosition());
+	camera->SetEye({ 0,2,5 });
 
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{
@@ -49,45 +36,31 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 		enemy[i]->SetAllive(false);
 	}
 
-	gManager = new GameManager();
+	menuON = false;
+
+	buttonTitle->SetPosition({ 0, WinApp::window_height - 128 });
+	buttonTitle->SetSize({ 128,64 });
+
+	gManager->Start();
 
 	SceneBase::Update();
 }
 
 void SceneInGame::Update()
 {
-	cursorON = false;
+	Menu();
 
-	if (input->PushKey(DIK_LALT) || input->PushKey(DIK_RALT))
-	{
-		cursorON = true;
-	}
-
-	if(!cursorON)
-	{
-		// マウスカーソルの座標を画面中央に固定
-		SetCursorPos(WinApp::window_width / 2, WinApp::window_height / 2);
-		player->SetCameraMoveFlag(true);
-	}
-	else
-	{
-		spriteCursor->SetPosition(input->GetMousePos2());
-		spriteCursor->Update();
-		player->SetCameraMoveFlag(false);
-	}
-
-	if (input->TriggerKey(DIK_ESCAPE) || buttonTitle->Click(MOUSE_LEFT))
+	if (menuON && buttonTitle->Click(MOUSE_LEFT))
 	{
 		SceneManager::SetScene(TITLE);
 
 		for (int i = 0; i < CUBE_RED_MAX; i++)
 		{
-			tmp[i] = objCubeRed[i]->ObjectOBJ::GetPosition();
-			tmp[i + 10] = objCubeGreen[i]->ObjectOBJ::GetPosition();
-			tmp[i + 20] = objCubeBlue[i]->ObjectOBJ::GetPosition();
+			SceneBase::SaveStage(objCubeRed[i]);
+			SceneBase::SaveStage(objCubeGreen[i]);
+			SceneBase::SaveStage(objCubeBlue[i]);
 		}
-
-		tmp[99] = objCastle->ObjectOBJ::GetPosition();
+		SceneBase::SaveStage(objCastle);
 	}
 
 	camera->SetTarget({
@@ -96,9 +69,11 @@ void SceneInGame::Update()
 		player->GetPosition().z
 		});
 
+	numberTimer->SetSequence(gManager->GetTimerSeconds(), 0, 32, { 32,64 });
+
 	gManager->Update();
 
-	numberTimer->SetSequence(gManager->GetTimerSeconds(), 0, 64, { 32,64 });
+	buttonTitle->Update();
 
 	SceneBase::Update();
 }
@@ -142,9 +117,12 @@ void SceneInGame::Draw()
 	player->ObjectOBJ::Draw();
 	weapon[0]->ObjectOBJ::Draw();
 
-	for (int i = 0; i < ENEMY_MAX; i++)
+	if(gManager->GetFinishState() == 0)
 	{
-		enemy[i]->ObjectOBJ::Draw();
+		for (int i = 0; i < ENEMY_MAX; i++)
+		{
+			enemy[i]->ObjectOBJ::Draw();
+		}
 	}
 
 	ObjectOBJ::PostDraw();
@@ -159,11 +137,14 @@ void SceneInGame::Draw()
 	// スプライト描画前処理
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
-	buttonTitle->Draw();
+	if(menuON)
+	{
+		buttonTitle->Draw();
+	}
 
 	// スプライト描画
 	//spriteBG->Draw();
-	if (cursorON) spriteCursor->Draw();
+	if (menuON) spriteCursor->Draw();
 	numberTimer->Draw();
 
 	spriteCommon->PostDraw();
@@ -174,4 +155,30 @@ void SceneInGame::Draw()
 #pragma endregion
 
 #pragma endregion グラフィックスコマンド
+}
+
+void SceneInGame::Menu()
+{
+	if (!menuON)
+	{
+		// マウスカーソルの座標を画面中央に固定
+		SetCursorPos(WinApp::window_width / 2, WinApp::window_height / 2);
+		player->SetCameraMoveFlag(true);
+
+		if (input->TriggerKey(DIK_ESCAPE))
+		{
+			menuON = true;
+		}
+	}
+	else
+	{
+		spriteCursor->SetPosition(input->GetMousePos2());
+		spriteCursor->Update();
+		player->SetCameraMoveFlag(false);
+
+		if (input->TriggerKey(DIK_ESCAPE))
+		{
+			menuON = false;
+		}
+	}
 }

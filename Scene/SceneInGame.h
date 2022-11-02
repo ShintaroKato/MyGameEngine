@@ -35,7 +35,11 @@ public: // メンバ関数
 	/// </summary>
 	void Draw()override;
 
+	/// <summary>
+	/// メニュー表示
+	/// </summary>
+	void Menu();
+
 private:
-	GameManager* gManager = nullptr;
-	bool cursorON = false;
+	bool menuON = false;
 };

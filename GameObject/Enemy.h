@@ -4,6 +4,7 @@
 #include "ObjectOBJ.h"
 #include "SphereCollider.h"
 #include "GameObject.h"
+#include "GameManager.h"
 
 class Enemy : public ObjectFBX, public ObjectOBJ
 {

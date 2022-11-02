@@ -1,7 +1,12 @@
 #include "SceneBase.h"
 
-XMFLOAT3 SceneBase::tmp[OBJECT_MAX];
-bool SceneBase::tmpFlag[OBJECT_MAX];
+ObjectTmpData SceneBase::tmp[];
+
+GameObject* SceneBase::objCastle;
+GameObject* SceneBase::objCubeRed[];
+GameObject* SceneBase::objCubeGreen[];
+GameObject* SceneBase::objCubeBlue[];
+
 
 void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input, Audio* audio)
 {
@@ -84,9 +89,19 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 		objCubeRed[i] = GameObject::Create(modelCubeRed);
 		objCubeGreen[i] = GameObject::Create(modelCubeGreen);
 		objCubeBlue[i] = GameObject::Create(modelCubeBlue);
+
+		objCubeRed[i]->SetTag("Red");
+		objCubeGreen[i]->SetTag("Green");
+		objCubeBlue[i]->SetTag("Blue");
+
+		SaveStage(objCubeRed[i]);
+		SaveStage(objCubeGreen[i]);
+		SaveStage(objCubeBlue[i]);
 	}
 	objCastle = GameObject::Create(modelCastle);
 	objCastle->SetRadius(5.5f);
+	objCastle->SetTag("Castle");
+	SaveStage(objCastle);
 
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{
@@ -134,11 +149,33 @@ void SceneBase::Update()
 	spriteTitle->Update();
 }
 
-void SceneBase::SaveStage()
+void SceneBase::SaveStage(GameObject* gameObject)
 {
+	for (int i = 0; i < OBJECT_MAX; i++)
+	{
+		if (tmp[i].isSaved) continue;
 
+		tmp[i].pos = gameObject->GetPosition();
+		tmp[i].isUsed = gameObject->GetUsedFlag();
+		tmp[i].tag = gameObject->GetTag();
+		tmp[i].isSaved = true;
+
+		break;
+	}
 }
 
-void SceneBase::LoadStage()
+void SceneBase::LoadStage(GameObject* gameObject)
 {
+	for (int i = 0; i < OBJECT_MAX; i++)
+	{
+		if (!tmp[i].isSaved) continue;
+		if (gameObject->GetTag() != tmp[i].tag) continue;
+
+		gameObject->SetPosition(tmp[i].pos);
+		gameObject->SetUsedFlag(tmp[i].isUsed);
+		gameObject->SetTag(tmp[i].tag);
+		tmp[i].isSaved = false;
+
+		break;
+	}
 }

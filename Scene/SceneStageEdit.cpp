@@ -28,15 +28,11 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 
 	for (int i = 0; i < CUBE_RED_MAX; i++)
 	{
-		objCubeRed[i]->SetPosition(tmp[i]);
-		objCubeGreen[i]->SetPosition(tmp[i + 10]);
-		objCubeBlue[i]->SetPosition(tmp[i + 20]);
-
-		objCubeRed[i]->SetUsedFlag(tmpFlag[i]);
-		objCubeGreen[i]->SetUsedFlag(tmpFlag[i + 10]);
-		objCubeBlue[i]->SetUsedFlag(tmpFlag[i + 20]);
+		SceneBase::LoadStage(objCubeRed[i]);
+		SceneBase::LoadStage(objCubeGreen[i]);
+		SceneBase::LoadStage(objCubeBlue[i]);
 	}
-	objCastle->SetPosition(tmp[99]);
+	SceneBase::LoadStage(objCastle);
 	objCastle->SetUsedFlag(true);
 
 	objSkydome->SetScale({ 5,5,5 });
@@ -60,20 +56,15 @@ void SceneStageEdit::Update()
 
 		for (int i = 0; i < CUBE_RED_MAX; i++)
 		{
-			tmp[i] = objCubeRed[i]->ObjectOBJ::GetPosition();
-			tmp[i + 10] = objCubeGreen[i]->ObjectOBJ::GetPosition();
-			tmp[i + 20] = objCubeBlue[i]->ObjectOBJ::GetPosition();
-
-			tmpFlag[i] = objCubeRed[i]->GetUsedFlag();
-			tmpFlag[i + 10] = objCubeGreen[i]->GetUsedFlag();
-			tmpFlag[i + 20] = objCubeBlue[i]->GetUsedFlag();
+			SceneBase::SaveStage(objCubeRed[i]);
+			SceneBase::SaveStage(objCubeGreen[i]);
+			SceneBase::SaveStage(objCubeBlue[i]);
 		}
-		tmp[99] = objCastle->ObjectOBJ::GetPosition();
-		tmpFlag[99] = objCastle->GetUsedFlag();
+		SceneBase::SaveStage(objCastle);
 	}
 
 	camera->SetTarget(player->GetPosition());
-
+	camera->SetEye({ 0,30,-100 });
 	if (input->PushMouse(MOUSE_RIGHT))
 	{
 		player->SetCameraMoveFlag(true);

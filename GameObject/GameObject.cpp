@@ -2,6 +2,7 @@
 #include "CollisionManager.h"
 #include "CollisionAttribute.h"
 #include "Collision.h"
+#include "SceneManager.h"
 
 bool GameObject::isDragStatic = false;
 
@@ -65,12 +66,7 @@ bool GameObject::Initialize()
 	sphere.radius = radius;
 
 	meshColl = new MeshCollider();
-	sphereColl = new SphereCollider();
-
-	//meshColl->SetAttribute(COLLISION_ATTR_OBJECT_SPHERE);
-	//sphereColl->SetAttribute(COLLISION_ATTR_OBJECT_MESH);
-	//sphereColl->SetSphere(sphere);
-	//sphereColl->SetRadius(sphere.radius);
+	sphereColl = new SphereCollider(sphere, true);
 
 	SetPosition(pos);
 
@@ -79,8 +75,6 @@ bool GameObject::Initialize()
 
 void GameObject::Update()
 {
-	if (!used) pos.y = 10000;
-
 	Drag();
 	Move();
 
@@ -97,7 +91,7 @@ bool GameObject::Hit()
 
 void GameObject::Drag()
 {
-	if(isInGame) return;
+	if(SceneManager::GetScene() != EDIT) return;
 	if (!used) return;
 
 	Input* input = Input::GetInstance();
@@ -136,7 +130,9 @@ void GameObject::Drag()
 	if (isDrag)
 	{
 		pos = { vec.m128_f32[0], vec.m128_f32[1], vec.m128_f32[2] };
-
+		sphere.center = vec;
+		sphereColl->SetOffset(sphere.center);
+		CollisionManager::GetInstance()->CheckAllCollision(sphereColl, COLLISION_ATTR_OBJECT_SPHERE);
 	}
 }
 
@@ -149,8 +145,6 @@ void GameObject::Move()
 	if (pos.z > 60) pos.z = 60;
 
 	if (pos.y > 0) pos.y = 0;
-
-	CollisionManager::GetInstance()->CheckAllCollision(sphereColl, COLLISION_ATTR_OBJECT_SPHERE);
 }
 
 void GameObject::SetPosition(const XMFLOAT3& position)
@@ -176,7 +170,7 @@ void GameObject::SetPosition(const XMFLOAT3& position)
 		}
 		else
 		{
-			sphereColl->SetSphere(sphere);
+			*sphereColl = SphereCollider(sphere, true);
 			sphereColl->SetAttribute(COLLISION_ATTR_OBJECT_SPHERE);
 
 			if (!used)
@@ -202,7 +196,7 @@ void GameObject::SetPosition(const XMFLOAT3& position)
 		}
 		else
 		{
-			sphereColl->SetSphere(sphere);
+			*sphereColl = SphereCollider(sphere, true);
 			sphereColl->SetAttribute(COLLISION_ATTR_OBJECT_SPHERE);
 
 			if (!used) sphereColl->SetAttribute(COLLISION_ATTR_OBJECT_NONE);
@@ -235,6 +229,7 @@ void GameObject::OnCollision(const CollisionInfo& info)
 
 void GameObject::Rejection(const CollisionInfo& info)
 {
-	pos.x += info.reject.m128_f32[0] / 2;
-	pos.z += info.reject.m128_f32[2] / 2;
+	pos.x -= info.reject.m128_f32[0];
+	pos.z -= info.reject.m128_f32[2];
+	//sphere.center -= info.reject;
 }
