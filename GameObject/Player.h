@@ -153,14 +153,14 @@ private:
 	XMFLOAT3 cameraPos{};
 	XMFLOAT3 cameraRot{};
 	float cameraRotX = 0;
-	float cameraRotY = -90;
+	float cameraRotY = 0;
 	float distance = 10;
 	// ÉJÉÅÉâëÄçÏONÅEOFF
 	bool cameraMoveOn = true;
 
 	// HP
-	float HP = 20.0f;
-	const float HPMax = HP;
+	const float HPMax = 20.0f;
+	float HP = HPMax;
 	float HPRate = HP / HPMax;
 
 	bool aliveFlag = true;

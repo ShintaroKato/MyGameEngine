@@ -240,8 +240,8 @@ void Player::ControlCamera()
 		cameraRotX = 70;
 	}
 
-	cameraPos.x = pos.x + distance * cos(XMConvertToRadians(cameraRotY)) * cos(XMConvertToRadians(cameraRotX));
-	cameraPos.z = pos.z + distance * sin(XMConvertToRadians(cameraRotY)) * cos(XMConvertToRadians(cameraRotX));
+	cameraPos.x = pos.x + distance * cos(XMConvertToRadians(cameraRotY - 90)) * cos(XMConvertToRadians(cameraRotX));
+	cameraPos.z = pos.z + distance * sin(XMConvertToRadians(cameraRotY - 90)) * cos(XMConvertToRadians(cameraRotX));
 
 	cameraPos.y = pos.y + 2 + distance * sin(XMConvertToRadians(cameraRotX));
 
@@ -271,7 +271,7 @@ void Player::ControlCamera()
 	{
 		//マウス操作
 		cameraRotX += input->GetMouseMovement().y * 0.1f;		//上下移動
-		cameraRotY -= input->GetMouseMovement().x * 0.1f * 5;	//左右移動
+		cameraRotY -= input->GetMouseMovement().x * 0.1f;		//左右移動
 	}
 
 	ObjectOBJ::GetCamera()->SetEye(cameraPos);
