@@ -35,6 +35,7 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	spriteCommon->LoadTexture(button_start, "button_start.png");
 	spriteCommon->LoadTexture(button_edit, "button_edit.png");
 	spriteCommon->LoadTexture(cursor, "cursor.png");
+	spriteCommon->LoadTexture(number, "number.png");
 
 	// テキスト
 	text = Text::GetInstance();
@@ -49,7 +50,8 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	buttonStart = Button::Create(spriteCommon, button_start, { 0,0 }, { 0,0 });
 	buttonEdit = Button::Create(spriteCommon, button_edit, { 0,0 }, { 0,0 });
 	spriteCursor = Sprite::Create(spriteCommon, cursor, { 0,0 }, { 0,0 });
-	spriteCursor->SetSize({ 32,32 });
+	spriteCursor->SetSize({ 16,16 });
+	numberTimer = Number::Create(spriteCommon, number, 3, { 0,0 }, { 0,0 });
 
 	// .objからモデルデータ読み込み
 	modelSkydome = ModelOBJ::LoadObj("skydome");
@@ -84,7 +86,7 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 		objCubeBlue[i] = GameObject::Create(modelCubeBlue);
 	}
 	objCastle = GameObject::Create(modelCastle);
-	objCastle->SetRadius(8.0f);
+	objCastle->SetRadius(5.5f);
 
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{

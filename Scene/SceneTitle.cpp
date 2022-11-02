@@ -6,12 +6,6 @@ SceneTitle::SceneTitle()
 
 void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
 {
-	if (!initialized)
-	{
-		SceneBase::Initialize(dxCommon, sprCommon, input, audio);
-		initialized = true;
-	}
-
 	for (int i = 0; i < CUBE_RED_MAX; i++)
 	{
 		objCubeRed[i]->PositionFix();

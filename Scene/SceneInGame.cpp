@@ -6,17 +6,12 @@ SceneInGame::SceneInGame()
 
 SceneInGame::~SceneInGame()
 {
+	delete gManager;
 	delete player;
 }
 
 void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
 {
-	if (!initialized)
-	{
-		SceneBase::Initialize(dxCommon, sprCommon, input, audio);
-		initialized = true;
-	}
-
 	buttonTitle->SetPosition({ 0,0 });
 	buttonTitle->SetSize({ 128,64 });
 
@@ -51,8 +46,10 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	{
 		enemy[i]->SetTargetPos(objCastle->GetPosition());
 		enemy[i]->SetInGame(true);
+		enemy[i]->SetAllive(false);
 	}
 
+	gManager = new GameManager();
 
 	SceneBase::Update();
 }
@@ -98,6 +95,10 @@ void SceneInGame::Update()
 		player->GetPosition().y + 2,
 		player->GetPosition().z
 		});
+
+	gManager->Update();
+
+	numberTimer->SetSequence(gManager->GetTimerSeconds(), 0, 64, { 32,64 });
 
 	SceneBase::Update();
 }
@@ -163,6 +164,7 @@ void SceneInGame::Draw()
 	// スプライト描画
 	//spriteBG->Draw();
 	if (cursorON) spriteCursor->Draw();
+	numberTimer->Draw();
 
 	spriteCommon->PostDraw();
 

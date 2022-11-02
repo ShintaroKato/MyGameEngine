@@ -11,12 +11,6 @@ SceneStageEdit::~SceneStageEdit()
 
 void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
 {
-	if (!initialized)
-	{
-		SceneBase::Initialize(dxCommon, sprCommon, input, audio);
-		initialized = true;
-	}
-
 	buttonTitle->SetPosition({ 0,0 });
 	buttonTitle->SetSize({ 128,64 });
 

@@ -8,6 +8,7 @@
 #include "ObjectOBJ.h"
 #include "ObjectFBX.h"
 #include "UI/Button.h"
+#include "UI/Number.h"
 #include "GameObject.h"
 #include "Player.h"
 #include "Enemy.h"
@@ -26,6 +27,7 @@ enum SpriteNo
 	button_start,
 	button_edit,
 	cursor,
+	number,
 };
 
 class SceneBase
@@ -104,6 +106,8 @@ protected:
 	Button* buttonStart = nullptr;
 	Button* buttonEdit = nullptr;
 
+	Number* numberTimer = nullptr;
+
 	ModelOBJ* modelSkydome = nullptr;
 	ModelOBJ* modelGround = nullptr;
 	ModelOBJ* modelGroundGrid = nullptr;
@@ -129,6 +133,4 @@ protected:
 	Player* player = nullptr;
 	Enemy* enemy[ENEMY_MAX]{};
 	Weapon* weapon[WEAPON_MAX]{};
-
-	bool initialized = false;
 };

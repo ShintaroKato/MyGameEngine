@@ -1,6 +1,7 @@
 #pragma once
 #include "SceneBase.h"
 #include "SceneManager.h"
+#include "GameManager.h"
 
 /// <summary>
 /// ゲームシーン
@@ -35,5 +36,6 @@ public: // メンバ関数
 	void Draw()override;
 
 private:
+	GameManager* gManager = nullptr;
 	bool cursorON = false;
 };
