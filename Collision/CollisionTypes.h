@@ -9,5 +9,6 @@ enum CollisionShapeType
 	SHAPE_UNKNOWN = -1, // 未設定
 
 	COLLISIONSHAPE_SPHERE, // 球
+	COLLISIONSHAPE_SPHERE_SQUARE, // 矩形(面)付きの球
 	COLLISIONSHAPE_MESH, // メッシュ
 };
