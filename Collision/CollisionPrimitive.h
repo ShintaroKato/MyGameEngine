@@ -7,6 +7,17 @@ struct Sphere
 {
 	XMVECTOR center = { 0,0,0,1 };///’†SÀ•W
 	float radius = 1.0f;//”¼Œa
+
+	struct Square
+	{
+		XMVECTOR center{};
+		float top;
+		float bottom;
+		float left;
+		float right;
+	};
+
+	Square square{};
 };
 
 struct Plane

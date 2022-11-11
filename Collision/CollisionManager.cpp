@@ -82,6 +82,22 @@ bool CollisionManager::CheckCollision(BaseCollider* colA, BaseCollider* colB)
 			return true;
 		}
 	}
+	// ‚Æ‚à‚É‹éŒ`(‹…‚Å¶¬)
+	else if (colA->GetShapeType() == COLLISIONSHAPE_SQUARE &&
+		colB->GetShapeType() == COLLISIONSHAPE_SQUARE)
+	{
+		Sphere* sphereA = dynamic_cast<Sphere*>(colA);
+		Sphere* sphereB = dynamic_cast<Sphere*>(colB);
+		XMVECTOR inter;
+		XMVECTOR reject;
+
+		if (Collision::CheckSquare2Square(*sphereA, *sphereB, &inter, &reject))
+		{
+			CheckSetObject(colA, colB, inter, reject);
+
+			return true;
+		}
+	}
 	//ƒƒbƒVƒ…‚Æ‹…
 	else if (colA->GetShapeType() == COLLISIONSHAPE_MESH &&
 		colB->GetShapeType() == COLLISIONSHAPE_SPHERE)

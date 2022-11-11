@@ -5,11 +5,11 @@ class Collision
 {
 public:
 	/// <summary>
-/// 当たり判定（球と球）
-/// </summary>
-/// <param name="sphere1">球１</param>
-/// <param name="sphere2">球２</param>
-/// <returns>交差しているか否か</returns>
+	/// 当たり判定（球と球）
+	/// </summary>
+	/// <param name="sphere1">球１</param>
+	/// <param name="sphere2">球２</param>
+	/// <returns>交差しているか否か</returns>
 	static bool CheckShpere2Sphere(const Sphere& sphere1, const Sphere& sphere2, XMVECTOR* inter = nullptr, XMVECTOR* reject = nullptr);
 	/// <summary>
 	/// 当たり判定（球と平面）

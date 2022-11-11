@@ -104,6 +104,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	FBXLoader::GetInstance()->Initialize(dxCommon->GetDev());
 	ObjectFBX::StaticInitialize(dxCommon->GetDev());
 
+	// ゲームマネージャー
+	GameManager* gameManager = new GameManager();
+
 	// シーン初期化
 	SceneTitle* title = new SceneTitle();
 	SceneStageEdit* edit = new SceneStageEdit();
@@ -118,6 +121,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	for (int i = 0; i < _countof(scene); i++)
 	{
+		scene[i]->SetGameManager(gameManager);
 		scene[i]->Initialize(dxCommon, spriteCommon, input, audio);
 	}
 

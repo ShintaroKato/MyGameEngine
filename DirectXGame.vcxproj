@@ -180,6 +180,7 @@
     <ClCompile Include="GameObject\Weapon.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Scene\GameManager.cpp" />
     <ClCompile Include="Scene\PostEffectScene.cpp" />
     <ClCompile Include="Scene\SceneInGame.cpp" />
     <ClCompile Include="Scene\SceneBase.cpp" />
@@ -187,6 +188,7 @@
     <ClCompile Include="Scene\SceneStageEdit.cpp" />
     <ClCompile Include="Scene\SceneTitle.cpp" />
     <ClCompile Include="UI\Button.cpp" />
+    <ClCompile Include="UI\Number.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="DirectXTex\DirectXTex_Desktop_2019_Win10.vcxproj">
@@ -321,6 +323,7 @@
     <ClInclude Include="GameObject\Player.h" />
     <ClInclude Include="GameObject\Weapon.h" />
     <ClInclude Include="Input\Input.h" />
+    <ClInclude Include="Scene\GameManager.h" />
     <ClInclude Include="Scene\PostEffectScene.h" />
     <ClInclude Include="Scene\SceneBase.h" />
     <ClInclude Include="Scene\SceneInGame.h" />
@@ -328,6 +331,7 @@
     <ClInclude Include="Scene\SceneStageEdit.h" />
     <ClInclude Include="Scene\SceneTitle.h" />
     <ClInclude Include="UI\Button.h" />
+    <ClInclude Include="UI\Number.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Picture2\256x256Blue.png" />

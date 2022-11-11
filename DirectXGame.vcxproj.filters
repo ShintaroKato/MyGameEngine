@@ -51,6 +51,8 @@
     <ClCompile Include="Scene\SceneTitle.cpp" />
     <ClCompile Include="GameObject\Weapon.cpp" />
     <ClCompile Include="UI\Button.cpp" />
+    <ClCompile Include="UI\Number.cpp" />
+    <ClCompile Include="Scene\GameManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2D\PostEffect.h" />
@@ -93,6 +95,8 @@
     <ClInclude Include="Scene\SceneTitle.h" />
     <ClInclude Include="GameObject\Weapon.h" />
     <ClInclude Include="UI\Button.h" />
+    <ClInclude Include="UI\Number.h" />
+    <ClInclude Include="Scene\GameManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli" />

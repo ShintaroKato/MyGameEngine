@@ -12,6 +12,8 @@ SceneInGame::~SceneInGame()
 
 void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
 {
+	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
+
 	for (int i = 0; i < CUBE_RED_MAX; i++)
 	{
 		SceneBase::LoadStage(objCubeRed[i]);
