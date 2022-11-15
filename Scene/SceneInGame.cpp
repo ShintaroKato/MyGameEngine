@@ -44,6 +44,14 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	buttonTitle->SetPosition({ 0, WinApp::window_height - 128 });
 	buttonTitle->SetSize({ 128,64 });
 
+	meterPlayerHP->SetPosition({ 0, WinApp::window_height - 64 });
+	meterPlayerHP->SetSize(
+		{ 320, 64 },
+		{ 320, 64 },
+		{ 320, 64 });
+	meterPlayerHP->SetValue(player->GetHP(), player->GetHPMax());
+
+
 	gManager->Start();
 
 	SceneBase::Update();
@@ -74,11 +82,16 @@ void SceneInGame::Update()
 		player->GetPosition().z
 		});
 
+	if (menuON) return;
+
 	numberTimer->SetSequence(gManager->GetTimerSeconds(), 0, 32, { 32,64 });
 
-	gManager->Update();
-
 	buttonTitle->Update();
+
+	meterPlayerHP->SetValue(player->GetHP(), player->GetHPMax());
+	meterPlayerHP->Update();
+
+	gManager->Update();
 
 	SceneBase::Update();
 }
@@ -142,15 +155,17 @@ void SceneInGame::Draw()
 	// スプライト描画前処理
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
+	numberTimer->Draw();
+	meterPlayerHP->Draw();
+
 	if(menuON)
 	{
 		buttonTitle->Draw();
 	}
-
+	
 	// スプライト描画
 	//spriteBG->Draw();
 	if (menuON) spriteCursor->Draw();
-	numberTimer->Draw();
 
 	spriteCommon->PostDraw();
 

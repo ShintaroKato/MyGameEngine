@@ -132,6 +132,15 @@ public:
 
 	Weapon* GetWeapon() { return weapon; }
 
+	float GetHP() { return HP; }
+	float GetHPMax()
+	{
+		float max = HPMax;
+		return max;
+	}
+
+	float GetPower() { return attackPower + weapon->GetPower(); }
+
 private:
 	// ç¿ïW
 	XMFLOAT3 pos{};
@@ -159,7 +168,7 @@ private:
 	bool cameraMoveOn = true;
 
 	// HP
-	const float HPMax = 20.0f;
+	const float HPMax = 200.0f;
 	float HP = HPMax;
 	float HPRate = HP / HPMax;
 
@@ -170,6 +179,7 @@ private:
 	bool attackFlag = false;
 	int attackLevel = 0;
 	float attackCount = 0;
+	float attackPower = 10;
 
 	// ÉQÅ[ÉÄñ{ï“Ç©î€Ç©
 	bool isInGame = true;

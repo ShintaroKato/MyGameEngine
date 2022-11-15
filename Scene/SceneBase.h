@@ -9,6 +9,7 @@
 #include "ObjectFBX.h"
 #include "UI/Button.h"
 #include "UI/Number.h"
+#include "UI/Meter.h"
 #include "GameObject.h"
 #include "Player.h"
 #include "Enemy.h"
@@ -21,14 +22,15 @@ enum SpriteNo
 {
 	debug_font,
 	title,
-	button_r,
-	button_g,
-	button_b,
+	square_red,
+	square_green,
+	square_blue,
 	button_title,
 	button_start,
 	button_edit,
 	cursor,
 	number,
+	player_HP,
 };
 
 // オブジェクトのデータを保存するための構造体
@@ -123,6 +125,8 @@ protected:
 	Button* buttonEdit = nullptr;
 
 	Number* numberTimer = nullptr;
+
+	Meter* meterPlayerHP = nullptr;
 
 	ModelOBJ* modelSkydome = nullptr;
 	ModelOBJ* modelGround = nullptr;

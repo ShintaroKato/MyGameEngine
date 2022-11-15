@@ -32,14 +32,15 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	// スプライト共通テクスチャ読み込み
 	spriteCommon->LoadTexture(debug_font, "debugfont.png");
 	spriteCommon->LoadTexture(title, "title_transparent.png");
-	spriteCommon->LoadTexture(button_r, "256x256Red.png");
-	spriteCommon->LoadTexture(button_g, "256x256Green.png");
-	spriteCommon->LoadTexture(button_b, "256x256Blue.png");
+	spriteCommon->LoadTexture(square_red, "256x256Red.png");
+	spriteCommon->LoadTexture(square_green, "256x256Green.png");
+	spriteCommon->LoadTexture(square_blue, "256x256Blue.png");
 	spriteCommon->LoadTexture(button_title, "button_title.png");
 	spriteCommon->LoadTexture(button_start, "button_start.png");
 	spriteCommon->LoadTexture(button_edit, "button_edit.png");
 	spriteCommon->LoadTexture(cursor, "cursor.png");
 	spriteCommon->LoadTexture(number, "number.png");
+	spriteCommon->LoadTexture(player_HP, "player_HP.png");
 
 	// テキスト
 	text = Text::GetInstance();
@@ -47,22 +48,23 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 
 	// スプライト
 	spriteTitle = Sprite::Create(spriteCommon, title, { 0,0 }, { 0,0 });
-	buttonRed = Button::Create(spriteCommon, button_r, { 0,0 }, { 0,0 });
-	buttonGreen = Button::Create(spriteCommon, button_g, { 0,0 }, { 0,0 });
-	buttonBlue = Button::Create(spriteCommon, button_b, { 0,0 }, { 0,0 });
+	buttonRed = Button::Create(spriteCommon, square_red, { 0,0 }, { 0,0 });
+	buttonGreen = Button::Create(spriteCommon, square_green, { 0,0 }, { 0,0 });
+	buttonBlue = Button::Create(spriteCommon, square_blue, { 0,0 }, { 0,0 });
 	buttonTitle = Button::Create(spriteCommon, button_title, { 0,0 }, { 0,0 });
 	buttonStart = Button::Create(spriteCommon, button_start, { 0,0 }, { 0,0 });
 	buttonEdit = Button::Create(spriteCommon, button_edit, { 0,0 }, { 0,0 });
 	spriteCursor = Sprite::Create(spriteCommon, cursor, { 0,0 }, { 0,0 });
 	spriteCursor->SetSize({ 16,16 });
 	numberTimer = Number::Create(spriteCommon, number, 3, { 0,0 }, { 0,0 });
+	meterPlayerHP = Meter::Create(spriteCommon, square_red, square_blue, player_HP, { 0,0 });
 
 	// .objからモデルデータ読み込み
 	modelSkydome = ModelOBJ::LoadObj("skydome");
 	modelGround = ModelOBJ::LoadObj("ground");
 	modelGroundGrid = ModelOBJ::LoadObj("512MeshPlane");
-	modelPlayer = ModelOBJ::LoadObj("chr_sword");
-	modelEnemy = ModelOBJ::LoadObj("player");
+	modelPlayer = ModelOBJ::LoadObj("player");
+	modelEnemy = ModelOBJ::LoadObj("chr_sword");
 	modelCubeRed = ModelOBJ::LoadObj("cube64Red");
 	modelCubeGreen = ModelOBJ::LoadObj("brokenBlock");
 	modelCubeBlue = ModelOBJ::LoadObj("cube64Blue");

@@ -72,7 +72,7 @@ public:
 	SphereCollider* GetSphereCollider() { return this->sphereColl; };
 
 	// UŒ‚—Í‚ğæ“¾
-	float GetPower() { return power; }
+	float GetPower(){ return power; }
 
 private:
 	// À•W
@@ -91,5 +91,5 @@ private:
 	SphereCollider* sphereColl = nullptr;
 
 	// UŒ‚—Í
-	float power = 10.0f;
+	float power = 100.0f;
 };

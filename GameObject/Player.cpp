@@ -331,7 +331,7 @@ void Player::Attack()
 
 		if ((int)attackCount % 5 == 0)
 		{
-			CollisionManager::GetInstance()->CheckAllCollision(weapon->GetSphereCollider());
+			CollisionManager::GetInstance()->CheckAllCollision(weapon->GetSphereCollider(), COLLISION_ATTR_ENEMIES);
 		}
 	}
 	else
@@ -437,10 +437,12 @@ void Player::SetWeapon(Weapon* weapon)
 	{
 		this->weapon->SetParent((ObjectOBJ*)this);
 		this->weapon->SetPosition(pos);
+		this->ObjectOBJ::SetPower(GetPower());
 	}
 	if(ObjectFBX::model)
 	{
 		this->weapon->SetParent((ObjectFBX*)this);
 		this->weapon->SetPosition(pos);
+		this->ObjectFBX::SetPower(GetPower());
 	}
 }

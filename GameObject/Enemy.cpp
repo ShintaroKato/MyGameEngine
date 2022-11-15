@@ -159,9 +159,9 @@ void Enemy::Attack()
 {
 }
 
-void Enemy::Hit()
+void Enemy::Hit(float attackPower)
 {
-	HP -= 100.0f;
+	HP -= attackPower;
 
 	if (HP <= 0)
 	{
@@ -185,7 +185,8 @@ void Enemy::OnCollision(const CollisionInfo& info)
 {
 	if (info.collider->GetAttribute() == COLLISION_ATTR_WEAPONS + COLLISION_ATTR_ALLIES)
 	{
-		Hit();
+		if(info.obj) Hit(info.obj->attackPower);
+		else if(info.fbx) Hit(info.fbx->attackPower);
 	}
 }
 

@@ -76,12 +76,14 @@ bool Weapon::Initialize()
 void Weapon::SetParent(ObjectOBJ* obj)
 {
 	this->obj = obj;
+	ObjectOBJ::SetPower(obj->attackPower + power);
 	sphereColl->SetAttribute(COLLISION_ATTR_WEAPONS + obj->GetCollider()->GetAttribute());
 }
 
 void Weapon::SetParent(ObjectFBX* fbx)
 {
 	this->fbx = fbx;
+	ObjectFBX::SetPower(fbx->attackPower + power);
 	sphereColl->SetAttribute(COLLISION_ATTR_WEAPONS + fbx->GetCollider()->GetAttribute());
 }
 

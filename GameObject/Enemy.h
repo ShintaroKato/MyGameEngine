@@ -68,7 +68,7 @@ public:
 	/// <summary>
 	/// “G‚Æ‚Ì“–‚½‚è”»’è
 	/// </summary>
-	void Hit();
+	void Hit(float attackPower);
 
 	/// <summary>
 	/// À•W‚ğæ“¾
