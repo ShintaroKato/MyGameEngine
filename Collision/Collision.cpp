@@ -1,4 +1,5 @@
 #include "Collision.h"
+#include <cmath>
 
 bool Collision::CheckShpere2Sphere(const Sphere& sphere1, const Sphere& sphere2, XMVECTOR* inter, XMVECTOR* reject)
 {
@@ -27,6 +28,83 @@ bool Collision::CheckShpere2Sphere(const Sphere& sphere1, const Sphere& sphere2,
 		return true;
 	}
 	return false;
+}
+
+bool Collision::CheckSquare2Square(const Sphere::Square& square1, const Sphere::Square& square2, XMVECTOR* inter, XMVECTOR* reject)
+{
+	//１の下辺と２の上辺を比較
+	if (square1.bottom > square2.top) return false;
+	//１の上辺と２の下辺を比較
+	if (square1.top < square2.bottom) return false;
+	//１の左辺と２の右辺を比較
+	if (square1.left > square2.right) return false;
+	//１の右辺と２の左辺を比較
+	if (square1.right < square2.left) return false;
+
+	// 押し出し用のベクトルがなければ関数を終了
+	if (!reject) return true;
+
+	/*押し出し用のベクトルを計算*/
+
+	// 各辺の長さ
+	float verticalL1 = square1.top - square1.bottom;
+	float horizontalL1 = square1.right - square1.left;
+
+	float verticalL2 = square2.top - square2.bottom;
+	float horizontalL2 = square2.right - square2.left;
+
+	// 各辺の長さの合計
+	float vLength = verticalL1 + verticalL2;
+	float hLength = horizontalL1 + horizontalL2;
+
+	// 辺が重なった部分の長さ
+	// X <= Yになるように記録
+	XMFLOAT2 vLRate{};
+	XMFLOAT2 hLRate{};
+
+	if (abs(square2.top - square1.bottom) <= abs(square1.top - square2.bottom))
+	{
+		vLRate = {
+			square1.bottom - square2.top,
+			square2.bottom - square1.top
+		};
+	}
+	else
+	{
+		vLRate = {
+			square1.top - square2.bottom,
+			square2.top - square1.bottom
+		};
+	}
+
+	if (abs(square1.right - square2.left) <= abs(square2.right - square1.left))
+	{
+		hLRate = {
+			square1.right - square2.left,
+			square2.right - square1.left
+		};
+	}
+	else
+	{
+		hLRate = {
+			square1.left - square2.right,
+			square2.left - square1.right
+		};
+	}
+
+	// 二辺の合計に対する辺が重なった部分の割合が小さい方に押し出す
+	if (abs(hLRate.x) / hLength < abs(vLRate.x) / vLength)
+	{
+		reject->m128_f32[0] = hLRate.x;
+		reject->m128_f32[2] = 0;
+	}
+	else
+	{
+		reject->m128_f32[0] = 0;
+		reject->m128_f32[2] = vLRate.x;
+	}
+
+	return true;
 }
 
 bool Collision::CheckShpere2Plane(const Sphere& sphere, const Plane& plane, XMVECTOR* inter)

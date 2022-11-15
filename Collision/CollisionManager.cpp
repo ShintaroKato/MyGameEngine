@@ -91,7 +91,7 @@ bool CollisionManager::CheckCollision(BaseCollider* colA, BaseCollider* colB)
 		XMVECTOR inter;
 		XMVECTOR reject;
 
-		if (Collision::CheckSquare2Square(*sphereA, *sphereB, &inter, &reject))
+		if (Collision::CheckSquare2Square(sphereA->square, sphereB->square, &inter, &reject))
 		{
 			CheckSetObject(colA, colB, inter, reject);
 

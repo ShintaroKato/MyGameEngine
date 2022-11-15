@@ -4,6 +4,7 @@
 
 #include <d3d12.h>
 #include <forward_list>
+#include <algorithm>
 
 class BaseCollider;
 
@@ -20,7 +21,10 @@ public: //メンバ関数
 	/// <param name="collider">コライダー</param>
 	inline void AddCollider(BaseCollider* collider)
 	{
-		colliders.push_front(collider);
+		// リスト内の要素を探索
+		auto result = std::find(colliders.begin(), colliders.end(), collider);
+		// 指定した要素が見つからなかったらリストに要素を追加
+		if(result == colliders.end()) colliders.push_front(collider);
 	}
 
 	/// <summary>
@@ -30,6 +34,14 @@ public: //メンバ関数
 	inline void RemoveCollider(BaseCollider* collider)
 	{
 		colliders.remove(collider);
+	}
+
+	/// <summary>
+	/// コライダーを全て削除
+	/// </summary>
+	inline void DeleteCollider()
+	{
+		colliders.clear();
 	}
 
 	/// <summary>
