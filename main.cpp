@@ -119,7 +119,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 
 
-		SceneManager::Initialize(dxCommon, spriteCommon, input, audio);
+		SceneManager::Initialize(dxCommon, spriteCommon, input, audio, gameManager);
 
 		// 更新
 		input->Update();

@@ -85,7 +85,7 @@ public:
 	///	ゲームマネージャーをセット
 	/// </summary>
 	/// <param name="gameManager">ゲームマネージャー</param>
-	void SetGameManager(GameManager* gameManager) { gManager = gameManager; }
+	void SetGameManager(GameManager* gameManager) { this->gManager = gameManager; }
 
 	/// <summary>
 	/// 作成したステージを保存

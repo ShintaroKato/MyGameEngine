@@ -31,11 +31,12 @@ auto SceneManager::CreateScene()
 	return instance;
 }
 
-void SceneManager::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input, Audio* audio)
+void SceneManager::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input, Audio* audio, GameManager* gameManager)
 {
 	if (scenes[currentScene]) return;
 	
 	scenes[currentScene] = CreateScene();
+	scenes[currentScene]->SetGameManager(gameManager);
 	scenes[currentScene]->Initialize(dxCommon, spriteCommon, input, audio);
 }
 
@@ -53,6 +54,7 @@ void SceneManager::DeleteScene()
 {
 	CollisionManager::GetInstance()->DeleteCollider();
 	delete scenes[currentScene];
+	scenes[currentScene] = nullptr;
 }
 
 void SceneManager::SceneChange()

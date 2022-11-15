@@ -53,6 +53,7 @@
     <ClCompile Include="UI\Button.cpp" />
     <ClCompile Include="UI\Number.cpp" />
     <ClCompile Include="Scene\GameManager.cpp" />
+    <ClCompile Include="UI\Meter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2D\PostEffect.h" />
@@ -97,6 +98,7 @@
     <ClInclude Include="UI\Button.h" />
     <ClInclude Include="UI\Number.h" />
     <ClInclude Include="Scene\GameManager.h" />
+    <ClInclude Include="UI\Meter.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli" />

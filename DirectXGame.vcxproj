@@ -188,6 +188,7 @@
     <ClCompile Include="Scene\SceneStageEdit.cpp" />
     <ClCompile Include="Scene\SceneTitle.cpp" />
     <ClCompile Include="UI\Button.cpp" />
+    <ClCompile Include="UI\Meter.cpp" />
     <ClCompile Include="UI\Number.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -331,6 +332,7 @@
     <ClInclude Include="Scene\SceneStageEdit.h" />
     <ClInclude Include="Scene\SceneTitle.h" />
     <ClInclude Include="UI\Button.h" />
+    <ClInclude Include="UI\Meter.h" />
     <ClInclude Include="UI\Number.h" />
   </ItemGroup>
   <ItemGroup>

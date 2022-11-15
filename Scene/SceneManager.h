@@ -21,7 +21,7 @@ public:
 	// シーン生成
 	static auto CreateScene();
 	// 初期化
-	static void Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input, Audio* audio);
+	static void Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input, Audio* audio, GameManager* gameManager);
 	// 更新
 	static void Update();
 	// 描画

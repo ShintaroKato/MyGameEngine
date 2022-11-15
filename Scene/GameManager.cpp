@@ -2,6 +2,7 @@
 
 GameManager::GameManager()
 {
+	Start();
 }
 
 void GameManager::Start()
