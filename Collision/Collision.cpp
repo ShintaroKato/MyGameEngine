@@ -63,32 +63,32 @@ bool Collision::CheckSquare2Square(const Sphere::Square& square1, const Sphere::
 	XMFLOAT2 hLRate{};
 
 	if (abs(square2.top - square1.bottom) <= abs(square1.top - square2.bottom))
-	{
+	{// ã‚©‚çÚ‹ß
 		vLRate = {
 			square1.bottom - square2.top,
 			square2.bottom - square1.top
 		};
 	}
 	else
-	{
+	{// ‰º‚©‚çÚ‹ß
 		vLRate = {
 			square1.top - square2.bottom,
 			square2.top - square1.bottom
 		};
 	}
 
-	if (abs(square1.right - square2.left) <= abs(square2.right - square1.left))
-	{
-		hLRate = {
-			square1.right - square2.left,
-			square2.right - square1.left
-		};
-	}
-	else
-	{
+	if (abs(square2.right - square1.left) <= abs(square1.right - square2.left))
+	{// ‰E‚©‚çÚ‹ß
 		hLRate = {
 			square1.left - square2.right,
 			square2.left - square1.right
+		};
+	}
+	else
+	{// ¶‚©‚çÚ‹ß
+		hLRate = {
+			square1.right - square2.left,
+			square2.right - square1.left
 		};
 	}
 

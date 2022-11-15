@@ -77,6 +77,7 @@ void GameObject::Update()
 {
 	Drag();
 	Move();
+	if(isDrag) CollisionManager::GetInstance()->CheckAllCollision(sphereColl, COLLISION_ATTR_OBJECT_SPHERE);
 
 	SetPosition(pos);
 
@@ -103,10 +104,10 @@ void GameObject::Drag()
 
 	if (input->ReleaseMouse(MOUSE_LEFT) && isDrag)
 	{
-		isDrag = false;
-		isDragStatic = false;
+		//isDrag = false;
+		//isDragStatic = false;
 
-		return;
+		//return;
 	}
 
 	XMVECTOR vec = input->CursorPoint3D(Camera::GetViewMatrix(), Camera::GetProjectionMatrix());
@@ -132,7 +133,6 @@ void GameObject::Drag()
 		pos = { vec.m128_f32[0], vec.m128_f32[1], vec.m128_f32[2] };
 		sphere.center = vec;
 		sphereColl->SetOffset(sphere.center);
-		CollisionManager::GetInstance()->CheckAllCollision(sphereColl, COLLISION_ATTR_OBJECT_SPHERE);
 	}
 }
 
