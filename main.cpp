@@ -104,9 +104,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	FBXLoader::GetInstance()->Initialize(dxCommon->GetDev());
 	ObjectFBX::StaticInitialize(dxCommon->GetDev());
 
-	// ゲームマネージャー
-	GameManager* gameManager = new GameManager();
-
 	postEffectScene->Initialize(dxCommon, spriteCommon, input, audio);
 
 #pragma endregion 描画初期化処理
@@ -119,7 +116,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 
 
-		SceneManager::Initialize(dxCommon, spriteCommon, input, audio, gameManager);
+		SceneManager::Initialize(dxCommon, spriteCommon, input, audio);
 
 		// 更新
 		input->Update();

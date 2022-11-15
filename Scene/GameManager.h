@@ -3,26 +3,28 @@
 class GameManager
 {
 public:
-	GameManager();
-
-	void Start();
-	void Update();
+	static void Start();
+	static void Update();
 	// 終了フラグの状態取得
-	int GetFinishState() { return finish; }
+	static int GetFinishState() { return finish; }
 	// タイマー取得
-	int GetTimer() { return timer; }
+	static int GetTimer() { return timer; }
 	// タイマー取得(秒に換算)
-	int GetTimerSeconds() { return timer / 60; }
+	static int GetTimerSeconds() { return timer / 60; }
 
 private:
+	GameManager() = default;
+	GameManager(const GameManager&) = delete;
+	~GameManager() = default;
+	GameManager& operator=(const GameManager&) = delete;
 	// 制限時間
-	int timerMax = 10 * 60;
-	int timer = timerMax;
+	static const int timerMax = 60 * 60;
+	static int timer;
 	// スコア
-	int score = 0;
+	static int score;
 	// ウェーブ数
-	int wave = 1;
-	int waveMax = 1;
+	static const int waveMax = 1;
+	static int wave;
 	// ウェーブ終了
-	int finish = 0; // 1でクリア判定 -1で失敗判定
+	static int finish; // 1でクリア判定 -1で失敗判定
 };

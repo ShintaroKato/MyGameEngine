@@ -84,12 +84,6 @@ public:
 	virtual void Draw() {};
 
 	/// <summary>
-	///	ゲームマネージャーをセット
-	/// </summary>
-	/// <param name="gameManager">ゲームマネージャー</param>
-	void SetGameManager(GameManager* gameManager) { this->gManager = gameManager; }
-
-	/// <summary>
 	/// 作成したステージを保存
 	/// </summary>
 	static void SaveStage(GameObject* gameObject);
@@ -149,8 +143,6 @@ protected:
 	static GameObject* objCubeBlue[CUBE_BLUE_MAX];
 
 	static GameObject* objCastle;
-
-	GameManager* gManager = nullptr;
 
 	Player* player = nullptr;
 	Enemy* enemy[ENEMY_MAX]{};

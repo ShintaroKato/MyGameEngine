@@ -31,12 +31,11 @@ auto SceneManager::CreateScene()
 	return instance;
 }
 
-void SceneManager::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input, Audio* audio, GameManager* gameManager)
+void SceneManager::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input, Audio* audio)
 {
 	if (scenes[currentScene]) return;
 	
 	scenes[currentScene] = CreateScene();
-	scenes[currentScene]->SetGameManager(gameManager);
 	scenes[currentScene]->Initialize(dxCommon, spriteCommon, input, audio);
 }
 

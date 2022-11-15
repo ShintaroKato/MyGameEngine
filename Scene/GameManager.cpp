@@ -1,9 +1,9 @@
 #include "GameManager.h"
 
-GameManager::GameManager()
-{
-	Start();
-}
+int GameManager::timer = 0;
+int GameManager::wave = 0;
+int GameManager::score = 0;
+int GameManager::finish = 0;
 
 void GameManager::Start()
 {

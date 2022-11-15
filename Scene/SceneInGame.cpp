@@ -7,7 +7,6 @@ SceneInGame::SceneInGame()
 
 SceneInGame::~SceneInGame()
 {
-	delete gManager;
 	delete player;
 }
 
@@ -52,7 +51,7 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	meterPlayerHP->SetValue(player->GetHP(), player->GetHPMax());
 
 
-	gManager->Start();
+	GameManager::Start();
 
 	SceneBase::Update();
 }
@@ -84,14 +83,14 @@ void SceneInGame::Update()
 
 	if (menuON) return;
 
-	numberTimer->SetSequence(gManager->GetTimerSeconds(), 0, 32, { 32,64 });
+	numberTimer->SetSequence(GameManager::GetTimerSeconds(), 0, 32, { 32,64 });
 
 	buttonTitle->Update();
 
 	meterPlayerHP->SetValue(player->GetHP(), player->GetHPMax());
 	meterPlayerHP->Update();
 
-	gManager->Update();
+	GameManager::Update();
 
 	SceneBase::Update();
 }
@@ -135,7 +134,7 @@ void SceneInGame::Draw()
 	player->ObjectOBJ::Draw();
 	weapon[0]->ObjectOBJ::Draw();
 
-	if(gManager->GetFinishState() == 0)
+	if(GameManager::GetFinishState() == 0)
 	{
 		for (int i = 0; i < ENEMY_MAX; i++)
 		{
