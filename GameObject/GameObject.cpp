@@ -75,6 +75,8 @@ bool GameObject::Initialize()
 
 void GameObject::Update()
 {
+	if (HP <= 0) aliveFlag = false;
+
 	Drag();
 	Move();
 	if(isDrag) CollisionManager::GetInstance()->CheckAllCollision(sphereColl, COLLISION_ATTR_OBJECT_SPHERE);
@@ -104,10 +106,10 @@ void GameObject::Drag()
 
 	if (input->ReleaseMouse(MOUSE_LEFT) && isDrag)
 	{
-		//isDrag = false;
-		//isDragStatic = false;
+		isDrag = false;
+		isDragStatic = false;
 
-		//return;
+		return;
 	}
 
 	XMVECTOR vec = input->CursorPoint3D(Camera::GetViewMatrix(), Camera::GetProjectionMatrix());
@@ -224,6 +226,11 @@ void GameObject::OnCollision(const CollisionInfo& info)
 	if (info.collider->GetAttribute() == COLLISION_ATTR_OBJECT_SPHERE && isDrag)
 	{
 		Rejection(info);
+	}
+	if (info.collider->GetAttribute() == COLLISION_ATTR_ENEMIES && tag == "Castle")
+	{
+		if(info.obj) HP -= info.obj->attackPower;
+		else if(info.fbx) HP -= info.fbx->attackPower;
 	}
 }
 

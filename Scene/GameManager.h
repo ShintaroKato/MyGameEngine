@@ -11,12 +11,19 @@ public:
 	static int GetTimer() { return timer; }
 	// タイマー取得(秒に換算)
 	static int GetTimerSeconds() { return timer / 60; }
+	// 待機時間取得
+	static int GetWaitTimer() { return waitTimer; }
+	// 待機時間取得(秒に換算)
+	static int GetWaitTimerSeconds() { return waitTimer / 60; }
 
 private:
 	GameManager() = default;
 	GameManager(const GameManager&) = delete;
 	~GameManager() = default;
 	GameManager& operator=(const GameManager&) = delete;
+	// 開始前待機時間
+	static const int waitTimerMax = 10 * 60;
+	static int waitTimer;
 	// 制限時間
 	static const int timerMax = 60 * 60;
 	static int timer;

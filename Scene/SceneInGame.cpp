@@ -16,11 +16,11 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 
 	for (int i = 0; i < CUBE_RED_MAX; i++)
 	{
-		SceneBase::LoadStage(objCubeRed[i]);
-		SceneBase::LoadStage(objCubeGreen[i]);
-		SceneBase::LoadStage(objCubeBlue[i]);
+		SceneBase::LoadStage(objCubeRed[i], true);
+		SceneBase::LoadStage(objCubeGreen[i], true);
+		SceneBase::LoadStage(objCubeBlue[i], true);
 	}
-	SceneBase::LoadStage(objCastle);
+	SceneBase::LoadStage(objCastle, true);
 
 	objSkydome->SetScale({ 5,5,5 });
 	objGroundGrid->ObjectOBJ::SetScale({ 5,5,5 });
@@ -40,7 +40,7 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 
 	menuON = false;
 
-	buttonTitle->SetPosition({ 0, WinApp::window_height - 128 });
+	buttonTitle->SetPosition({ 0, 0 });
 	buttonTitle->SetSize({ 128,64 });
 
 	meterPlayerHP->SetPosition({ 0, WinApp::window_height - 64 });
@@ -50,6 +50,7 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 		{ 320, 64 });
 	meterPlayerHP->SetValue(player->GetHP(), player->GetHPMax());
 
+	spriteWaveClear->SetPosition({ WinApp::window_width / 2, 128 });
 
 	GameManager::Start();
 
@@ -83,12 +84,15 @@ void SceneInGame::Update()
 
 	if (menuON) return;
 
-	numberTimer->SetSequence(GameManager::GetTimerSeconds(), 0, 32, { 32,64 });
+	numberTimer->SetSequence(GameManager::GetTimerSeconds(), 0, 64, { 32,64 });
+	numberWaitTimer->SetSequence(GameManager::GetWaitTimerSeconds(), WinApp::window_width / 2, 128, { 32, 64 });
 
 	buttonTitle->Update();
 
 	meterPlayerHP->SetValue(player->GetHP(), player->GetHPMax());
 	meterPlayerHP->Update();
+
+	spriteWaveClear->Update();
 
 	GameManager::Update();
 
@@ -155,6 +159,7 @@ void SceneInGame::Draw()
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
 	numberTimer->Draw();
+	if(GameManager::GetWaitTimer() > 0) numberWaitTimer->Draw();
 	meterPlayerHP->Draw();
 
 	if(menuON)
@@ -164,6 +169,7 @@ void SceneInGame::Draw()
 	
 	// スプライト描画
 	//spriteBG->Draw();
+	if (GameManager::GetFinishState() == 1) spriteWaveClear->Draw();
 	if (menuON) spriteCursor->Draw();
 
 	spriteCommon->PostDraw();

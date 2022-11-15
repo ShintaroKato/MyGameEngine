@@ -41,6 +41,7 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	spriteCommon->LoadTexture(cursor, "cursor.png");
 	spriteCommon->LoadTexture(number, "number.png");
 	spriteCommon->LoadTexture(player_HP, "player_HP.png");
+	spriteCommon->LoadTexture(wave_clear, "wave_clear.png");
 
 	// テキスト
 	text = Text::GetInstance();
@@ -57,7 +58,9 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	spriteCursor = Sprite::Create(spriteCommon, cursor, { 0,0 }, { 0,0 });
 	spriteCursor->SetSize({ 16,16 });
 	numberTimer = Number::Create(spriteCommon, number, 3, { 0,0 }, { 0,0 });
+	numberWaitTimer = Number::Create(spriteCommon, number, 1, { 0,0 }, { 0.5f,0.5f });
 	meterPlayerHP = Meter::Create(spriteCommon, square_red, square_blue, player_HP, { 0,0 });
+	spriteWaveClear = Sprite::Create(spriteCommon, wave_clear, { 0,0 }, { 0.5f,0.5f });
 
 	// .objからモデルデータ読み込み
 	modelSkydome = ModelOBJ::LoadObj("skydome");
@@ -135,7 +138,7 @@ void SceneBase::Update()
 
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{
-		enemy[i]->Update();
+		if(GameManager::GetWaitTimer() <= 0) enemy[i]->Update();
 	}
 
 	// obj更新
@@ -165,7 +168,7 @@ void SceneBase::SaveStage(GameObject* gameObject)
 	}
 }
 
-void SceneBase::LoadStage(GameObject* gameObject)
+void SceneBase::LoadStage(GameObject* gameObject, bool isInGame)
 {
 	for (int i = 0; i < OBJECT_MAX; i++)
 	{
@@ -176,6 +179,8 @@ void SceneBase::LoadStage(GameObject* gameObject)
 		gameObject->SetUsedFlag(tmp[i].isUsed);
 		gameObject->SetTag(tmp[i].tag);
 		tmp[i].isSaved = false;
+
+		if (isInGame) gameObject->PositionFix();
 
 		break;
 	}

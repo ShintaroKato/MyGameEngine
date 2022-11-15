@@ -144,6 +144,7 @@ private:
 
 	// UŒ‚
 	bool attackFlag = false;
+	int attackPower = 1;
 
 	// ƒQ[ƒ€“à‚Å‚ ‚é‚©”Û‚©
 	bool isInGame = false;

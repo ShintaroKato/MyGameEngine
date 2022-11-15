@@ -31,6 +31,7 @@ enum SpriteNo
 	cursor,
 	number,
 	player_HP,
+	wave_clear,
 };
 
 // オブジェクトのデータを保存するための構造体
@@ -91,7 +92,7 @@ public:
 	/// <summary>
 	/// 作成したステージを読み込み
 	/// </summary>
-	static void LoadStage(GameObject* gameObject);
+	static void LoadStage(GameObject* gameObject, bool isInGame = false);
 
 protected:
 
@@ -110,6 +111,7 @@ protected:
 
 	Sprite* spriteTitle = nullptr;
 	Sprite* spriteCursor = nullptr;
+	Sprite* spriteWaveClear = nullptr;
 
 	Button* buttonRed = nullptr;
 	Button* buttonGreen = nullptr;
@@ -119,6 +121,7 @@ protected:
 	Button* buttonEdit = nullptr;
 
 	Number* numberTimer = nullptr;
+	Number* numberWaitTimer = nullptr;
 
 	Meter* meterPlayerHP = nullptr;
 

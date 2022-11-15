@@ -117,7 +117,7 @@ private:
 	std::string tag = "default";
 
 	// ‘Ï‹v’l
-	const float HPMax = 20.0f;
+	const float HPMax = 10000.0f;
 	float HP = HPMax;
 	float HPRate = HP / HPMax;
 
