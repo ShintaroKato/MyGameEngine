@@ -1,4 +1,5 @@
 #include "SceneStageEdit.h"
+#include "SceneManager.h"
 
 SceneStageEdit::SceneStageEdit()
 {
@@ -54,8 +55,6 @@ void SceneStageEdit::Update()
 
 	if (input->TriggerKey(DIK_ESCAPE) || buttonTitle->Click(MOUSE_LEFT))
 	{
-		SceneManager::SetScene(TITLE);
-
 		for (int i = 0; i < CUBE_RED_MAX; i++)
 		{
 			SceneBase::SaveStage(objCubeRed[i]);
@@ -63,6 +62,10 @@ void SceneStageEdit::Update()
 			SceneBase::SaveStage(objCubeBlue[i]);
 		}
 		SceneBase::SaveStage(objCastle);
+
+		SceneManager::SetScene(TITLE);
+
+		return;
 	}
 
 	camera->SetTarget(player->GetPosition());

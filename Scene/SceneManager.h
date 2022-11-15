@@ -15,11 +15,20 @@ class SceneManager
 {
 private:
 
-	static int scene;
 	static SceneNum currentScene;
-	static bool isLoaded;
 
 public:
+	// シーン生成
+	static auto CreateScene();
+	// 初期化
+	static void Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input, Audio* audio);
+	// 更新
+	static void Update();
+	// 描画
+	static void Draw();
+	// シーン削除
+	static void DeleteScene();
+
 	/// <summary>
 	/// シーンを切り替える
 	/// </summary>
@@ -38,10 +47,21 @@ public:
 	/// <summary>
 	/// 初期化済みであるかの判定を取得
 	/// </summary>
-	static bool GetInitFlag() { return isLoaded; }
+	static bool GetInitFlag()
+	{
+		if(scenes[currentScene]) return true;
+		else return false;
+	}
 
-	/// <summary>
-	/// 初期化済みに変更
-	/// </summary>
-	static void ChangeLoaded() { isLoaded = true; }
+private:
+	SceneManager() = default;
+	SceneManager(const SceneManager&) = delete;
+	~SceneManager() = default;
+	SceneManager& operator=(const SceneManager&) = delete;
+
+	// シーン初期化
+	static SceneTitle* title;
+	static SceneStageEdit* edit;
+	static SceneInGame* game;
+	static SceneBase* scenes[];
 };

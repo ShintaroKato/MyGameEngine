@@ -107,24 +107,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// ゲームマネージャー
 	GameManager* gameManager = new GameManager();
 
-	// シーン初期化
-	SceneTitle* title = new SceneTitle();
-	SceneStageEdit* edit = new SceneStageEdit();
-	SceneInGame* game = new SceneInGame();
-
-	SceneBase* scene[] =
-	{
-		title,
-		edit,
-		game,
-	};
-
-	for (int i = 0; i < _countof(scene); i++)
-	{
-		scene[i]->SetGameManager(gameManager);
-		scene[i]->Initialize(dxCommon, spriteCommon, input, audio);
-	}
-
 	postEffectScene->Initialize(dxCommon, spriteCommon, input, audio);
 
 #pragma endregion 描画初期化処理
@@ -136,21 +118,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			break;
 		}
 
-		int sceneNum = SceneManager::GetScene();
 
-		// 初期化
-		if (!SceneManager::GetInitFlag())
-		{
-			scene[sceneNum]->Initialize(dxCommon, spriteCommon, input, audio);
-			SceneManager::ChangeLoaded();
-		}
+		SceneManager::Initialize(dxCommon, spriteCommon, input, audio);
 
 		// 更新
 		input->Update();
 		ShowCursor(FALSE);
 
 		// シーン更新
-		scene[sceneNum]->Update();
+		SceneManager::Update();
 		postEffectScene->Update();
 
 		//描画
@@ -168,7 +144,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		// シーン描画
 		if (SceneManager::GetInitFlag())
 		{
-			scene[sceneNum]->Draw();
+			SceneManager::Draw();
 		}
 		else
 		{
@@ -181,13 +157,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	}
 
 	FBXLoader::GetInstance()->Finalize();
-
-	int sceneCount = _countof(scene);
-
-	for (int i = 0; i < sceneCount; i++)
-	{
-		delete scene[i];
-	}
 
 #pragma region WindowsAPI後始末
 	winApp->Finalize();

@@ -1,6 +1,5 @@
 #pragma once
 #include "SceneBase.h"
-#include "SceneManager.h"
 
 /// <summary>
 /// ƒQ[ƒ€ƒV[ƒ“

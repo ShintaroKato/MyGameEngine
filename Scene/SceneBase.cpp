@@ -7,7 +7,6 @@ GameObject* SceneBase::objCubeRed[];
 GameObject* SceneBase::objCubeGreen[];
 GameObject* SceneBase::objCubeBlue[];
 
-
 void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input, Audio* audio)
 {
 	// nullptrチェック

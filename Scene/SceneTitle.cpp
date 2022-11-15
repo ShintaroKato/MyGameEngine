@@ -1,4 +1,5 @@
 #include "SceneTitle.h"
+#include "SceneManager.h"
 
 SceneTitle::SceneTitle()
 {
@@ -43,8 +44,6 @@ void SceneTitle::Update()
 
 	if (input->TriggerKey(DIK_1) || buttonEdit->Click(MOUSE_LEFT))
 	{
-		SceneManager::SetScene(EDIT);
-
 		for (int i = 0; i < CUBE_RED_MAX; i++)
 		{
 			SceneBase::SaveStage(objCubeRed[i]);
@@ -52,11 +51,13 @@ void SceneTitle::Update()
 			SceneBase::SaveStage(objCubeBlue[i]);
 		}
 		SceneBase::SaveStage(objCastle);
+
+		SceneManager::SetScene(EDIT);
+
+		return;
 	}
 	if (input->TriggerKey(DIK_2) || buttonStart->Click(MOUSE_LEFT))
 	{
-		SceneManager::SetScene(GAME);
-
 		for (int i = 0; i < CUBE_RED_MAX; i++)
 		{
 			SceneBase::SaveStage(objCubeRed[i]);
@@ -64,6 +65,10 @@ void SceneTitle::Update()
 			SceneBase::SaveStage(objCubeBlue[i]);
 		}
 		SceneBase::SaveStage(objCastle);
+
+		SceneManager::SetScene(GAME);
+
+		return;
 	}
 
 	if (input->PushMouse(MOUSE_RIGHT))

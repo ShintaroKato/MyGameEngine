@@ -1,6 +1,5 @@
 #pragma once
 #include "SceneBase.h"
-#include "SceneManager.h"
 #include "GameManager.h"
 
 /// <summary>
