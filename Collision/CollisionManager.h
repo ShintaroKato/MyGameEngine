@@ -47,9 +47,9 @@ public: //メンバ関数
 	/// <summary>
 	/// 全ての衝突チェック
 	/// </summary>
-	void CheckAllCollision();
-	void CheckAllCollision(BaseCollider* col);
-	void CheckAllCollision(BaseCollider* col, unsigned short attr);
+	bool CheckAllCollision();
+	bool CheckAllCollision(BaseCollider* col);
+	bool CheckAllCollision(BaseCollider* col, unsigned short attr);
 
 	/// <summary>
 	///

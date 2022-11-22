@@ -11,7 +11,7 @@ CollisionManager* CollisionManager::GetInstance()
 	return &instance;
 }
 
-void CollisionManager::CheckAllCollision()
+bool CollisionManager::CheckAllCollision()
 {
 	std::forward_list<BaseCollider*>::iterator itA;
 	std::forward_list<BaseCollider*>::iterator itB;
@@ -28,12 +28,14 @@ void CollisionManager::CheckAllCollision()
 			BaseCollider* colA = *itA;
 			BaseCollider* colB = *itB;
 
-			CheckCollision(colA, colB);
+			if (CheckCollision(colA, colB)) return true;
 		}
 	}
+
+	return false; 
 }
 
-void CollisionManager::CheckAllCollision(BaseCollider* col)
+bool CollisionManager::CheckAllCollision(BaseCollider* col)
 {
 	std::forward_list<BaseCollider*>::iterator it;
 
@@ -43,11 +45,13 @@ void CollisionManager::CheckAllCollision(BaseCollider* col)
 	{
 		BaseCollider* colB = *it;
 
-		CheckCollision(col, colB);
+		if (CheckCollision(col, colB)) return true;
 	}
+
+	return false;
 }
 
-void CollisionManager::CheckAllCollision(BaseCollider* col, unsigned short attr)
+bool CollisionManager::CheckAllCollision(BaseCollider* col, unsigned short attr)
 {
 	std::forward_list<BaseCollider*>::iterator it;
 
@@ -60,8 +64,10 @@ void CollisionManager::CheckAllCollision(BaseCollider* col, unsigned short attr)
 		if (col == colB) continue;
 		if (colB->GetAttribute() != attr) continue;
 
-		CheckCollision(col, colB);
+		if (CheckCollision(col, colB)) return true;
 	}
+
+	return false;
 }
 
 bool CollisionManager::CheckCollision(BaseCollider* colA, BaseCollider* colB)

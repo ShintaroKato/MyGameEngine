@@ -98,7 +98,7 @@ bool Collision::CheckSquare2Square(const Sphere::Square& square1, const Sphere::
 		reject->m128_f32[0] = hLRate.x;
 		reject->m128_f32[2] = 0;
 	}
-	else
+	if (abs(hLRate.x) / hLength > abs(vLRate.x) / vLength)
 	{
 		reject->m128_f32[0] = 0;
 		reject->m128_f32[2] = vLRate.x;
