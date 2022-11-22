@@ -5,7 +5,7 @@ int GameManager::timer = 0;
 int GameManager::wave = 0;
 int GameManager::score = 0;
 int GameManager::finish = 0;
-GameObject* GameManager::gameObject = nullptr;
+StageObject* GameManager::StageObject = nullptr;
 
 void GameManager::Start()
 {
@@ -37,8 +37,8 @@ void GameManager::Update()
 		else finish = 1; // ƒNƒŠƒA”»’è
 
 		// Ž¸”s”»’è‚Ìˆ—
-		if (gameObject != nullptr &&
-			gameObject->GetHP() <= 0) finish = -1;
+		if (StageObject != nullptr &&
+			StageObject->GetHP() <= 0) finish = -1;
 
 		break;
 

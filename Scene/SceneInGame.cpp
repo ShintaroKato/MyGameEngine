@@ -90,7 +90,7 @@ void SceneInGame::Update()
 		return;
 	}
 
-	GameManager::SetGameObject(objCastle);
+	GameManager::SetStageObject(objCastle);
 
 	camera->SetTarget({
 		player->GetPosition().x,

@@ -1,15 +1,15 @@
-#include "GameObject.h"
+#include "StageObject.h"
 #include "CollisionManager.h"
 #include "CollisionAttribute.h"
 #include "Collision.h"
 #include "SceneManager.h"
 
-bool GameObject::isDragStatic = false;
+bool StageObject::isDragStatic = false;
 
-GameObject* GameObject::Create(ModelFBX* fbx)
+StageObject* StageObject::Create(ModelFBX* fbx)
 {
 	// 3Dオブジェクトのインスタンスを生成
-	GameObject* instance = new GameObject();
+	StageObject* instance = new StageObject();
 	if (instance == nullptr)
 	{
 		return nullptr;
@@ -31,10 +31,10 @@ GameObject* GameObject::Create(ModelFBX* fbx)
 	return instance;
 }
 
-GameObject* GameObject::Create(ModelOBJ* obj)
+StageObject* StageObject::Create(ModelOBJ* obj)
 {
 	// 3Dオブジェクトのインスタンスを生成
-	GameObject* instance = new GameObject();
+	StageObject* instance = new StageObject();
 	if (instance == nullptr)
 	{
 		return nullptr;
@@ -56,7 +56,7 @@ GameObject* GameObject::Create(ModelOBJ* obj)
 	return instance;
 }
 
-bool GameObject::Initialize()
+bool StageObject::Initialize()
 {
 	ObjectFBX::Initialize();
 	ObjectOBJ::Initialize();
@@ -73,7 +73,7 @@ bool GameObject::Initialize()
 	return true;
 }
 
-void GameObject::Update()
+void StageObject::Update()
 {
 	if (HP <= 0) aliveFlag = false;
 
@@ -98,14 +98,14 @@ void GameObject::Update()
 	ObjectFBX::Update();
 }
 
-void GameObject::Draw()
+void StageObject::Draw()
 {
 	if (!aliveFlag) return;
 
 	ObjectOBJ::Draw();
 }
 
-void GameObject::Hit(float attackPower)
+void StageObject::Hit(float attackPower)
 {
 	HP -= attackPower;
 
@@ -115,7 +115,7 @@ void GameObject::Hit(float attackPower)
 	}
 }
 
-void GameObject::Drag()
+void StageObject::Drag()
 {
 	if(SceneManager::GetScene() != EDIT) return;
 	if (!used) return;
@@ -154,8 +154,8 @@ void GameObject::Drag()
 		speed.x = 1.5f* sin(atan2(pos.x - vec.m128_f32[0], pos.z - vec.m128_f32[2]));
 		speed.z = 1.5f* cos(atan2(pos.x - vec.m128_f32[0], pos.z - vec.m128_f32[2]));
 
-		if (abs(pos.x - vec.m128_f32[0]) <= 1.5f &&
-			abs(pos.z - vec.m128_f32[2]) <= 1.5f)
+		if (abs(pos.x - vec.m128_f32[0]) <= 1.0f &&
+			abs(pos.z - vec.m128_f32[2]) <= 1.0f)
 		{
 			speed.x = 0;
 			speed.z = 0;
@@ -169,7 +169,7 @@ void GameObject::Drag()
 	}
 }
 
-void GameObject::Move()
+void StageObject::Move()
 {
 	if (pos.x < -60) pos.x = -60;
 	if (pos.x > 60) pos.x = 60;
@@ -180,7 +180,7 @@ void GameObject::Move()
 	if (pos.y > 0) pos.y = 0;
 }
 
-void GameObject::SetPosition(const XMFLOAT3& position)
+void StageObject::SetPosition(const XMFLOAT3& position)
 {
 	this->pos = position;
 
@@ -240,7 +240,7 @@ void GameObject::SetPosition(const XMFLOAT3& position)
 
 }
 
-XMFLOAT3 GameObject::GetPosition()
+XMFLOAT3 StageObject::GetPosition()
 {
 	if (ObjectOBJ::model)
 	{
@@ -252,7 +252,7 @@ XMFLOAT3 GameObject::GetPosition()
 	}
 }
 
-void GameObject::OnCollision(const CollisionInfo& info)
+void StageObject::OnCollision(const CollisionInfo& info)
 {
 	if (info.collider->GetAttribute() == COLLISION_ATTR_OBJECT_SPHERE && isDrag)
 	{
@@ -265,7 +265,7 @@ void GameObject::OnCollision(const CollisionInfo& info)
 	}
 }
 
-void GameObject::Rejection(const CollisionInfo& info)
+void StageObject::Rejection(const CollisionInfo& info)
 {
 	pos.x -= info.reject.m128_f32[0];
 	pos.z -= info.reject.m128_f32[2];

@@ -3,7 +3,7 @@
 #include "ObjectFBX.h"
 #include "ObjectOBJ.h"
 #include "SphereCollider.h"
-#include "GameObject.h"
+#include "StageObject.h"
 #include "GameManager.h"
 
 class Enemy : public ObjectFBX, public ObjectOBJ
@@ -109,7 +109,7 @@ public:
 	/// <summary>
 	/// 攻撃対象のオブジェクトを設定
 	/// </summary>
-	void SetTargetPos(GameObject* object)
+	void SetTargetPos(StageObject* object)
 	{
 		this->target = object;
 		targetPos = target->GetPosition();
@@ -134,7 +134,7 @@ private:
 	// 移動ベクトル
 	XMVECTOR move = { 0,0,0.1f,0 };
 	// 標的のオブジェクト
-	GameObject* target{};
+	StageObject* target{};
 	// 標的の座標
 	XMFLOAT3 targetPos{};
 	// コライダー

@@ -87,6 +87,7 @@ void Enemy::Update()
 
 	Move();
 	Jump();
+	SetTargetPos(target);
 	Attack();
 
 	SetPosition(pos);
@@ -119,12 +120,9 @@ void Enemy::Spawn()
 
 		SetPosition(pos);
 
+		SetTargetPos(target);
+
 		aliveFlag = true;
-	}
-	if (abs(pos.x - targetPos.x) <= 2 && abs(pos.z - targetPos.z) <= 2 &&
-		aliveFlag == true)
-	{
-		aliveFlag = false;
 	}
 }
 
@@ -190,7 +188,7 @@ void Enemy::OnCollision(const CollisionInfo& info)
 		if (info.obj) targetPos = info.obj->GetPosition();
 		else if (info.fbx) targetPos = info.obj->GetPosition();
 	}
-	else if (info.collider->GetAttribute() == COLLISION_ATTR_OBJECT_MESH)
+	else if (info.collider->GetAttribute() == COLLISION_ATTR_OBJECT_NONE)
 	{
 		SetTargetPos(target);
 	}

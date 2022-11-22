@@ -2,10 +2,10 @@
 
 ObjectTmpData SceneBase::tmp[];
 
-GameObject* SceneBase::objCastle;
-GameObject* SceneBase::objCubeRed[];
-GameObject* SceneBase::objCubeGreen[];
-GameObject* SceneBase::objCubeBlue[];
+StageObject* SceneBase::objCastle;
+StageObject* SceneBase::objCubeRed[];
+StageObject* SceneBase::objCubeGreen[];
+StageObject* SceneBase::objCubeBlue[];
 
 void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input, Audio* audio)
 {
@@ -96,9 +96,9 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 
 	for (int i = 0; i < CUBE_RED_MAX; i++)
 	{
-		objCubeRed[i] = GameObject::Create(modelCubeRed);
-		objCubeGreen[i] = GameObject::Create(modelCubeGreen);
-		objCubeBlue[i] = GameObject::Create(modelCubeBlue);
+		objCubeRed[i] = StageObject::Create(modelCubeRed);
+		objCubeGreen[i] = StageObject::Create(modelCubeGreen);
+		objCubeBlue[i] = StageObject::Create(modelCubeBlue);
 
 		objCubeRed[i]->SetTag("Red");
 		objCubeGreen[i]->SetTag("Green");
@@ -108,7 +108,7 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 		SaveStage(objCubeGreen[i]);
 		SaveStage(objCubeBlue[i]);
 	}
-	objCastle = GameObject::Create(modelCastle);
+	objCastle = StageObject::Create(modelCastle);
 	objCastle->SetRadius(5.5f);
 	objCastle->SetTag("Castle");
 	objCastle->SetHP(1000.0f);
@@ -160,35 +160,35 @@ void SceneBase::Update()
 	spriteTitle->Update();
 }
 
-void SceneBase::SaveStage(GameObject* gameObject)
+void SceneBase::SaveStage(StageObject* StageObject)
 {
 	for (int i = 0; i < OBJECT_MAX; i++)
 	{
 		if (tmp[i].isSaved) continue;
 
-		tmp[i].pos = gameObject->GetPosition();
-		tmp[i].isUsed = gameObject->GetUsedFlag();
-		tmp[i].tag = gameObject->GetTag();
+		tmp[i].pos = StageObject->GetPosition();
+		tmp[i].isUsed = StageObject->GetUsedFlag();
+		tmp[i].tag = StageObject->GetTag();
 		tmp[i].isSaved = true;
 
 		break;
 	}
 }
 
-void SceneBase::LoadStage(GameObject* gameObject, bool isInGame)
+void SceneBase::LoadStage(StageObject* StageObject, bool isInGame)
 {
 	for (int i = 0; i < OBJECT_MAX; i++)
 	{
 		if (!tmp[i].isSaved) continue;
-		if (gameObject->GetTag() != tmp[i].tag) continue;
+		if (StageObject->GetTag() != tmp[i].tag) continue;
 
-		gameObject->SetPosition(tmp[i].pos);
-		gameObject->SetUsedFlag(tmp[i].isUsed);
-		gameObject->SetTag(tmp[i].tag);
+		StageObject->SetPosition(tmp[i].pos);
+		StageObject->SetUsedFlag(tmp[i].isUsed);
+		StageObject->SetTag(tmp[i].tag);
 		tmp[i].isSaved = false;
 
-		if (isInGame) gameObject->PositionFix();
-		if (gameObject->GetTag() == "Castle") gameObject->SetUsedFlag(true);
+		if (isInGame) StageObject->PositionFix();
+		if (StageObject->GetTag() == "Castle") StageObject->SetUsedFlag(true);
 
 		break;
 	}

@@ -10,7 +10,7 @@
 #include "UI/Button.h"
 #include "UI/Number.h"
 #include "UI/Meter.h"
-#include "GameObject.h"
+#include "StageObject.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "Weapon.h"
@@ -90,12 +90,12 @@ public:
 	/// <summary>
 	/// 作成したステージを保存
 	/// </summary>
-	static void SaveStage(GameObject* gameObject);
+	static void SaveStage(StageObject* StageObject);
 
 	/// <summary>
 	/// 作成したステージを読み込み
 	/// </summary>
-	static void LoadStage(GameObject* gameObject, bool isInGame = false);
+	static void LoadStage(StageObject* StageObject, bool isInGame = false);
 
 protected:
 
@@ -147,11 +147,11 @@ protected:
 	ObjectOBJ* objSkydome = nullptr;
 	TouchableObject* objGroundGrid = nullptr;
 
-	static GameObject* objCubeRed[CUBE_RED_MAX];
-	static GameObject* objCubeGreen[CUBE_GREEN_MAX];
-	static GameObject* objCubeBlue[CUBE_BLUE_MAX];
+	static StageObject* objCubeRed[CUBE_RED_MAX];
+	static StageObject* objCubeGreen[CUBE_GREEN_MAX];
+	static StageObject* objCubeBlue[CUBE_BLUE_MAX];
 
-	static GameObject* objCastle;
+	static StageObject* objCastle;
 
 	Player* player = nullptr;
 	Enemy* enemy[ENEMY_MAX]{};

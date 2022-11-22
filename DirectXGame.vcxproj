@@ -158,7 +158,7 @@
     <ClCompile Include="2D\SpriteCommon.cpp" />
     <ClCompile Include="2D\Text.cpp" />
     <ClCompile Include="3D\FBXLoader.cpp" />
-    <ClCompile Include="GameObject\GameObject.cpp" />
+    <ClCompile Include="GameObject\StageObject.cpp" />
     <ClCompile Include="3D\ModelFBX.cpp" />
     <ClCompile Include="3D\ObjectFBX.cpp" />
     <ClCompile Include="3D\Material.cpp" />
@@ -174,6 +174,7 @@
     <ClCompile Include="Collision\CollisionPrimitive.cpp" />
     <ClCompile Include="Collision\MeshCollider.cpp" />
     <ClCompile Include="Collision\SphereCollider.cpp" />
+    <ClCompile Include="GameObject\StageObjectOffensive.cpp" />
     <ClCompile Include="GameObject\TouchableObject.cpp" />
     <ClCompile Include="GameObject\Enemy.cpp" />
     <ClCompile Include="GameObject\Player.cpp" />
@@ -297,7 +298,7 @@
     <ClInclude Include="2D\SpriteCommon.h" />
     <ClInclude Include="2D\Text.h" />
     <ClInclude Include="3D\FBXLoader.h" />
-    <ClInclude Include="GameObject\GameObject.h" />
+    <ClInclude Include="GameObject\StageObject.h" />
     <ClInclude Include="3D\ModelFBX.h" />
     <ClInclude Include="3D\ObjectFBX.h" />
     <ClInclude Include="3D\Material.h" />
@@ -319,6 +320,7 @@
     <ClInclude Include="Collision\MeshCollider.h" />
     <ClInclude Include="Collision\RaycastHit.h" />
     <ClInclude Include="Collision\SphereCollider.h" />
+    <ClInclude Include="GameObject\StageObjectOffensive.h" />
     <ClInclude Include="GameObject\TouchableObject.h" />
     <ClInclude Include="GameObject\Enemy.h" />
     <ClInclude Include="GameObject\Player.h" />

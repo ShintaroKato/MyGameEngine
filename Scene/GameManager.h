@@ -1,5 +1,5 @@
 #pragma once
-#include "GameObject.h"
+#include "StageObject.h"
 
 class GameManager
 {
@@ -21,7 +21,7 @@ public:
 	// 待機時間取得(秒に換算)
 	static int GetWaitTimerSeconds() { return waitTimer / 60; }
 	// 守る対象のオブジェクトをセット
-	static void SetGameObject(GameObject* gameObject) { GameManager::gameObject = gameObject; }
+	static void SetStageObject(StageObject* StageObject) { GameManager::StageObject = StageObject; }
 
 private:
 	GameManager() = default;
@@ -42,5 +42,5 @@ private:
 	// ウェーブ終了
 	static int finish; // 1でクリア判定 -1で失敗判定
 	// 守る対象のオブジェクト
-	static GameObject* gameObject;
+	static StageObject* StageObject;
 };

@@ -6,7 +6,7 @@
 #include "SphereCollider.h"
 #include "MeshCollider.h"
 
-class GameObject : public ObjectFBX, public ObjectOBJ
+class StageObject : public ObjectFBX, public ObjectOBJ
 {
 private: // エイリアス
 // Microsoft::WRL::を省略
@@ -23,8 +23,8 @@ public:
 	/// 3Dオブジェクト生成
 	/// </summary>
 	/// <returns>インスタンス</returns>
-	static GameObject* Create(ModelOBJ* obj = nullptr);
-	static GameObject* Create(ModelFBX* fbx = nullptr);
+	static StageObject* Create(ModelOBJ* obj = nullptr);
+	static StageObject* Create(ModelFBX* fbx = nullptr);
 
 public:
 	/// <summary>
@@ -88,7 +88,7 @@ public:
 	void OnCollision(const CollisionInfo& info) override;
 
 	/// <summary>
-	/// 他のGameObjectと重なるのを防ぐ
+	/// 他のStageObjectと重なるのを防ぐ
 	/// </summary>
 	void Rejection(const CollisionInfo& info);
 

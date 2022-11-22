@@ -3,7 +3,7 @@
 #include "ObjectFBX.h"
 #include "ObjectOBJ.h"
 #include "SphereCollider.h"
-#include "GameObject.h"
+#include "StageObject.h"
 #include "Weapon.h"
 
 class Player : public ObjectFBX, public ObjectOBJ
