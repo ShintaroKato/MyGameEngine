@@ -31,7 +31,10 @@ enum SpriteNo
 	cursor,
 	number,
 	player_HP,
+	castle_HP,
 	wave_clear,
+	wave_failed,
+	pause,
 };
 
 // オブジェクトのデータを保存するための構造体
@@ -112,6 +115,8 @@ protected:
 	Sprite* spriteTitle = nullptr;
 	Sprite* spriteCursor = nullptr;
 	Sprite* spriteWaveClear = nullptr;
+	Sprite* spriteWaveFailed = nullptr;
+	Sprite* spritePause = nullptr;
 
 	Button* buttonRed = nullptr;
 	Button* buttonGreen = nullptr;
@@ -124,6 +129,7 @@ protected:
 	Number* numberWaitTimer = nullptr;
 
 	Meter* meterPlayerHP = nullptr;
+	Meter* meterCastleHP = nullptr;
 
 	ModelOBJ* modelSkydome = nullptr;
 	ModelOBJ* modelGround = nullptr;

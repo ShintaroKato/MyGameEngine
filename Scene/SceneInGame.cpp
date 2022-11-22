@@ -25,7 +25,11 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	objSkydome->SetScale({ 5,5,5 });
 	objGroundGrid->ObjectOBJ::SetScale({ 5,5,5 });
 
-	player->SetPosition({ 0, 0, 0 });
+	player->SetPosition({
+		objCastle->GetPosition().x,
+		objCastle->GetPosition().y + 10,
+		objCastle->GetPosition().z
+		});
 	player->Update();
 
 	camera->SetTarget(player->GetPosition());
@@ -33,14 +37,15 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{
-		enemy[i]->SetTargetPos(objCastle->GetPosition());
+		enemy[i]->SetTargetPos(objCastle);
 		enemy[i]->SetInGame(true);
 		enemy[i]->SetAllive(false);
 	}
 
 	menuON = false;
 
-	buttonTitle->SetPosition({ 0, 0 });
+	buttonTitle->SetPosition({ WinApp::window_width / 2, 300 });
+	buttonTitle->SetAnchorPoint({ 0.5f,0.5f });
 	buttonTitle->SetSize({ 128,64 });
 
 	meterPlayerHP->SetPosition({ 0, WinApp::window_height - 64 });
@@ -50,7 +55,16 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 		{ 320, 64 });
 	meterPlayerHP->SetValue(player->GetHP(), player->GetHPMax());
 
+	meterCastleHP->SetPosition({ 0, WinApp::window_height - 128 });
+	meterCastleHP->SetSize(
+		{ 320, 64 },
+		{ 320, 64 },
+		{ 320, 64 });
+	meterCastleHP->SetValue(player->GetHP(), player->GetHPMax());
+
 	spriteWaveClear->SetPosition({ WinApp::window_width / 2, 128 });
+	spriteWaveFailed->SetPosition({ WinApp::window_width / 2, 128 });
+	spritePause->SetPosition({ WinApp::window_width / 2, 128 });
 
 	GameManager::Start();
 
@@ -61,7 +75,7 @@ void SceneInGame::Update()
 {
 	Menu();
 
-	if (menuON && buttonTitle->Click(MOUSE_LEFT))
+	if ((menuON || GameManager::GetFinishState() != 0) && buttonTitle->Click(MOUSE_LEFT))
 	{
 		for (int i = 0; i < CUBE_RED_MAX; i++)
 		{
@@ -75,6 +89,8 @@ void SceneInGame::Update()
 
 		return;
 	}
+
+	GameManager::SetGameObject(objCastle);
 
 	camera->SetTarget({
 		player->GetPosition().x,
@@ -92,7 +108,12 @@ void SceneInGame::Update()
 	meterPlayerHP->SetValue(player->GetHP(), player->GetHPMax());
 	meterPlayerHP->Update();
 
+	meterCastleHP->SetValue(objCastle->GetHP(), objCastle->GetHPMax());
+	meterCastleHP->Update();
+
 	spriteWaveClear->Update();
+	spriteWaveFailed->Update();
+	spritePause->Update();
 
 	GameManager::Update();
 
@@ -126,12 +147,12 @@ void SceneInGame::Draw()
 
 	for (int i = 0; i < 10; i++)
 	{
-		if (objCubeRed[i]->GetUsedFlag()) objCubeRed[i]->ObjectOBJ::Draw();
-		if (objCubeGreen[i]->GetUsedFlag()) objCubeGreen[i]->ObjectOBJ::Draw();
-		if (objCubeBlue[i]->GetUsedFlag()) objCubeBlue[i]->ObjectOBJ::Draw();
+		if (objCubeRed[i]->GetUsedFlag()) objCubeRed[i]->Draw();
+		if (objCubeGreen[i]->GetUsedFlag()) objCubeGreen[i]->Draw();
+		if (objCubeBlue[i]->GetUsedFlag()) objCubeBlue[i]->Draw();
 	}
 
-	if(objCastle->GetUsedFlag()) objCastle->ObjectOBJ::Draw();
+	if(objCastle->GetUsedFlag()) objCastle->Draw();
 
 	objWall->Draw();
 
@@ -158,19 +179,36 @@ void SceneInGame::Draw()
 	// スプライト描画前処理
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
-	numberTimer->Draw();
-	if(GameManager::GetWaitTimer() > 0) numberWaitTimer->Draw();
+	// スプライト描画
 	meterPlayerHP->Draw();
+	meterCastleHP->Draw();
+	numberTimer->Draw();
 
-	if(menuON)
+	if(GameManager::GetFinishState() == 0 && menuON)
+	{
+		spritePause->Draw();
+	}
+	else if (GameManager::GetWaitTimer() > 0)
+	{
+		numberWaitTimer->Draw();
+	}
+
+	if (GameManager::GetFinishState() == 1)
+	{
+		spriteWaveClear->Draw();
+	}
+	if (GameManager::GetFinishState() == -1)
+	{
+		spriteWaveFailed->Draw();
+	}
+
+	if (GameManager::GetFinishState() != 0 || menuON)
 	{
 		buttonTitle->Draw();
+		spriteCursor->Draw();
 	}
-	
-	// スプライト描画
+
 	//spriteBG->Draw();
-	if (GameManager::GetFinishState() == 1) spriteWaveClear->Draw();
-	if (menuON) spriteCursor->Draw();
 
 	spriteCommon->PostDraw();
 
@@ -190,7 +228,7 @@ void SceneInGame::Menu()
 		SetCursorPos(WinApp::window_width / 2, WinApp::window_height / 2);
 		player->SetCameraMoveFlag(true);
 
-		if (input->TriggerKey(DIK_ESCAPE))
+		if (input->TriggerKey(DIK_ESCAPE) || GameManager::GetFinishState() != 0)
 		{
 			menuON = true;
 		}

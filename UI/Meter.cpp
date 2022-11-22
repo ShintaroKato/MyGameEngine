@@ -39,7 +39,7 @@ void Meter::Update()
 {
 	float vRate = value / valueMax;
 
-	inner->SetSize({ innerSize.x * vRate, innerSize.y * vRate });
+	inner->SetSize({ innerSize.x * vRate, innerSize.y });
 
 	base->Update();
 	inner->Update();

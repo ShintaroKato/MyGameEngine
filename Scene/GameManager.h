@@ -1,9 +1,14 @@
 #pragma once
+#include "GameObject.h"
 
 class GameManager
 {
 public:
+	// ゲームスタート
 	static void Start();
+	// ゲームリスタート
+	static void Restart();
+	// 更新
 	static void Update();
 	// 終了フラグの状態取得
 	static int GetFinishState() { return finish; }
@@ -15,6 +20,8 @@ public:
 	static int GetWaitTimer() { return waitTimer; }
 	// 待機時間取得(秒に換算)
 	static int GetWaitTimerSeconds() { return waitTimer / 60; }
+	// 守る対象のオブジェクトをセット
+	static void SetGameObject(GameObject* gameObject) { GameManager::gameObject = gameObject; }
 
 private:
 	GameManager() = default;
@@ -34,4 +41,6 @@ private:
 	static int wave;
 	// ウェーブ終了
 	static int finish; // 1でクリア判定 -1で失敗判定
+	// 守る対象のオブジェクト
+	static GameObject* gameObject;
 };

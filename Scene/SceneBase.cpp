@@ -41,7 +41,10 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	spriteCommon->LoadTexture(cursor, "cursor.png");
 	spriteCommon->LoadTexture(number, "number.png");
 	spriteCommon->LoadTexture(player_HP, "player_HP.png");
+	spriteCommon->LoadTexture(castle_HP, "castle_HP.png");
 	spriteCommon->LoadTexture(wave_clear, "wave_clear.png");
+	spriteCommon->LoadTexture(wave_failed, "wave_failed.png");
+	spriteCommon->LoadTexture(pause, "pause.png");
 
 	// テキスト
 	text = Text::GetInstance();
@@ -60,7 +63,10 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	numberTimer = Number::Create(spriteCommon, number, 3, { 0,0 }, { 0,0 });
 	numberWaitTimer = Number::Create(spriteCommon, number, 1, { 0,0 }, { 0.5f,0.5f });
 	meterPlayerHP = Meter::Create(spriteCommon, square_red, square_blue, player_HP, { 0,0 });
+	meterCastleHP = Meter::Create(spriteCommon, square_red, square_blue, castle_HP, { 0,0 });
 	spriteWaveClear = Sprite::Create(spriteCommon, wave_clear, { 0,0 }, { 0.5f,0.5f });
+	spriteWaveFailed = Sprite::Create(spriteCommon, wave_failed, { 0,0 }, { 0.5f,0.5f });
+	spritePause = Sprite::Create(spriteCommon, pause, { 0,0 }, { 0.5f,0.5f });
 
 	// .objからモデルデータ読み込み
 	modelSkydome = ModelOBJ::LoadObj("skydome");
@@ -105,6 +111,7 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	objCastle = GameObject::Create(modelCastle);
 	objCastle->SetRadius(5.5f);
 	objCastle->SetTag("Castle");
+	objCastle->SetHP(1000.0f);
 	SaveStage(objCastle);
 
 	for (int i = 0; i < ENEMY_MAX; i++)
@@ -181,6 +188,7 @@ void SceneBase::LoadStage(GameObject* gameObject, bool isInGame)
 		tmp[i].isSaved = false;
 
 		if (isInGame) gameObject->PositionFix();
+		if (gameObject->GetTag() == "Castle") gameObject->SetUsedFlag(true);
 
 		break;
 	}
