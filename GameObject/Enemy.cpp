@@ -121,7 +121,7 @@ void Enemy::Spawn()
 
 		aliveFlag = true;
 	}
-	if (abs(pos.x - target.x) <= 2 && abs(pos.z - target.z) <= 2 &&
+	if (abs(pos.x - targetPos.x) <= 2 && abs(pos.z - targetPos.z) <= 2 &&
 		aliveFlag == true)
 	{
 		aliveFlag = false;
@@ -132,16 +132,16 @@ void Enemy::Move()
 {
 	// •W“I‚Ì•ûŒü‚ðŒü‚­
 	rotation.y = XMConvertToDegrees(
-		atan2f(target.x - pos.x, target.z - pos.z));
+		atan2f(targetPos.x - pos.x, targetPos.z - pos.z));
 
 	move = { 0,0,0.1f,0 };
 	XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rotation.y));
 	move = XMVector3TransformNormal(move, matRot);
 
-	float nearLimit = 5.5f;
+	float nearLimit = 5.0f;
 
 	//‚ ‚é’ö“x‚Ì‹——£‚ð•Û‚¿‘±‚¯‚éˆ—
-	if (abs(pos.x - target.x) < nearLimit && abs(pos.z - target.z) < nearLimit);
+	if (abs(pos.x - targetPos.x) < nearLimit && abs(pos.z - targetPos.z) < nearLimit);
 	else
 	{
 		pos.x += move.m128_f32[0];
@@ -157,6 +157,8 @@ void Enemy::Jump()
 
 void Enemy::Attack()
 {
+	ObjectOBJ::SetPower(attackPower);
+	CollisionManager::GetInstance()->CheckAllCollision(sphereColl, COLLISION_ATTR_OBJECT_MESH);
 }
 
 void Enemy::Hit(float attackPower)
@@ -183,6 +185,15 @@ XMFLOAT3 Enemy::GetPosition()
 
 void Enemy::OnCollision(const CollisionInfo& info)
 {
+	if (info.collider->GetAttribute() == COLLISION_ATTR_OBJECT_MESH)
+	{
+		if (info.obj) targetPos = info.obj->GetPosition();
+		else if (info.fbx) targetPos = info.obj->GetPosition();
+	}
+	else if (info.collider->GetAttribute() == COLLISION_ATTR_OBJECT_MESH)
+	{
+		SetTargetPos(target);
+	}
 	if (info.collider->GetAttribute() == COLLISION_ATTR_WEAPONS + COLLISION_ATTR_ALLIES)
 	{
 		if(info.obj) Hit(info.obj->attackPower);

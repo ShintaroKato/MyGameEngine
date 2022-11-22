@@ -107,9 +107,13 @@ public:
 	void SetAllive(bool flag) { this->aliveFlag = flag; }
 
 	/// <summary>
-	/// 攻撃対象の座標を設定
+	/// 攻撃対象のオブジェクトを設定
 	/// </summary>
-	void SetTargetPos(XMFLOAT3 pos) { this->target = pos; }
+	void SetTargetPos(GameObject* object)
+	{
+		this->target = object;
+		targetPos = target->GetPosition();
+	}
 
 	/// <summary>
 	/// ゲーム内であるか否かを設定
@@ -129,8 +133,10 @@ private:
 	float radius = 1.0f;
 	// 移動ベクトル
 	XMVECTOR move = { 0,0,0.1f,0 };
+	// 標的のオブジェクト
+	GameObject* target{};
 	// 標的の座標
-	XMFLOAT3 target{};
+	XMFLOAT3 targetPos{};
 	// コライダー
 	Sphere sphere{};
 	SphereCollider* sphereColl = nullptr;
@@ -144,7 +150,7 @@ private:
 
 	// 攻撃
 	bool attackFlag = false;
-	int attackPower = 1;
+	float attackPower = 0.1f;
 
 	// ゲーム内であるか否か
 	bool isInGame = false;

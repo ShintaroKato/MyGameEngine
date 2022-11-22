@@ -151,7 +151,7 @@ private:
 	// 接地フラグ
 	bool onGround = true;
 	// 移動ベクトル
-	XMVECTOR move = { 0,0,0.1f,0 };
+	XMVECTOR move = { 0,0,1.0f,0 };
 	// 落下ベクトル
 	DirectX::XMVECTOR fallVel;
 	// コライダー
@@ -179,7 +179,7 @@ private:
 	bool attackFlag = false;
 	int attackLevel = 0;
 	float attackCount = 0;
-	float attackPower = 10;
+	float attackPower = 10.0f;
 
 	// ゲーム本編か否か
 	bool isInGame = true;
