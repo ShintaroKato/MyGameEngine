@@ -77,9 +77,22 @@ void GameObject::Update()
 {
 	if (HP <= 0) aliveFlag = false;
 
-	Drag();
-	Move();
-	if(isDrag) CollisionManager::GetInstance()->CheckAllCollision(sphereColl, COLLISION_ATTR_OBJECT_SPHERE);
+	if (!isInGame)
+	{
+		Drag();
+		Move();
+
+		if (isDrag)
+		{
+			if (CollisionManager::GetInstance()->CheckAllCollision(
+				sphereColl, COLLISION_ATTR_OBJECT_SPHERE));
+			else
+			{
+				hitX = false;
+				hitZ = false;
+			}
+		}
+	}
 
 	SetPosition(pos);
 
@@ -87,9 +100,21 @@ void GameObject::Update()
 	ObjectFBX::Update();
 }
 
-bool GameObject::Hit()
+void GameObject::Draw()
 {
-	return false;
+	if (!aliveFlag) return;
+
+	ObjectOBJ::Draw();
+}
+
+void GameObject::Hit(float attackPower)
+{
+	HP -= attackPower;
+
+	if (HP <= 0)
+	{
+		aliveFlag = false;
+	}
 }
 
 void GameObject::Drag()
@@ -98,11 +123,6 @@ void GameObject::Drag()
 	if (!used) return;
 
 	Input* input = Input::GetInstance();
-
-	if (input->PushMouse(MOUSE_LEFT) && isDrag)
-	{
-
-	}
 
 	if (input->ReleaseMouse(MOUSE_LEFT) && isDrag)
 	{
@@ -132,7 +152,19 @@ void GameObject::Drag()
 	// ’Í‚Ü‚ê‚Ä‚¢‚é‚Ìˆ—
 	if (isDrag)
 	{
-		pos = { vec.m128_f32[0], vec.m128_f32[1], vec.m128_f32[2] };
+
+		if (hitX)
+		{
+			pos = { pos.x, vec.m128_f32[1], vec.m128_f32[2] };
+		}
+		else if (hitZ)
+		{
+			pos = { vec.m128_f32[0], vec.m128_f32[1], pos.z };
+		}
+		else
+		{
+			pos = { vec.m128_f32[0], vec.m128_f32[1], vec.m128_f32[2] };
+		}
 		sphere.center = vec;
 		sphereColl->SetOffset(sphere.center);
 	}
@@ -166,7 +198,7 @@ void GameObject::SetPosition(const XMFLOAT3& position)
 			meshColl->ConstructTriangle(ObjectOBJ::model);
 			meshColl->SetAttribute(COLLISION_ATTR_OBJECT_MESH);
 
-			if (!used) meshColl->SetAttribute(COLLISION_ATTR_OBJECT_NONE);
+			if (!used || !aliveFlag) meshColl->SetAttribute(COLLISION_ATTR_OBJECT_NONE);
 
 			ObjectOBJ::SetCollider(meshColl);
 		}
@@ -192,7 +224,7 @@ void GameObject::SetPosition(const XMFLOAT3& position)
 			meshColl->ConstructTriangle(ObjectFBX::model);
 			meshColl->SetAttribute(COLLISION_ATTR_OBJECT_MESH);
 
-			if (!used) meshColl->SetAttribute(COLLISION_ATTR_OBJECT_NONE);
+			if (!used || !aliveFlag) meshColl->SetAttribute(COLLISION_ATTR_OBJECT_NONE);
 
 			ObjectFBX::SetCollider(meshColl);
 		}
@@ -227,10 +259,10 @@ void GameObject::OnCollision(const CollisionInfo& info)
 	{
 		Rejection(info);
 	}
-	if (info.collider->GetAttribute() == COLLISION_ATTR_ENEMIES && tag == "Castle")
+	if (info.collider->GetAttribute() == COLLISION_ATTR_ENEMIES && tag != "default")
 	{
-		if(info.obj) HP -= info.obj->attackPower;
-		else if(info.fbx) HP -= info.fbx->attackPower;
+		if(info.obj) Hit(info.obj->attackPower);
+		else if(info.fbx) Hit(info.fbx->attackPower);
 	}
 }
 
@@ -238,5 +270,7 @@ void GameObject::Rejection(const CollisionInfo& info)
 {
 	pos.x -= info.reject.m128_f32[0];
 	pos.z -= info.reject.m128_f32[2];
-	//sphere.center -= info.reject;
+
+	if (info.reject.m128_f32[0] != 0.0f) hitX = true; // X•ûŒü‚Ö‰Ÿ‚µo‚·—Ê‚ª0‚Å‚Í‚È‚¢(X•ûŒü‚©‚çÕ“Ë)
+	if (info.reject.m128_f32[2] != 0.0f) hitZ = true; // Z•ûŒü‚Ö‰Ÿ‚µo‚·—Ê‚ª0‚Å‚Í‚È‚¢(Z•ûŒü‚©‚çÕ“Ë)
 }

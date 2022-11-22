@@ -39,9 +39,14 @@ public:
 	void Update() override;
 
 	/// <summary>
+	/// 描画
+	/// </summary>
+	void Draw() override;
+
+	/// <summary>
 	/// 敵との当たり判定
 	/// </summary>
-	bool Hit();
+	void Hit(float attackPower);
 
 	/// <summary>
 	/// オブジェクトを掴む
@@ -97,9 +102,32 @@ public:
 	/// </summary>
 	void SetTag(std::string tag) { this->tag = tag; }
 
+	/// <summary>
+	/// 耐久値を設定
+	/// </summary>
+	/// <returns></returns>
+	void SetHP(float HP)
+	{
+		HPMax = HP;
+		this->HP = HPMax;
+	}
+
+	/// <summary>
+	/// 現在の耐久値を取得
+	/// </summary>
+	/// <returns></returns>
+	float GetHP() { return HP; }
+
+	/// <summary>
+	/// 耐久値の最大値を取得
+	/// </summary>
+	/// <returns></returns>
+	float GetHPMax() { return HPMax; }
+
 private:
 	// 座標
 	XMFLOAT3 pos{};
+	XMFLOAT3 posTmp{};
 	// 半径
 	float radius = 4.0f;
 	// 掴まれているか否か
@@ -116,8 +144,13 @@ private:
 	// オブジェクトの種類を判別するためのタグ
 	std::string tag = "default";
 
+	// 衝突している方向を判定(X方向)
+	bool hitX = false;
+	// 衝突している方向を判定(Z方向)
+	bool hitZ = false;
+
 	// 耐久値
-	const float HPMax = 10000.0f;
+	float HPMax = 100.0f;
 	float HP = HPMax;
 	float HPRate = HP / HPMax;
 
