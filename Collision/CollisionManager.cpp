@@ -53,6 +53,8 @@ bool CollisionManager::CheckAllCollision(BaseCollider* col)
 
 bool CollisionManager::CheckAllCollision(BaseCollider* col, unsigned short attr)
 {
+	bool result = false;
+
 	std::forward_list<BaseCollider*>::iterator it;
 
 	//全ての組み合わせについて総当たりチェック
@@ -64,10 +66,10 @@ bool CollisionManager::CheckAllCollision(BaseCollider* col, unsigned short attr)
 		if (col == colB) continue;
 		if (colB->GetAttribute() != attr) continue;
 
-		if (CheckCollision(col, colB)) return true;
+		if(CheckCollision(col, colB)) result = true;
 	}
 
-	return false;
+	return result;
 }
 
 bool CollisionManager::CheckCollision(BaseCollider* colA, BaseCollider* colB)

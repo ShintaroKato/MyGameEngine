@@ -84,12 +84,10 @@ void GameObject::Update()
 
 		if (isDrag)
 		{
-			if (CollisionManager::GetInstance()->CheckAllCollision(
-				sphereColl, COLLISION_ATTR_OBJECT_SPHERE));
-			else
+			if (!CollisionManager::GetInstance()->CheckAllCollision(
+				sphereColl, COLLISION_ATTR_OBJECT_SPHERE))
 			{
-				hitX = false;
-				hitZ = false;
+				hit = false;
 			}
 		}
 	}
@@ -152,20 +150,21 @@ void GameObject::Drag()
 	// ’Í‚Ü‚ê‚Ä‚¢‚é‚Ìˆ—
 	if (isDrag)
 	{
+		XMFLOAT3 speed{};
+		speed.x = 1.5f* sin(atan2(pos.x - vec.m128_f32[0], pos.z - vec.m128_f32[2]));
+		speed.z = 1.5f* cos(atan2(pos.x - vec.m128_f32[0], pos.z - vec.m128_f32[2]));
 
-		if (hitX)
+		if (abs(pos.x - vec.m128_f32[0]) <= 1.5f &&
+			abs(pos.z - vec.m128_f32[2]) <= 1.5f)
 		{
-			pos = { pos.x, vec.m128_f32[1], vec.m128_f32[2] };
+			speed.x = 0;
+			speed.z = 0;
 		}
-		else if (hitZ)
-		{
-			pos = { vec.m128_f32[0], vec.m128_f32[1], pos.z };
-		}
-		else
-		{
-			pos = { vec.m128_f32[0], vec.m128_f32[1], vec.m128_f32[2] };
-		}
-		sphere.center = vec;
+
+		pos.x -= speed.x;
+		pos.z -= speed.z;
+
+		sphere.center = { pos.x, pos.y, pos.z };
 		sphereColl->SetOffset(sphere.center);
 	}
 }
@@ -261,8 +260,8 @@ void GameObject::OnCollision(const CollisionInfo& info)
 	}
 	if (info.collider->GetAttribute() == COLLISION_ATTR_ENEMIES && tag != "default")
 	{
-		if(info.obj) Hit(info.obj->attackPower);
-		else if(info.fbx) Hit(info.fbx->attackPower);
+		if (info.obj) Hit(info.obj->attackPower);
+		else if (info.fbx) Hit(info.fbx->attackPower);
 	}
 }
 
@@ -271,6 +270,5 @@ void GameObject::Rejection(const CollisionInfo& info)
 	pos.x -= info.reject.m128_f32[0];
 	pos.z -= info.reject.m128_f32[2];
 
-	if (info.reject.m128_f32[0] != 0.0f) hitX = true; // X•ûŒü‚Ö‰Ÿ‚µo‚·—Ê‚ª0‚Å‚Í‚È‚¢(X•ûŒü‚©‚çÕ“Ë)
-	if (info.reject.m128_f32[2] != 0.0f) hitZ = true; // Z•ûŒü‚Ö‰Ÿ‚µo‚·—Ê‚ª0‚Å‚Í‚È‚¢(Z•ûŒü‚©‚çÕ“Ë)
+	hit = true;
 }

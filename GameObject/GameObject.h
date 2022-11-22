@@ -144,10 +144,8 @@ private:
 	// オブジェクトの種類を判別するためのタグ
 	std::string tag = "default";
 
-	// 衝突している方向を判定(X方向)
-	bool hitX = false;
-	// 衝突している方向を判定(Z方向)
-	bool hitZ = false;
+	// 衝突しているか否か
+	bool hit = false;
 
 	// 耐久値
 	float HPMax = 100.0f;
