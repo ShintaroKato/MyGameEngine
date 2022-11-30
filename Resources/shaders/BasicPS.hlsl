@@ -14,5 +14,5 @@ float4 main(VSOutput input) : SV_TARGET
     // アンビエント光を0.3として計算
     float brightness = diffuse + 0.3f;
     // テクスチャとシェーディングによる色を合成
-    return float4(texcolor.rgb * brightness, texcolor.a) * color;
+    return float4(texcolor.rgb * brightness, texcolor.a) * constColor;
 }

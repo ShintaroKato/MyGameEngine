@@ -9,10 +9,10 @@ float4 main(VSOutput input) : SV_TARGET
     float4 texcolor0 = tex0.Sample(smp, input.uv);
     float4 texcolor1 = tex1.Sample(smp, input.uv);
 
-    float4 color = texcolor0;
+    float4 constColor = texcolor0;
     if (fmod(input.uv.y, 0.1f) < 0.05f)
     {
-        color = texcolor1;
+        constColor = texcolor1;
     }
 
     // UV‚¸‚ç‚µ
@@ -27,5 +27,5 @@ float4 main(VSOutput input) : SV_TARGET
     // F”½“]
     //color = float4(float3(1,1,1) - color.rgb, 1);
 
-    return color;
+    return constColor;
 }

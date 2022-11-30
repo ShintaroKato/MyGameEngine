@@ -1,6 +1,6 @@
 cbuffer cbuff0 : register(b0)
 {
-    float4 color;
+    float4 constColor;
     matrix mat;
     uint mode;
     float alpha;

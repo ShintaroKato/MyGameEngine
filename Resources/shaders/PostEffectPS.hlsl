@@ -30,7 +30,7 @@ float4 main(VSOutput input) : SV_TARGET
     if (mode == 3)
     {
         // ぼかし
-        float4 color = float4(0,0,0,0); // 合計値保存用
+        float4 constColor = float4(0,0,0,0); // 合計値保存用
         float count = 0; // サンプリングしたピクセルの数をカウント
 
         for (float y = -10; y < 10; y++)
@@ -38,13 +38,13 @@ float4 main(VSOutput input) : SV_TARGET
             for (float x = -10; x < 10; x++)
             {
                 //ピクセルの色をサンプリングして合計に加算
-                color += tex.Sample(smp, input.uv + float2(x, y) * 0.001f);
+                constColor += tex.Sample(smp, input.uv + float2(x, y) * 0.001f);
                 count++;
             }
         }
 
         // 平均値を算出
-        texcolor.rgb = color.rgb / count;
+        texcolor.rgb = constColor.rgb / count;
     }
 
     return texcolor;
