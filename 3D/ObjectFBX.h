@@ -207,7 +207,7 @@ protected: // メンバ変数
 	// モデル
 	ModelFBX* model = nullptr;
 	// 色
-	XMFLOAT4 color = { 1,1,1,1 };
+	XMFLOAT4 constColor = { 1,1,1,1 };
 	// ローカルスケール
 	XMFLOAT3 scale = { 1,1,1 };
 	// X,Y,Z軸回りのローカル回転角

@@ -147,12 +147,12 @@ void SceneInGame::Draw()
 
 	for (int i = 0; i < 10; i++)
 	{
-		if (objCubeRed[i]->GetUsedFlag()) objCubeRed[i]->Draw();
-		if (objCubeGreen[i]->GetUsedFlag()) objCubeGreen[i]->Draw();
-		if (objCubeBlue[i]->GetUsedFlag()) objCubeBlue[i]->Draw();
+		if (objCubeRed[i]->GetUsedState() == USED) objCubeRed[i]->Draw();
+		if (objCubeGreen[i]->GetUsedState() == USED) objCubeGreen[i]->Draw();
+		if (objCubeBlue[i]->GetUsedState() == USED) objCubeBlue[i]->Draw();
 	}
 
-	if(objCastle->GetUsedFlag()) objCastle->Draw();
+	if(objCastle->GetUsedState()) objCastle->Draw();
 
 	objWall->Draw();
 

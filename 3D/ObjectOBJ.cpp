@@ -112,7 +112,7 @@ bool ObjectOBJ::InitializeGraphicsPipeline()
 
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/shaders/PhongPS.hlsl",	// シェーダファイル名
+		L"Resources/shaders/ObjPS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -267,6 +267,8 @@ void ObjectOBJ::Update()
 	constMap->viewProj = matViewProjection;
 	constMap->world = matWorld;
 	constMap->camPos = camera->GetEye();
+	constMap->constColor = color;
+	constMap->mode = shadeMode;
 	constBuffB0->Unmap(0, nullptr);
 }
 

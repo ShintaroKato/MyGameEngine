@@ -169,7 +169,7 @@ void RenderTexture::Draw()
 	ConstBufferData* constMap = nullptr;
 	HRESULT result = constBuff->Map(0, nullptr, (void**)&constMap);
 	constMap->mat = XMMatrixIdentity();
-	constMap->color = color;
+	constMap->constColor = constColor;
 	constBuff->Unmap(0, nullptr);
 
 	// パイプラインステートの設定

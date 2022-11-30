@@ -6,6 +6,13 @@
 #include "SphereCollider.h"
 #include "MeshCollider.h"
 
+enum UsedState
+{
+	UNUSED,
+	WAITING,
+	USED
+};
+
 class StageObject : public ObjectFBX, public ObjectOBJ
 {
 private: // エイリアス
@@ -70,10 +77,10 @@ public:
 
 	XMFLOAT3 GetPosition();
 
-	bool GetUsedFlag() { return used; }
-	void SetUsedFlag(bool flag)
+	UsedState GetUsedState() { return used; }
+	void SetUsedState(UsedState state)
 	{
-		if(!isDrag) used = flag;
+		if(!isDrag) used = state;
 		SetPosition(pos);
 	}
 
@@ -127,14 +134,13 @@ public:
 private:
 	// 座標
 	XMFLOAT3 pos{};
-	XMFLOAT3 posTmp{};
 	// 半径
-	float radius = 4.0f;
+	float radius = 3.5f;
 	// 掴まれているか否か
 	bool isDrag = false;
 	static bool isDragStatic;
-	// 使用されているか否か
-	bool used = false;
+	// 使用されているかを判別
+	UsedState used = UNUSED;
 	// ゲーム本編か否か
 	bool isInGame = false;
 	// コライダー

@@ -114,9 +114,9 @@ void SceneTitle::Draw()
 
 	for (int i = 0; i < 10; i++)
 	{
-		if (objCubeRed[i]->GetUsedFlag()) objCubeRed[i]->ObjectOBJ::Draw();
-		if (objCubeGreen[i]->GetUsedFlag()) objCubeGreen[i]->ObjectOBJ::Draw();
-		if (objCubeBlue[i]->GetUsedFlag()) objCubeBlue[i]->ObjectOBJ::Draw();
+		if (objCubeRed[i]->GetUsedState() == USED) objCubeRed[i]->ObjectOBJ::Draw();
+		if (objCubeGreen[i]->GetUsedState() == USED) objCubeGreen[i]->ObjectOBJ::Draw();
+		if (objCubeBlue[i]->GetUsedState() == USED) objCubeBlue[i]->ObjectOBJ::Draw();
 	}
 
 	objCastle->ObjectOBJ::Draw();

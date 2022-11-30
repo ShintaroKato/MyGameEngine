@@ -55,6 +55,8 @@
     <ClCompile Include="Scene\GameManager.cpp" />
     <ClCompile Include="UI\Meter.cpp" />
     <ClCompile Include="GameObject\StageObjectOffensive.cpp" />
+    <ClCompile Include="GameObject\Bullet.cpp" />
+    <ClCompile Include="UI\PlaneCursor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2D\PostEffect.h" />
@@ -101,6 +103,8 @@
     <ClInclude Include="Scene\GameManager.h" />
     <ClInclude Include="UI\Meter.h" />
     <ClInclude Include="GameObject\StageObjectOffensive.h" />
+    <ClInclude Include="GameObject\Bullet.h" />
+    <ClInclude Include="UI\PlaneCursor.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli" />

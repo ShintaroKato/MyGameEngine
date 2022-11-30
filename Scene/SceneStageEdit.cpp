@@ -1,5 +1,6 @@
 #include "SceneStageEdit.h"
 #include "SceneManager.h"
+#include "PlaneCursor.h"
 
 SceneStageEdit::SceneStageEdit()
 {
@@ -36,7 +37,9 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 		SceneBase::LoadStage(objCubeBlue[i]);
 	}
 	SceneBase::LoadStage(objCastle);
-	objCastle->SetUsedFlag(true);
+	objCastle->SetUsedState(USED);
+
+	PlaneCursor::Initialize(objCursor);
 
 	objSkydome->SetScale({ 5,5,5 });
 	objGroundGrid->ObjectOBJ::SetScale({ 5,5,5 });
@@ -81,21 +84,21 @@ void SceneStageEdit::Update()
 
 	for (int i = 0; i < 10; i++)
 	{
-		if (buttonRed->Click(MOUSE_LEFT) && !objCubeRed[i]->GetUsedFlag())
+		if (buttonRed->Click(MOUSE_LEFT) && !objCubeRed[i]->GetUsedState())
 		{
-			objCubeRed[i]->SetUsedFlag(true);
+			objCubeRed[i]->SetUsedState(WAITING);
 			buttonRed->SetClickFlag(false);
 			break;
 		}
-		if (buttonGreen->Click(MOUSE_LEFT) && !objCubeGreen[i]->GetUsedFlag())
+		if (buttonGreen->Click(MOUSE_LEFT) && !objCubeGreen[i]->GetUsedState())
 		{
-			objCubeGreen[i]->SetUsedFlag(true);
+			objCubeGreen[i]->SetUsedState(WAITING);
 			buttonGreen->SetClickFlag(false);
 			break;
 		}
-		if (buttonBlue->Click(MOUSE_LEFT) && !objCubeBlue[i]->GetUsedFlag())
+		if (buttonBlue->Click(MOUSE_LEFT) && !objCubeBlue[i]->GetUsedState())
 		{
-			objCubeBlue[i]->SetUsedFlag(true);
+			objCubeBlue[i]->SetUsedState(WAITING);
 			buttonBlue->SetClickFlag(false);
 			break;
 		}
@@ -108,6 +111,8 @@ void SceneStageEdit::Update()
 	spriteCursor->Update();
 
 	SceneBase::Update();
+
+	PlaneCursor::Update();
 }
 
 void SceneStageEdit::Draw()
@@ -136,15 +141,15 @@ void SceneStageEdit::Draw()
 
 	for (int i = 0; i < 10; i++)
 	{
-		if (objCubeRed[i]->GetUsedFlag()) objCubeRed[i]->ObjectOBJ::Draw();
-		if (objCubeGreen[i]->GetUsedFlag()) objCubeGreen[i]->ObjectOBJ::Draw();
-		if (objCubeBlue[i]->GetUsedFlag()) objCubeBlue[i]->ObjectOBJ::Draw();
+		if (objCubeRed[i]->GetUsedState()) objCubeRed[i]->ObjectOBJ::Draw();
+		if (objCubeGreen[i]->GetUsedState()) objCubeGreen[i]->ObjectOBJ::Draw();
+		if (objCubeBlue[i]->GetUsedState()) objCubeBlue[i]->ObjectOBJ::Draw();
 	}
 
 	objCastle->ObjectOBJ::Draw();
 
 	objWall->Draw();
-
+	PlaneCursor::Draw();
 	ObjectOBJ::PostDraw();
 
 	// FBXƒ‚ƒfƒ‹

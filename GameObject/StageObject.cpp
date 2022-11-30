@@ -3,6 +3,7 @@
 #include "CollisionAttribute.h"
 #include "Collision.h"
 #include "SceneManager.h"
+#include "PlaneCursor.h"
 
 bool StageObject::isDragStatic = false;
 
@@ -81,15 +82,6 @@ void StageObject::Update()
 	{
 		Drag();
 		Move();
-
-		if (isDrag)
-		{
-			if (!CollisionManager::GetInstance()->CheckAllCollision(
-				sphereColl, COLLISION_ATTR_OBJECT_SPHERE))
-			{
-				hit = false;
-			}
-		}
 	}
 
 	SetPosition(pos);
@@ -118,54 +110,56 @@ void StageObject::Hit(float attackPower)
 void StageObject::Drag()
 {
 	if(SceneManager::GetScene() != EDIT) return;
-	if (!used) return;
+	if (used == UNUSED) return;
 
 	Input* input = Input::GetInstance();
 
-	if (input->ReleaseMouse(MOUSE_LEFT) && isDrag)
+	if (!CollisionManager::GetInstance()->CheckAllCollision(sphereColl, COLLISION_ATTR_OBJECT_SPHERE) &&
+		input->TriggerMouse(MOUSE_LEFT) && isDrag)
 	{
 		isDrag = false;
 		isDragStatic = false;
 
-		return;
+		if (used == WAITING) used = USED;
+
+		PlaneCursor::SetIsDrag(isDragStatic);
 	}
-
-	XMVECTOR vec = input->CursorPoint3D(Camera::GetViewMatrix(), Camera::GetProjectionMatrix());
-	Ray ray;
-	ray.start = input->CalcScreenToWorld(input->GetMousePos2(), 0.0f, Camera::GetViewMatrix(), Camera::GetProjectionMatrix());
-	ray.dir = input->CalcScreenToWorld(input->GetMousePos2(), 1.0f, Camera::GetViewMatrix(), Camera::GetProjectionMatrix());
-	ray.dir = XMVector3Normalize(ray.dir - ray.start);
-	float distance = 0;
-	XMVECTOR inter{};
-
-	if (input->TriggerMouse(MOUSE_LEFT))
+	else if (CollisionManager::GetInstance()->CheckAllCollision(sphereColl, COLLISION_ATTR_PLANE_CURSOR) &&
+		input->TriggerMouse(MOUSE_LEFT) && !isDrag ||
+		used == WAITING)
 	{
-		if (Collision::ChackRay2Sphere(ray, sphere, &distance, &inter))
-		{
-			// íÕÇÒÇ≈Ç¢ÇÈèÛë‘Ç…Ç∑ÇÈ
-			if(!isDragStatic) isDrag = true;
-			isDragStatic = true;
-		}
+		// íÕÇÒÇ≈Ç¢ÇÈèÛë‘Ç…Ç∑ÇÈ
+		if(!isDragStatic) isDrag = true;
+		isDragStatic = true;
+		PlaneCursor::SetIsDrag(isDragStatic);
 	}
+
 	// íÕÇ‹ÇÍÇƒÇ¢ÇÈéûÇÃèàóù
 	if (isDrag)
 	{
-		XMFLOAT3 speed{};
-		speed.x = 1.5f* sin(atan2(pos.x - vec.m128_f32[0], pos.z - vec.m128_f32[2]));
-		speed.z = 1.5f* cos(atan2(pos.x - vec.m128_f32[0], pos.z - vec.m128_f32[2]));
-
-		if (abs(pos.x - vec.m128_f32[0]) <= 1.0f &&
-			abs(pos.z - vec.m128_f32[2]) <= 1.0f)
-		{
-			speed.x = 0;
-			speed.z = 0;
-		}
-
-		pos.x -= speed.x;
-		pos.z -= speed.z;
+		PlaneCursor::SetRadius(radius);
+		pos = PlaneCursor::GetPosition();
+		pos.y += 10.0f;
 
 		sphere.center = { pos.x, pos.y, pos.z };
 		sphereColl->SetOffset(sphere.center);
+	}
+
+	if (PlaneCursor::GetIsDrag())
+	{
+		if (CollisionManager::GetInstance()->CheckAllCollision(sphereColl, COLLISION_ATTR_OBJECT_SPHERE))
+		{
+			PlaneCursor::SetColor({ 0.0f,1.0f,0.0f,0.0f });
+		}
+		else
+		{
+			PlaneCursor::SetColor({ 0.0f,0.0f,1.0f,0.0f });
+		}
+	}
+	else
+	{
+		PlaneCursor::SetColor({ 0.0f,1.0f,1.0f,1.0f });
+
 	}
 }
 
@@ -177,7 +171,7 @@ void StageObject::Move()
 	if (pos.z < -60) pos.z = -60;
 	if (pos.z > 60) pos.z = 60;
 
-	if (pos.y > 0) pos.y = 0;
+	if (!isDrag) pos.y = 0;
 }
 
 void StageObject::SetPosition(const XMFLOAT3& position)
@@ -256,7 +250,7 @@ void StageObject::OnCollision(const CollisionInfo& info)
 {
 	if (info.collider->GetAttribute() == COLLISION_ATTR_OBJECT_SPHERE && isDrag)
 	{
-		Rejection(info);
+		//Rejection(info);
 	}
 	if (info.collider->GetAttribute() == COLLISION_ATTR_ENEMIES && tag != "default")
 	{

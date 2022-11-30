@@ -35,6 +35,8 @@ public: // サブクラス
 		XMMATRIX viewProj;	// ビュープロジェクション行列
 		XMMATRIX world;				// ワールド行列
 		XMFLOAT3 camPos;			// カメラの位置
+		XMFLOAT4 constColor;				// 色
+		UINT mode;			// シェーディングのモード
 	};
 
 public: // 静的メンバ関数
@@ -155,6 +157,12 @@ public: // メンバ関数
 	void SetScale(const XMFLOAT3& scale) { this->scale = scale; }
 
 	/// <summary>
+	/// 色の設定
+	/// </summary>
+	/// <param name="color">色(RGBA)</param>
+	void SetColor(const XMFLOAT4& color) { this->color = color; }
+
+	/// <summary>
 	/// モデルの設定
 	/// </summary>
 	void SetModelOBJ(ModelOBJ* model) { this->model = model; }
@@ -163,6 +171,12 @@ public: // メンバ関数
 	/// コライダーの設定
 	/// </summary>
 	void SetCollider(BaseCollider* collider);
+
+	/// <summary>
+	/// シェーディングのモードを設定
+	/// </summary>
+	/// <param name="mode"></param>
+	void SetShadingMode(UINT mode) { shadeMode = mode; }
 
 	/// <summary>
 	/// 衝突時コールバック関数
@@ -193,6 +207,9 @@ protected: // メンバ変数
 
 	// コライダー
 	BaseCollider* collider = nullptr;
+
+	// シェーディングのモード
+	UINT shadeMode = 1;
 
 public: // ゲームオブジェクト用
 	// 攻撃力

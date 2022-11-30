@@ -7,7 +7,7 @@ public:
 	// 定数バッファ用データ構造体
 	struct ConstBufferData
 	{
-		XMFLOAT4 color; // 色 (RGBA)
+		XMFLOAT4 constColor; // 色 (RGBA)
 		XMMATRIX mat;   // ３Ｄ変換行列
 		UINT mode;     // 表示切り替え
 		float alpha;     // 透明度

@@ -6,7 +6,7 @@
 #include "SphereCollider.h"
 #include "MeshCollider.h"
 
-class StageObject : public ObjectFBX, public ObjectOBJ
+class StageObjectOffensive : public ObjectFBX, public ObjectOBJ
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -23,8 +23,8 @@ public:
 	/// 3Dオブジェクト生成
 	/// </summary>
 	/// <returns>インスタンス</returns>
-	static StageObject* Create(ModelOBJ* obj = nullptr);
-	static StageObject* Create(ModelFBX* fbx = nullptr);
+	static StageObjectOffensive* Create(ModelOBJ* obj = nullptr);
+	static StageObjectOffensive* Create(ModelFBX* fbx = nullptr);
 
 public:
 	/// <summary>
@@ -49,16 +49,6 @@ public:
 	void Hit(float attackPower);
 
 	/// <summary>
-	/// オブジェクトを掴む
-	/// </summary>
-	void Drag();
-
-	/// <summary>
-	/// 移動
-	/// </summary>
-	void Move();
-
-	/// <summary>
 	/// 座標を固定された状態にする
 	/// </summary>
 	void PositionFix()
@@ -70,10 +60,10 @@ public:
 
 	XMFLOAT3 GetPosition();
 
-	bool GetUsedFlag() { return used; }
-	void SetUsedFlag(bool flag)
+	bool GetUsedState() { return used; }
+	void SetUsedState(bool flag)
 	{
-		if (!isDrag) used = flag;
+		used = flag;
 		SetPosition(pos);
 	}
 
@@ -130,9 +120,6 @@ private:
 	XMFLOAT3 posTmp{};
 	// 半径
 	float radius = 4.0f;
-	// 掴まれているか否か
-	bool isDrag = false;
-	static bool isDragStatic;
 	// 使用されているか否か
 	bool used = false;
 	// ゲーム本編か否か

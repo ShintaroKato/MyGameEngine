@@ -59,7 +59,7 @@ void Sprite::Initialize(SpriteCommon* spriteCommon, UINT texNumber, XMFLOAT2 pos
 	// 定数バッファにデータ転送
 	ConstBufferData* constMap = nullptr;
 	result = constBuff->Map(0, nullptr, (void**)&constMap);
-	constMap->color = XMFLOAT4(1, 1, 1, 1); // 色指定（RGBA）
+	constMap->constColor = XMFLOAT4(1, 1, 1, 1); // 色指定（RGBA）
 	constMap->mat = spriteCommon->GetMatProjection();
 	constBuff->Unmap(0, nullptr);
 }
@@ -88,7 +88,7 @@ void Sprite::Update()
 	ConstBufferData* constMap = nullptr;
 	HRESULT result = constBuff->Map(0, nullptr, (void**)&constMap);
 	constMap->mat = matWorld * this->spriteCommon->GetMatProjection();
-	constMap->color = color;
+	constMap->constColor = constColor;
 	constBuff->Unmap(0, nullptr);
 }
 

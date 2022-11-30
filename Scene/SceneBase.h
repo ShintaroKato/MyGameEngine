@@ -7,9 +7,9 @@
 #include "Text.h"
 #include "ObjectOBJ.h"
 #include "ObjectFBX.h"
-#include "UI/Button.h"
-#include "UI/Number.h"
-#include "UI/Meter.h"
+#include "Button.h"
+#include "Number.h"
+#include "Meter.h"
 #include "StageObject.h"
 #include "Player.h"
 #include "Enemy.h"
@@ -41,7 +41,7 @@ enum SpriteNo
 struct ObjectTmpData
 {
 	XMFLOAT3 pos;
-	bool isUsed;
+	UsedState used;
 	std::string tag;
 
 	bool isSaved = false;
@@ -142,6 +142,7 @@ protected:
 	ModelOBJ* modelCastle = nullptr;
 	ModelOBJ* modelWall = nullptr;
 	ModelOBJ* modelWeapon = nullptr;
+	ModelOBJ* modelCursor = nullptr;
 
 	ObjectOBJ* objWall = nullptr;
 	ObjectOBJ* objSkydome = nullptr;
@@ -152,6 +153,8 @@ protected:
 	static StageObject* objCubeBlue[CUBE_BLUE_MAX];
 
 	static StageObject* objCastle;
+
+	ObjectOBJ* objCursor = nullptr;
 
 	Player* player = nullptr;
 	Enemy* enemy[ENEMY_MAX]{};

@@ -31,7 +31,7 @@ public: // サブクラス
 	// 定数バッファ用データ構造体
 	struct ConstBufferData
 	{
-		XMFLOAT4 color; // 色 (RGBA)
+		XMFLOAT4 constColor; // 色 (RGBA)
 		XMMATRIX mat;   // ３Ｄ変換行列
 	};
 
@@ -128,7 +128,7 @@ protected:
 	// ワールド行列
 	XMMATRIX matWorld{};
 	// 色
-	XMFLOAT4 color = { 1, 1, 1, 1 };
+	XMFLOAT4 constColor = { 1, 1, 1, 1 };
 	// 左右反転
 	bool isFlipX = false;
 	// 上下反転

@@ -80,12 +80,14 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	modelCastle = ModelOBJ::LoadObj("small_castle");
 	modelWall = ModelOBJ::LoadObj("square_wall");
 	modelWeapon = ModelOBJ::LoadObj("sword2");
+	modelCursor = ModelOBJ::LoadObj("cursor_plane");
 
 	// 3Dオブジェクト生成
 	objSkydome = ObjectOBJ::Create();
 	// オブジェクトにモデルを紐づける
 	objSkydome->SetModelOBJ(modelSkydome);
 	objSkydome->SetScale({ 5,5,5 });
+	objSkydome->SetShadingMode(0);
 
 	objWall = ObjectOBJ::Create();
 	objWall->SetModelOBJ(modelWall);
@@ -109,10 +111,15 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 		SaveStage(objCubeBlue[i]);
 	}
 	objCastle = StageObject::Create(modelCastle);
-	objCastle->SetRadius(5.5f);
+	objCastle->SetRadius(5.0f);
 	objCastle->SetTag("Castle");
 	objCastle->SetHP(1000.0f);
 	SaveStage(objCastle);
+
+	objCursor = ObjectOBJ::Create();
+	objCursor->SetModelOBJ(modelCursor);
+	objCursor->SetShadingMode(0);
+	objCursor->SetScale({ 5.0f,5.0f,5.0f });
 
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{
@@ -137,9 +144,9 @@ void SceneBase::Update()
 	player->Update();
 	for (int i = 0; i < 10; i++)
 	{
-		if (objCubeRed[i]->GetUsedFlag()) objCubeRed[i]->Update();
-		if (objCubeGreen[i]->GetUsedFlag()) objCubeGreen[i]->Update();
-		if (objCubeBlue[i]->GetUsedFlag()) objCubeBlue[i]->Update();
+		if (objCubeRed[i]->GetUsedState()) objCubeRed[i]->Update();
+		if (objCubeGreen[i]->GetUsedState()) objCubeGreen[i]->Update();
+		if (objCubeBlue[i]->GetUsedState()) objCubeBlue[i]->Update();
 	}
 	objCastle->Update();
 
@@ -153,7 +160,6 @@ void SceneBase::Update()
 	objGroundGrid->Update();
 	objWall->Update();
 	weapon[0]->Update();
-
 	// fbx更新
 
 	// スプライト
@@ -167,7 +173,7 @@ void SceneBase::SaveStage(StageObject* StageObject)
 		if (tmp[i].isSaved) continue;
 
 		tmp[i].pos = StageObject->GetPosition();
-		tmp[i].isUsed = StageObject->GetUsedFlag();
+		tmp[i].used = StageObject->GetUsedState();
 		tmp[i].tag = StageObject->GetTag();
 		tmp[i].isSaved = true;
 
@@ -183,12 +189,12 @@ void SceneBase::LoadStage(StageObject* StageObject, bool isInGame)
 		if (StageObject->GetTag() != tmp[i].tag) continue;
 
 		StageObject->SetPosition(tmp[i].pos);
-		StageObject->SetUsedFlag(tmp[i].isUsed);
+		StageObject->SetUsedState(tmp[i].used);
 		StageObject->SetTag(tmp[i].tag);
 		tmp[i].isSaved = false;
 
 		if (isInGame) StageObject->PositionFix();
-		if (StageObject->GetTag() == "Castle") StageObject->SetUsedFlag(true);
+		if (StageObject->GetTag() == "Castle") StageObject->SetUsedState(USED);
 
 		break;
 	}

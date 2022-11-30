@@ -159,7 +159,7 @@ void PostEffect::Draw()
 	ConstBufferData* constMap = nullptr;
 	HRESULT result = constBuff->Map(0, nullptr, (void**)&constMap);
 	constMap->mat = XMMatrixIdentity();
-	constMap->color = color;
+	constMap->constColor = constColor;
 	constMap->mode = mode;
 	constMap->alpha = alpha;
 	constBuff->Unmap(0, nullptr);

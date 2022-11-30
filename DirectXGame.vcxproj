@@ -79,7 +79,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(ProjectDir)Collision\;$(IncludePath)</IncludePath>
-    <IncludePath>$(ProjectDir)GameObject\;$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)UI\;$(ProjectDir)GameObject\;$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir);$(ProjectDir)3D\;$(ProjectDir)2D\;$(ProjectDir)Camera\;$(ProjectDir)Base\;$(ProjectDir)Input\;$(ProjectDir)Audio\;$(ProjectDir)Scene\;$(ProjectDir)lib\DirectXTex\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib\DirectXTex\lib\Release;$(ProjectDir)lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -124,6 +124,7 @@
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -158,6 +159,7 @@
     <ClCompile Include="2D\SpriteCommon.cpp" />
     <ClCompile Include="2D\Text.cpp" />
     <ClCompile Include="3D\FBXLoader.cpp" />
+    <ClCompile Include="GameObject\Bullet.cpp" />
     <ClCompile Include="GameObject\StageObject.cpp" />
     <ClCompile Include="3D\ModelFBX.cpp" />
     <ClCompile Include="3D\ObjectFBX.cpp" />
@@ -191,6 +193,7 @@
     <ClCompile Include="UI\Button.cpp" />
     <ClCompile Include="UI\Meter.cpp" />
     <ClCompile Include="UI\Number.cpp" />
+    <ClCompile Include="UI\PlaneCursor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="DirectXTex\DirectXTex_Desktop_2019_Win10.vcxproj">
@@ -298,6 +301,7 @@
     <ClInclude Include="2D\SpriteCommon.h" />
     <ClInclude Include="2D\Text.h" />
     <ClInclude Include="3D\FBXLoader.h" />
+    <ClInclude Include="GameObject\Bullet.h" />
     <ClInclude Include="GameObject\StageObject.h" />
     <ClInclude Include="3D\ModelFBX.h" />
     <ClInclude Include="3D\ObjectFBX.h" />
@@ -336,6 +340,7 @@
     <ClInclude Include="UI\Button.h" />
     <ClInclude Include="UI\Meter.h" />
     <ClInclude Include="UI\Number.h" />
+    <ClInclude Include="UI\PlaneCursor.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Picture2\256x256Blue.png" />
