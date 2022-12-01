@@ -267,8 +267,8 @@ void ObjectOBJ::Update()
 	constMap->viewProj = matViewProjection;
 	constMap->world = matWorld;
 	constMap->camPos = camera->GetEye();
-	constMap->constColor = color;
 	constMap->mode = shadeMode;
+	constMap->constColor = color;
 	constBuffB0->Unmap(0, nullptr);
 }
 

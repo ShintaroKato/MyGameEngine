@@ -145,21 +145,18 @@ void StageObject::Drag()
 		sphereColl->SetOffset(sphere.center);
 	}
 
-	if (PlaneCursor::GetIsDrag())
+	if (PlaneCursor::GetIsDrag() && isDrag)
 	{
+		PlaneCursor::SetColor({ 0.0f,1.0f,0.0f,0.0f }); // óŒ
+
 		if (CollisionManager::GetInstance()->CheckAllCollision(sphereColl, COLLISION_ATTR_OBJECT_SPHERE))
 		{
-			PlaneCursor::SetColor({ 0.0f,1.0f,0.0f,0.0f });
-		}
-		else
-		{
-			PlaneCursor::SetColor({ 0.0f,0.0f,1.0f,0.0f });
+			PlaneCursor::SetColor({ 1.0f,0.0f,0.0f,0.0f }); // ê‘
 		}
 	}
-	else
+	else if(!PlaneCursor::GetIsDrag())
 	{
-		PlaneCursor::SetColor({ 0.0f,1.0f,1.0f,1.0f });
-
+		PlaneCursor::SetColor({ 1.0f,1.0f,1.0f,1.0f }); // îí
 	}
 }
 

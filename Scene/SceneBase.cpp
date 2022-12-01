@@ -87,7 +87,7 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	// オブジェクトにモデルを紐づける
 	objSkydome->SetModelOBJ(modelSkydome);
 	objSkydome->SetScale({ 5,5,5 });
-	objSkydome->SetShadingMode(0);
+	objSkydome->SetShadingMode(1);
 
 	objWall = ObjectOBJ::Create();
 	objWall->SetModelOBJ(modelWall);
@@ -118,7 +118,7 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 
 	objCursor = ObjectOBJ::Create();
 	objCursor->SetModelOBJ(modelCursor);
-	objCursor->SetShadingMode(0);
+	objCursor->SetShadingMode(1);
 	objCursor->SetScale({ 5.0f,5.0f,5.0f });
 
 	for (int i = 0; i < ENEMY_MAX; i++)

@@ -35,8 +35,8 @@ public: // サブクラス
 		XMMATRIX viewProj;	// ビュープロジェクション行列
 		XMMATRIX world;				// ワールド行列
 		XMFLOAT3 camPos;			// カメラの位置
-		XMFLOAT4 constColor;				// 色
 		UINT mode;			// シェーディングのモード
+		XMFLOAT4 constColor;				// 色
 	};
 
 public: // 静的メンバ関数
@@ -209,7 +209,7 @@ protected: // メンバ変数
 	BaseCollider* collider = nullptr;
 
 	// シェーディングのモード
-	UINT shadeMode = 1;
+	UINT shadeMode = 0;
 
 public: // ゲームオブジェクト用
 	// 攻撃力

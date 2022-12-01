@@ -9,9 +9,12 @@ float4 main(VSOutput input) : SV_TARGET
 {
     float4 result;
 
-    switch (mode)
+    if (mode == 0)
     {
-    case 0:
+        result = PhongShading(input);
+    }
+    if (mode == 1)
+    {
         float3 light = normalize(float3(1, -1, 1)); // 右下奥　向きのライト
         float light_diffuse = saturate(dot(-light, input.normal));
         float3 shade_color;
@@ -20,13 +23,6 @@ float4 main(VSOutput input) : SV_TARGET
         float4 texcolor = tex.Sample(smp, input.uv);
 
         result = float4(texcolor.rgb * shade_color * constColor.rgb, texcolor.a * m_alpha);
-
-        break;
-
-    case 1:
-        result = PhongShading(input);
-
-        break;
     }
 
     return result;
@@ -39,16 +35,16 @@ float4 PhongShading(VSOutput input) : SV_TARGET
     float3 light = float3(10, 10, 1);
 
     // アンビエント
-    float4 constColor = tex.Sample(smp, input.uv);
+    float4 color = tex.Sample(smp, input.uv);
     // 暗めにするために0.3を掛けた
-    float4 ambient = constColor * 0.3f;
+    float4 ambient = color * 0.3f;
     // 透明度を1に戻した
     ambient.a = 1;
 
     // ディフューズ
     // 光源ベクトルと法線ベクトルの内積を算出し、0.0～1.0の間でクランプ
     float intensity = saturate(dot(normalize(normal), light));
-    float4 diffuse = constColor * 0.5f * intensity;
+    float4 diffuse = color * 0.5f * intensity;
 
     // スペキュラー
     // 視線ベクトルを正規化

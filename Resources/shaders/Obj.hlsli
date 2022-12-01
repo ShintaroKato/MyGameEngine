@@ -3,8 +3,8 @@ cbuffer cbuff0 : register(b0)
 	matrix viewProj;
 	matrix world;
 	float3 camPos;
-	float4 constColor;
 	uint mode;
+	float4 constColor;
 };
 
 cbuffer cbuff0 : register(b1)
