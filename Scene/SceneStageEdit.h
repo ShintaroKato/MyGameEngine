@@ -34,7 +34,22 @@ public: // メンバ関数
 	void Draw()override;
 
 	/// <summary>
+	/// メニュー表示更新
+	/// </summary>
+	void MenuUpdate();
+
+	/// <summary>
+	/// メニュー表示描画
+	/// </summary>
+	void MenuDraw();
+
+	/// <summary>
 	/// datファイルに保存
 	/// </summary>
 	void SaveDat();
+
+private:
+	StageObject* stgObjectEdit[OBJECT_MAX];
+
+	bool menuON = true;
 };

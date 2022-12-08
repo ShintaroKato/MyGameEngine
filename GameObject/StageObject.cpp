@@ -80,6 +80,7 @@ void StageObject::Update()
 
 	if (!isInGame)
 	{
+		ResetStatus();
 		Drag();
 		Move();
 	}
@@ -231,6 +232,16 @@ void StageObject::SetPosition(const XMFLOAT3& position)
 
 }
 
+void StageObject::SetModel(ModelOBJ* obj)
+{
+	SetModelOBJ(obj);
+}
+
+void StageObject::SetModel(ModelFBX* fbx)
+{
+	SetModelFBX(fbx);
+}
+
 XMFLOAT3 StageObject::GetPosition()
 {
 	if (ObjectOBJ::model)
@@ -249,7 +260,7 @@ void StageObject::OnCollision(const CollisionInfo& info)
 	{
 		//Rejection(info);
 	}
-	if (info.collider->GetAttribute() == COLLISION_ATTR_ENEMIES && tag != "default")
+	if (info.collider->GetAttribute() == COLLISION_ATTR_ENEMIES && tag != STAGE_OBJECT_DEFAULT)
 	{
 		if (info.obj) Hit(info.obj->attackPower);
 		else if (info.fbx) Hit(info.fbx->attackPower);

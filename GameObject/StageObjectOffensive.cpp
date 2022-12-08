@@ -71,10 +71,7 @@ void StageObjectOffensive::Update()
 {
 	if (HP <= 0) aliveFlag = false;
 
-	SetPosition(pos);
-
-	ObjectOBJ::Update();
-	ObjectFBX::Update();
+	StageObject::Update();
 }
 
 void StageObjectOffensive::Draw()
@@ -82,54 +79,4 @@ void StageObjectOffensive::Draw()
 	if (!aliveFlag) return;
 
 	ObjectOBJ::Draw();
-}
-
-void StageObjectOffensive::Hit(float attackPower)
-{
-}
-
-XMFLOAT3 StageObjectOffensive::GetPosition()
-{
-	return XMFLOAT3();
-}
-
-void StageObjectOffensive::SetPosition(const XMFLOAT3& position)
-{
-	this->pos = position;
-
-	// コライダーの追加
-	sphere.center = { pos.x, pos.y + 5.0f, pos.z,0 };
-	sphere.radius = radius;
-
-	if (ObjectOBJ::model)
-	{
-		ObjectOBJ::SetPosition(pos);
-
-		meshColl->ConstructTriangle(ObjectOBJ::model);
-		meshColl->SetAttribute(COLLISION_ATTR_OBJECT_MESH);
-
-		if (!used || !aliveFlag) meshColl->SetAttribute(COLLISION_ATTR_OBJECT_NONE);
-
-		ObjectOBJ::SetCollider(meshColl);
-
-	}
-	if (ObjectFBX::model)
-	{
-		ObjectFBX::SetPosition(pos);
-
-		meshColl->ConstructTriangle(ObjectFBX::model);
-		meshColl->SetAttribute(COLLISION_ATTR_OBJECT_MESH);
-
-		if (!used || !aliveFlag) meshColl->SetAttribute(COLLISION_ATTR_OBJECT_NONE);
-
-		ObjectFBX::SetCollider(meshColl);
-	}
-}
-
-void StageObjectOffensive::OnCollision(const CollisionInfo& info)
-{
-}
-
-void StageObjectOffensive::Rejection(const CollisionInfo& info)
-{
 }

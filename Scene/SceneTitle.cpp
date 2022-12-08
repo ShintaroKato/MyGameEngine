@@ -9,13 +9,10 @@ void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 {
 	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
 
-	for (int i = 0; i < CUBE_RED_MAX; i++)
-	{
-		SceneBase::LoadStage(objCubeRed[i]);
-		SceneBase::LoadStage(objCubeGreen[i]);
-		SceneBase::LoadStage(objCubeBlue[i]);
-	}
-	SceneBase::LoadStage(objCastle);
+	//for (int i = 0; i < objTmp.size(); i++)
+	//{
+	//	SceneBase::LoadStage(objTmp[i]);
+	//}
 
 	objSkydome->SetScale({ 5,5,5 });
 	objGroundGrid->ObjectOBJ::SetScale({ 5,5,5 });
@@ -30,7 +27,12 @@ void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 	buttonStart->SetPosition({ WinApp::window_width / 2,WinApp::window_height - 256 });
 	buttonStart->SetSize({ 128,64 });
 	buttonStart->SetAnchorPoint({ 0.5f,0.5f });
-	
+
+	for (int i = 0; i < stgObjects.size(); i++)
+	{
+		if (stgObjects[i]->GetTag() == CASTLE_OBJECT) startUnlock = true;
+	}
+
 	buttonEdit->SetPosition({ WinApp::window_width / 2,WinApp::window_height - 256 + 64 + 20 });
 	buttonEdit->SetSize({ 128,64 });
 	buttonEdit->SetAnchorPoint({ 0.5f,0.5f });
@@ -44,27 +46,22 @@ void SceneTitle::Update()
 
 	if (input->TriggerKey(DIK_1) || buttonEdit->Click(MOUSE_LEFT))
 	{
-		for (int i = 0; i < CUBE_RED_MAX; i++)
-		{
-			SceneBase::SaveStage(objCubeRed[i]);
-			SceneBase::SaveStage(objCubeGreen[i]);
-			SceneBase::SaveStage(objCubeBlue[i]);
-		}
-		SceneBase::SaveStage(objCastle);
+		//for (int i = 0; i < objTmp.size(); i++)
+		//{
+		//	SceneBase::SaveStage(objTmp[i]);
+		//}
 
 		SceneManager::SetScene(EDIT);
 
 		return;
 	}
-	if (input->TriggerKey(DIK_2) || buttonStart->Click(MOUSE_LEFT))
+	if (startUnlock &&
+		(input->TriggerKey(DIK_2) || buttonStart->Click(MOUSE_LEFT)))
 	{
-		for (int i = 0; i < CUBE_RED_MAX; i++)
-		{
-			SceneBase::SaveStage(objCubeRed[i]);
-			SceneBase::SaveStage(objCubeGreen[i]);
-			SceneBase::SaveStage(objCubeBlue[i]);
-		}
-		SceneBase::SaveStage(objCastle);
+		//for (int i = 0; i < objTmp.size(); i++)
+		//{
+		//	SceneBase::SaveStage(objTmp[i]);
+		//}
 
 		SceneManager::SetScene(GAME);
 
@@ -81,12 +78,18 @@ void SceneTitle::Update()
 	}
 
 	buttonEdit->Update();
-	buttonStart->Update();
+
+	if (startUnlock) buttonStart->Update();
 
 	spriteCursor->Update();
 
 
 	SceneBase::Update();
+
+	for (int i = 0; i < stgObjects.size(); i++)
+	{
+		if (stgObjects[i]->GetUsedState() != UNUSED) stgObjects[i]->Update();
+	}
 }
 
 void SceneTitle::Draw()
@@ -112,14 +115,10 @@ void SceneTitle::Draw()
 	objSkydome->Draw();
 	objGroundGrid->ObjectOBJ::Draw();
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < stgObjects.size(); i++)
 	{
-		if (objCubeRed[i]->GetUsedState() == USED) objCubeRed[i]->ObjectOBJ::Draw();
-		if (objCubeGreen[i]->GetUsedState() == USED) objCubeGreen[i]->ObjectOBJ::Draw();
-		if (objCubeBlue[i]->GetUsedState() == USED) objCubeBlue[i]->ObjectOBJ::Draw();
+		if (stgObjects[i]->GetUsedState() != UNUSED) stgObjects[i]->ObjectOBJ::Draw();
 	}
-
-	objCastle->ObjectOBJ::Draw();
 
 	objWall->Draw();
 
@@ -136,7 +135,8 @@ void SceneTitle::Draw()
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
 	buttonEdit->Draw();
-	buttonStart->Draw();
+
+	if (startUnlock) buttonStart->Draw();
 
 	// スプライト描画
 	spriteTitle->Draw();

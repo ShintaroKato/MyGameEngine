@@ -13,6 +13,15 @@ enum UsedState
 	USED
 };
 
+enum Tag
+{
+	STAGE_OBJECT_DEFAULT,
+	RED_OBJECT,
+	GREEN_OBJECT,
+	BLUE_OBJECT,
+	CASTLE_OBJECT,
+};
+
 class StageObject : public ObjectFBX, public ObjectOBJ
 {
 private: // エイリアス
@@ -66,16 +75,18 @@ public:
 	void Move();
 
 	/// <summary>
-	/// 座標を固定された状態にする
+	/// ゲーム本編か否かを設定
 	/// </summary>
-	void PositionFix()
+	void SetInGameFlag(bool isInGame)
 	{
-		isInGame = true;
+		this->isInGame = isInGame;
 	}
 
 	BaseCollider* GetCollider() { return meshColl; }
 
 	XMFLOAT3 GetPosition();
+
+	void SetPosition(const XMFLOAT3& position);
 
 	UsedState GetUsedState() { return used; }
 	void SetUsedState(UsedState state)
@@ -84,9 +95,10 @@ public:
 		SetPosition(pos);
 	}
 
-	void SetPosition(const XMFLOAT3& position);
-
 	void SetRadius(float radius) { this->radius = radius; }
+
+	void SetModel(ModelOBJ* obj = nullptr);
+	void SetModel(ModelFBX* fbx = nullptr);
 
 	/// <summary>
 	/// 衝突時コールバック関数
@@ -99,15 +111,23 @@ public:
 	/// </summary>
 	void Rejection(const CollisionInfo& info);
 
+	bool GetDragFlag() { return isDrag; }
+
 	/// <summary>
 	/// タグを取得
 	/// </summary>
-	std::string GetTag() { return tag; }
+	Tag GetTag() { return tag; }
 
 	/// <summary>
 	/// タグをセット
 	/// </summary>
-	void SetTag(std::string tag) { this->tag = tag; }
+	void SetTag(Tag tag) { this->tag = tag; }
+
+	int GetNumber() { return number; }
+
+	void SetNumber(int number) { this->number = number; }
+
+	void SetAlive(bool aliveFlag) { this->aliveFlag = aliveFlag; }
 
 	/// <summary>
 	/// 耐久値を設定
@@ -131,6 +151,12 @@ public:
 	/// <returns></returns>
 	float GetHPMax() { return HPMax; }
 
+	void ResetStatus()
+	{
+		HP = HPMax;
+		aliveFlag = true;
+	}
+
 private:
 	// 座標
 	XMFLOAT3 pos{};
@@ -148,7 +174,9 @@ private:
 	MeshCollider* meshColl = nullptr;
 	SphereCollider* sphereColl = nullptr;
 	// オブジェクトの種類を判別するためのタグ
-	std::string tag = "default";
+	Tag tag = STAGE_OBJECT_DEFAULT;
+	// 番号
+	int number = -1;
 
 	// 衝突しているか否か
 	bool hit = false;

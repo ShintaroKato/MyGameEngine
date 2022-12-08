@@ -15,6 +15,28 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 {
 	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
 
+	for (int i = 0; i < OBJECT_MAX; i++)
+	{
+		if(stgObjects.size() <= i)
+		{
+			if (i == 0)
+			{
+				stgObjectEdit[i] = StageObject::Create(modelCastle);
+				stgObjectEdit[i]->SetTag(CASTLE_OBJECT);
+				stgObjectEdit[i]->SetRadius(5.0f);
+				stgObjectEdit[i]->SetUsedState(USED);
+				stgObjectEdit[i]->SetNumber(i);
+			}
+			else
+			{
+				stgObjectEdit[i] = StageObject::Create(modelCubeRed);
+				stgObjectEdit[i]->SetNumber(i);
+			}
+		}
+		else stgObjectEdit[i] = LoadStage(i);
+	}
+
+
 	buttonTitle->SetPosition({ 0,0 });
 	buttonTitle->SetSize({ 128,64 });
 
@@ -30,14 +52,10 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 	buttonBlue->SetSize({ 64,64 });
 	buttonBlue->Update();
 
-	for (int i = 0; i < CUBE_RED_MAX; i++)
-	{
-		SceneBase::LoadStage(objCubeRed[i]);
-		SceneBase::LoadStage(objCubeGreen[i]);
-		SceneBase::LoadStage(objCubeBlue[i]);
-	}
-	SceneBase::LoadStage(objCastle);
-	objCastle->SetUsedState(USED);
+	//for (int i = 0; i < OBJECT_MAX; i++)
+	//{
+	//	SceneBase::LoadStage(stgObject[i]);
+	//}
 
 	PlaneCursor::Initialize(objCursor);
 
@@ -58,13 +76,10 @@ void SceneStageEdit::Update()
 
 	if (input->TriggerKey(DIK_ESCAPE) || buttonTitle->Click(MOUSE_LEFT))
 	{
-		for (int i = 0; i < CUBE_RED_MAX; i++)
+		for (int i = 0; i < OBJECT_MAX; i++)
 		{
-			SceneBase::SaveStage(objCubeRed[i]);
-			SceneBase::SaveStage(objCubeGreen[i]);
-			SceneBase::SaveStage(objCubeBlue[i]);
+			SceneBase::SaveStage(stgObjectEdit[i]);
 		}
-		SceneBase::SaveStage(objCastle);
 
 		SceneManager::SetScene(TITLE);
 
@@ -82,35 +97,51 @@ void SceneStageEdit::Update()
 		player->SetCameraMoveFlag(false);
 	}
 
-	for (int i = 0; i < 10; i++)
+	if (input->TriggerMouse(MOUSE_MIDDLE))
 	{
-		if (buttonRed->Click(MOUSE_LEFT) && !objCubeRed[i]->GetUsedState())
+		if (menuON) menuON = false;
+		else		menuON = true;
+	}
+
+	SceneBase::Update();
+
+	for(int i = 0;i<OBJECT_MAX; i++)
+	{
+		if(stgObjectEdit[i]->GetUsedState() != UNUSED) stgObjectEdit[i]->Update();
+	}
+
+	for (int i = 0; i < OBJECT_MAX; i++)
+	{
+		if (stgObjectEdit[i]->GetDragFlag() && !menuON) break;
+
+		if (buttonRed->Click(MOUSE_LEFT) && stgObjectEdit[i]->GetUsedState() == UNUSED)
 		{
-			objCubeRed[i]->SetUsedState(WAITING);
+			stgObjectEdit[i]->SetModel(modelCubeRed);
+			stgObjectEdit[i]->SetTag(RED_OBJECT);
+			stgObjectEdit[i]->SetUsedState(WAITING);
 			buttonRed->SetClickFlag(false);
 			break;
 		}
-		if (buttonGreen->Click(MOUSE_LEFT) && !objCubeGreen[i]->GetUsedState())
+		if (buttonGreen->Click(MOUSE_LEFT) && stgObjectEdit[i]->GetUsedState() == UNUSED)
 		{
-			objCubeGreen[i]->SetUsedState(WAITING);
+			stgObjectEdit[i]->SetModel(modelCubeGreen);
+			stgObjectEdit[i]->SetTag(GREEN_OBJECT);
+			stgObjectEdit[i]->SetUsedState(WAITING);
 			buttonGreen->SetClickFlag(false);
 			break;
 		}
-		if (buttonBlue->Click(MOUSE_LEFT) && !objCubeBlue[i]->GetUsedState())
+		if (buttonBlue->Click(MOUSE_LEFT) && stgObjectEdit[i]->GetUsedState() == UNUSED)
 		{
-			objCubeBlue[i]->SetUsedState(WAITING);
+			stgObjectEdit[i]->SetModel(modelCubeBlue);
+			stgObjectEdit[i]->SetTag(BLUE_OBJECT);
+			stgObjectEdit[i]->SetUsedState(WAITING);
 			buttonBlue->SetClickFlag(false);
 			break;
 		}
+
 	}
 
-	buttonTitle->Update();
-	buttonRed->Update();
-	buttonGreen->Update();
-	buttonBlue->Update();
-	spriteCursor->Update();
-
-	SceneBase::Update();
+	MenuUpdate();
 
 	PlaneCursor::Update();
 }
@@ -139,17 +170,18 @@ void SceneStageEdit::Draw()
 	objSkydome->Draw();
 	objGroundGrid->ObjectOBJ::Draw();
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < OBJECT_MAX; i++)
 	{
-		if (objCubeRed[i]->GetUsedState()) objCubeRed[i]->ObjectOBJ::Draw();
-		if (objCubeGreen[i]->GetUsedState()) objCubeGreen[i]->ObjectOBJ::Draw();
-		if (objCubeBlue[i]->GetUsedState()) objCubeBlue[i]->ObjectOBJ::Draw();
+		if (stgObjectEdit[i]->GetUsedState() != UNUSED)
+		{
+			stgObjectEdit[i]->Draw();
+		}
 	}
 
-	objCastle->ObjectOBJ::Draw();
-
 	objWall->Draw();
-	PlaneCursor::Draw();
+
+	if(!menuON) PlaneCursor::Draw();
+
 	ObjectOBJ::PostDraw();
 
 	// FBXモデル
@@ -162,12 +194,10 @@ void SceneStageEdit::Draw()
 	// スプライト描画前処理
 	spriteCommon->PreDraw(dxCommon->GetCmdList());
 
-	buttonTitle->Draw();
-	buttonRed->Draw();
-	buttonGreen->Draw();
-	buttonBlue->Draw();
+
 	// スプライト描画
-	spriteCursor->Draw();
+	MenuDraw();
+
 	// テキスト描画
 	text->DrawAll();
 
@@ -177,4 +207,38 @@ void SceneStageEdit::Draw()
 #pragma endregion
 
 #pragma endregion グラフィックスコマンド
+}
+
+void SceneStageEdit::MenuUpdate()
+{
+	menuON = true;
+
+	for (int i = 0; i < OBJECT_MAX; i++)
+	{
+		if (stgObjectEdit[i]->GetDragFlag()) menuON = false;
+	}
+
+	if (!menuON) return;
+
+	buttonTitle->Update();
+	buttonRed->Update();
+	buttonGreen->Update();
+	buttonBlue->Update();
+	spriteCursor->Update();
+}
+
+void SceneStageEdit::MenuDraw()
+{
+	for (int i = 0; i < OBJECT_MAX; i++)
+	{
+		if (stgObjectEdit[i]->GetDragFlag()) menuON = false;
+	}
+
+	if (!menuON) return;
+
+	buttonTitle->Draw();
+	buttonRed->Draw();
+	buttonGreen->Draw();
+	buttonBlue->Draw();
+	spriteCursor->Draw();
 }

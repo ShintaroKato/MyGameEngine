@@ -14,13 +14,12 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 {
 	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
 
-	for (int i = 0; i < CUBE_RED_MAX; i++)
+	for (int i = 0; i < stgObjects.size(); i++)
 	{
-		SceneBase::LoadStage(objCubeRed[i], true);
-		SceneBase::LoadStage(objCubeGreen[i], true);
-		SceneBase::LoadStage(objCubeBlue[i], true);
+		stgObjects[i]->SetInGameFlag(true);
+		stgObjects[i]->ResetStatus();
+		if (stgObjects[i]->GetTag() == CASTLE_OBJECT) objCastle = stgObjects[i];
 	}
-	SceneBase::LoadStage(objCastle, true);
 
 	objSkydome->SetScale({ 5,5,5 });
 	objGroundGrid->ObjectOBJ::SetScale({ 5,5,5 });
@@ -60,7 +59,7 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 		{ 320, 64 },
 		{ 320, 64 },
 		{ 320, 64 });
-	meterCastleHP->SetValue(player->GetHP(), player->GetHPMax());
+	meterCastleHP->SetValue(objCastle->GetHP(), objCastle->GetHPMax());
 
 	spriteWaveClear->SetPosition({ WinApp::window_width / 2, 128 });
 	spriteWaveFailed->SetPosition({ WinApp::window_width / 2, 128 });
@@ -77,13 +76,10 @@ void SceneInGame::Update()
 
 	if ((menuON || GameManager::GetFinishState() != 0) && buttonTitle->Click(MOUSE_LEFT))
 	{
-		for (int i = 0; i < CUBE_RED_MAX; i++)
+		for (int i = 0; i < stgObjects.size(); i++)
 		{
-			SceneBase::SaveStage(objCubeRed[i]);
-			SceneBase::SaveStage(objCubeGreen[i]);
-			SceneBase::SaveStage(objCubeBlue[i]);
+			SceneBase::SaveStage(stgObjects[i]);
 		}
-		SceneBase::SaveStage(objCastle);
 
 		SceneManager::SetScene(TITLE);
 
@@ -118,6 +114,11 @@ void SceneInGame::Update()
 	GameManager::Update();
 
 	SceneBase::Update();
+
+	for (int i = 0; i < stgObjects.size(); i++)
+	{
+		if (stgObjects[i]->GetUsedState() != UNUSED) stgObjects[i]->Update();
+	}
 }
 
 void SceneInGame::Draw()
@@ -145,14 +146,10 @@ void SceneInGame::Draw()
 	objSkydome->Draw();
 	objGroundGrid->ObjectOBJ::Draw();
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < stgObjects.size(); i++)
 	{
-		if (objCubeRed[i]->GetUsedState() == USED) objCubeRed[i]->Draw();
-		if (objCubeGreen[i]->GetUsedState() == USED) objCubeGreen[i]->Draw();
-		if (objCubeBlue[i]->GetUsedState() == USED) objCubeBlue[i]->Draw();
+		if (stgObjects[i]->GetUsedState() == USED) stgObjects[i]->Draw();
 	}
-
-	if(objCastle->GetUsedState()) objCastle->Draw();
 
 	objWall->Draw();
 

@@ -62,14 +62,11 @@ protected: // エイリアス
 protected: // 定数
 	static const int debugTextTexNumber = 0;
 
-	static const int CUBE_RED_MAX = 10;
-	static const int CUBE_GREEN_MAX = 10;
-	static const int CUBE_BLUE_MAX = 10;
 	static const int ENEMY_MAX = 20;
 	static const int WEAPON_MAX = 1;
 
 public:
-	static ObjectTmpData tmp[OBJECT_MAX];
+	static std::vector<StageObject*> stgObjects;
 
 public:
 	/// <summary>
@@ -90,12 +87,12 @@ public:
 	/// <summary>
 	/// 作成したステージを保存
 	/// </summary>
-	static void SaveStage(StageObject* StageObject);
+	static void SaveStage(StageObject* stageObject);
 
 	/// <summary>
 	/// 作成したステージを読み込み
 	/// </summary>
-	static void LoadStage(StageObject* StageObject, bool isInGame = false);
+	static StageObject* LoadStage(int i = 0);
 
 protected:
 
@@ -148,11 +145,7 @@ protected:
 	ObjectOBJ* objSkydome = nullptr;
 	TouchableObject* objGroundGrid = nullptr;
 
-	static StageObject* objCubeRed[CUBE_RED_MAX];
-	static StageObject* objCubeGreen[CUBE_GREEN_MAX];
-	static StageObject* objCubeBlue[CUBE_BLUE_MAX];
-
-	static StageObject* objCastle;
+	StageObject* objCastle;
 
 	ObjectOBJ* objCursor = nullptr;
 

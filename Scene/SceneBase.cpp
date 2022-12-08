@@ -1,11 +1,7 @@
 #include "SceneBase.h"
+#include <algorithm>
 
-ObjectTmpData SceneBase::tmp[];
-
-StageObject* SceneBase::objCastle;
-StageObject* SceneBase::objCubeRed[];
-StageObject* SceneBase::objCubeGreen[];
-StageObject* SceneBase::objCubeBlue[];
+std::vector<StageObject*> SceneBase::stgObjects;
 
 void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, Input* input, Audio* audio)
 {
@@ -76,7 +72,7 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	modelEnemy = ModelOBJ::LoadObj("chr_sword");
 	modelCubeRed = ModelOBJ::LoadObj("cube64Red");
 	modelCubeGreen = ModelOBJ::LoadObj("brokenBlock");
-	modelCubeBlue = ModelOBJ::LoadObj("cube64Blue");
+	modelCubeBlue = ModelOBJ::LoadObj("tower01");
 	modelCastle = ModelOBJ::LoadObj("small_castle");
 	modelWall = ModelOBJ::LoadObj("square_wall");
 	modelWeapon = ModelOBJ::LoadObj("sword2");
@@ -95,26 +91,6 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 
 	objGroundGrid = TouchableObject::Create(modelGroundGrid);
 	objGroundGrid->ObjectOBJ::SetScale({ 10,10,10 });
-
-	for (int i = 0; i < CUBE_RED_MAX; i++)
-	{
-		objCubeRed[i] = StageObject::Create(modelCubeRed);
-		objCubeGreen[i] = StageObject::Create(modelCubeGreen);
-		objCubeBlue[i] = StageObject::Create(modelCubeBlue);
-
-		objCubeRed[i]->SetTag("Red");
-		objCubeGreen[i]->SetTag("Green");
-		objCubeBlue[i]->SetTag("Blue");
-
-		SaveStage(objCubeRed[i]);
-		SaveStage(objCubeGreen[i]);
-		SaveStage(objCubeBlue[i]);
-	}
-	objCastle = StageObject::Create(modelCastle);
-	objCastle->SetRadius(5.0f);
-	objCastle->SetTag("Castle");
-	objCastle->SetHP(1000.0f);
-	SaveStage(objCastle);
 
 	objCursor = ObjectOBJ::Create();
 	objCursor->SetModelOBJ(modelCursor);
@@ -142,13 +118,6 @@ void SceneBase::Update()
 
 	// ゲーム用オブジェクト
 	player->Update();
-	for (int i = 0; i < 10; i++)
-	{
-		if (objCubeRed[i]->GetUsedState()) objCubeRed[i]->Update();
-		if (objCubeGreen[i]->GetUsedState()) objCubeGreen[i]->Update();
-		if (objCubeBlue[i]->GetUsedState()) objCubeBlue[i]->Update();
-	}
-	objCastle->Update();
 
 	for (int i = 0; i < ENEMY_MAX; i++)
 	{
@@ -166,36 +135,24 @@ void SceneBase::Update()
 	spriteTitle->Update();
 }
 
-void SceneBase::SaveStage(StageObject* StageObject)
+void SceneBase::SaveStage(StageObject* stageObject)
 {
-	for (int i = 0; i < OBJECT_MAX; i++)
+	if (stgObjects.size() == OBJECT_MAX - 1) return;
+
+	if (stageObject->GetTag() != STAGE_OBJECT_DEFAULT)
 	{
-		if (tmp[i].isSaved) continue;
+		for (int i = 0; i < stgObjects.size(); i++)
+		{
+			if (stgObjects[i]->GetNumber() == stageObject->GetNumber()) return;
+		}
 
-		tmp[i].pos = StageObject->GetPosition();
-		tmp[i].used = StageObject->GetUsedState();
-		tmp[i].tag = StageObject->GetTag();
-		tmp[i].isSaved = true;
-
-		break;
+		stgObjects.push_back(stageObject);
 	}
 }
 
-void SceneBase::LoadStage(StageObject* StageObject, bool isInGame)
+StageObject* SceneBase::LoadStage(int i)
 {
-	for (int i = 0; i < OBJECT_MAX; i++)
-	{
-		if (!tmp[i].isSaved) continue;
-		if (StageObject->GetTag() != tmp[i].tag) continue;
-
-		StageObject->SetPosition(tmp[i].pos);
-		StageObject->SetUsedState(tmp[i].used);
-		StageObject->SetTag(tmp[i].tag);
-		tmp[i].isSaved = false;
-
-		if (isInGame) StageObject->PositionFix();
-		if (StageObject->GetTag() == "Castle") StageObject->SetUsedState(USED);
-
-		break;
-	}
+	stgObjects[i]->ResetStatus();
+	stgObjects[i]->SetInGameFlag(false);
+	return stgObjects[i];
 }

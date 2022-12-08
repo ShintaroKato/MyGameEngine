@@ -21,7 +21,7 @@ public:
 	// 待機時間取得(秒に換算)
 	static int GetWaitTimerSeconds() { return waitTimer / 60; }
 	// 守る対象のオブジェクトをセット
-	static void SetStageObject(StageObject* StageObject) { GameManager::StageObject = StageObject; }
+	static void SetStageObject(StageObject* stageObject) { GameManager::stageObject = stageObject; }
 
 private:
 	GameManager() = default;
@@ -42,5 +42,5 @@ private:
 	// ウェーブ終了
 	static int finish; // 1でクリア判定 -1で失敗判定
 	// 守る対象のオブジェクト
-	static StageObject* StageObject;
+	static StageObject* stageObject;
 };
