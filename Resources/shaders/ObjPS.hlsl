@@ -58,5 +58,7 @@ float4 PhongShading(VSOutput input) : SV_TARGET
     // アンビエント、ディフューズ、スペキュラーを加算
     float4 ads = ambient + diffuse + specular;
 
-    return ads;
+    float4 texcolor = tex.Sample(smp, input.uv);
+
+    return float4(ads.rgb, texcolor.a * m_alpha);
 }

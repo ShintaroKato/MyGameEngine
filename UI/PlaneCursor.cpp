@@ -76,8 +76,6 @@ void PlaneCursor::SetPosition(const XMFLOAT3& position)
 	pos = position;
 	pos.y = 0.0f;
 
-	if (!isDrag) radius = 5.0f;
-
 	// コライダーの追加
 	sphere.center = { pos.x, pos.y, pos.z,0 };
 	sphere.radius = radius;
@@ -85,7 +83,9 @@ void PlaneCursor::SetPosition(const XMFLOAT3& position)
 	*sphereColl = SphereCollider(sphere, true);
 	sphereColl->SetAttribute(COLLISION_ATTR_PLANE_CURSOR);
 
-	cursor->SetScale({ radius * 2, 1.0f, radius * 2 });
+	cursor->SetScale({
+		radius * 2, 1.0f,
+		radius * 2 });
 	cursor->SetPosition(pos);
 	cursor->SetCollider(sphereColl);
 }

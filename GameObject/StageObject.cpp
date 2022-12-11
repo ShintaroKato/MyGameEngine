@@ -139,6 +139,10 @@ void StageObject::Drag()
 	if (isDrag)
 	{
 		PlaneCursor::SetRadius(radius);
+		PlaneCursor::SetSquareSideLength(
+			radius + sphereColl->GetSquareSideLength().x,
+			radius + sphereColl->GetSquareSideLength().y);
+
 		pos = PlaneCursor::GetPosition();
 		pos.y += 10.0f;
 

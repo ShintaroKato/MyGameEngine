@@ -96,6 +96,10 @@ public:
 	}
 
 	void SetRadius(float radius) { this->radius = radius; }
+	void SetSquareSideLength(float length_X, float length_Y)
+	{
+		this->sphereColl->SetSquareSideLength(length_X, length_Y);
+	}
 
 	void SetModel(ModelOBJ* obj = nullptr);
 	void SetModel(ModelFBX* fbx = nullptr);
@@ -112,6 +116,11 @@ public:
 	void Rejection(const CollisionInfo& info);
 
 	bool GetDragFlag() { return isDrag; }
+	void ChangeDragFlagFalse()
+	{
+		isDrag = false;
+		isDragStatic = false;
+	}
 
 	/// <summary>
 	/// ƒ^ƒO‚ðŽæ“¾

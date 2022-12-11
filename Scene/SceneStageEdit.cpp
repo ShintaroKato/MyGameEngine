@@ -97,51 +97,22 @@ void SceneStageEdit::Update()
 		player->SetCameraMoveFlag(false);
 	}
 
-	if (input->TriggerMouse(MOUSE_MIDDLE))
-	{
-		if (menuON) menuON = false;
-		else		menuON = true;
-	}
-
 	SceneBase::Update();
 
-	for(int i = 0;i<OBJECT_MAX; i++)
-	{
-		if(stgObjectEdit[i]->GetUsedState() != UNUSED) stgObjectEdit[i]->Update();
-	}
+	menuON = true;
+	buttonClick = false;
+
+	MenuUpdate();
 
 	for (int i = 0; i < OBJECT_MAX; i++)
 	{
-		if (stgObjectEdit[i]->GetDragFlag() && !menuON) break;
-
-		if (buttonRed->Click(MOUSE_LEFT) && stgObjectEdit[i]->GetUsedState() == UNUSED)
+		if (stgObjectEdit[i]->GetUsedState() != UNUSED && !buttonClick)
 		{
-			stgObjectEdit[i]->SetModel(modelCubeRed);
-			stgObjectEdit[i]->SetTag(RED_OBJECT);
-			stgObjectEdit[i]->SetUsedState(WAITING);
-			buttonRed->SetClickFlag(false);
-			break;
-		}
-		if (buttonGreen->Click(MOUSE_LEFT) && stgObjectEdit[i]->GetUsedState() == UNUSED)
-		{
-			stgObjectEdit[i]->SetModel(modelCubeGreen);
-			stgObjectEdit[i]->SetTag(GREEN_OBJECT);
-			stgObjectEdit[i]->SetUsedState(WAITING);
-			buttonGreen->SetClickFlag(false);
-			break;
-		}
-		if (buttonBlue->Click(MOUSE_LEFT) && stgObjectEdit[i]->GetUsedState() == UNUSED)
-		{
-			stgObjectEdit[i]->SetModel(modelCubeBlue);
-			stgObjectEdit[i]->SetTag(BLUE_OBJECT);
-			stgObjectEdit[i]->SetUsedState(WAITING);
-			buttonBlue->SetClickFlag(false);
-			break;
+			stgObjectEdit[i]->Update();
 		}
 
+		if (stgObjectEdit[i]->GetDragFlag()) menuON = false;
 	}
-
-	MenuUpdate();
 
 	PlaneCursor::Update();
 }
@@ -211,14 +182,17 @@ void SceneStageEdit::Draw()
 
 void SceneStageEdit::MenuUpdate()
 {
-	menuON = true;
+	if (!menuON) return;
+
 
 	for (int i = 0; i < OBJECT_MAX; i++)
 	{
-		if (stgObjectEdit[i]->GetDragFlag()) menuON = false;
-	}
+		if (!menuON) break;
 
-	if (!menuON) return;
+		if (MakeObject(stgObjectEdit[i], buttonRed, modelCubeRed, RED_OBJECT, { 1.0f, 5.0f })) break;
+		if (MakeObject(stgObjectEdit[i], buttonGreen, modelCubeGreen, GREEN_OBJECT)) break;
+		if (MakeObject(stgObjectEdit[i], buttonBlue, modelCubeBlue, BLUE_OBJECT)) break;
+	}
 
 	buttonTitle->Update();
 	buttonRed->Update();
@@ -229,11 +203,6 @@ void SceneStageEdit::MenuUpdate()
 
 void SceneStageEdit::MenuDraw()
 {
-	for (int i = 0; i < OBJECT_MAX; i++)
-	{
-		if (stgObjectEdit[i]->GetDragFlag()) menuON = false;
-	}
-
 	if (!menuON) return;
 
 	buttonTitle->Draw();
@@ -241,4 +210,48 @@ void SceneStageEdit::MenuDraw()
 	buttonGreen->Draw();
 	buttonBlue->Draw();
 	spriteCursor->Draw();
+}
+
+bool SceneStageEdit::MakeObject(StageObject* stgObject, Button* button, ModelOBJ* model, const Tag& objectTag, const XMFLOAT2& sideLength)
+{
+	if (button->Click(MOUSE_LEFT) && stgObject->GetUsedState() == UNUSED)
+	{
+		stgObject->SetModel(model);
+		stgObject->SetTag(objectTag);
+		stgObject->SetSquareSideLength(sideLength.x, sideLength.y);
+		stgObject->SetUsedState(WAITING);
+		stgObject->Update();
+		button->SetClickFlag(false);
+
+		SetCursorPos(WinApp::window_width / 2, WinApp::window_height / 2);
+		PlaneCursor::Update();
+
+		menuON = false;
+		buttonClick = true;
+		return true;
+	}
+
+	return false;
+}
+
+bool SceneStageEdit::MakeObject(StageObject* stgObject, Button* button, ModelFBX* model, const Tag& objectTag, const XMFLOAT2& sideLength)
+{
+	if (button->Click(MOUSE_LEFT) && stgObject->GetUsedState() == UNUSED)
+	{
+		stgObject->SetModel(model);
+		stgObject->SetTag(objectTag);
+		stgObject->SetSquareSideLength(sideLength.x, sideLength.y);
+		stgObject->SetUsedState(WAITING);
+		stgObject->Update();
+		button->SetClickFlag(false);
+
+		SetCursorPos(WinApp::window_width / 2, WinApp::window_height / 2);
+		PlaneCursor::Update();
+
+		menuON = false;
+		buttonClick = true;
+		return true;
+	}
+
+	return false;
 }

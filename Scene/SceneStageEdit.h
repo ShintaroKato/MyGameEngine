@@ -44,6 +44,12 @@ public: // メンバ関数
 	void MenuDraw();
 
 	/// <summary>
+	/// オブジェクト作成
+	/// </summary>
+	bool MakeObject(StageObject* stgObject, Button* button, ModelOBJ* model, const Tag& objectTag, const XMFLOAT2& sideLength = { 3.5f, 3.5f });
+	bool MakeObject(StageObject* stgObject, Button* button, ModelFBX* model, const Tag& objectTag, const XMFLOAT2& sideLength = { 3.5f, 3.5f });
+
+	/// <summary>
 	/// datファイルに保存
 	/// </summary>
 	void SaveDat();
@@ -52,4 +58,5 @@ private:
 	StageObject* stgObjectEdit[OBJECT_MAX];
 
 	bool menuON = true;
+	bool buttonClick = false;
 };

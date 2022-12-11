@@ -42,6 +42,11 @@ public:
 
 	static void SetRadius(float radius) { PlaneCursor::radius = radius; }
 
+	static void SetSquareSideLength(float length_X, float length_Y)
+	{
+		PlaneCursor::sphereColl->SetSquareSideLength(length_X, length_Y);
+	}
+
 	/// <summary>
 	/// ˆÚ“®
 	/// </summary>

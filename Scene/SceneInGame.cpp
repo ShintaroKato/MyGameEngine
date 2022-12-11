@@ -146,11 +146,6 @@ void SceneInGame::Draw()
 	objSkydome->Draw();
 	objGroundGrid->ObjectOBJ::Draw();
 
-	for (int i = 0; i < stgObjects.size(); i++)
-	{
-		if (stgObjects[i]->GetUsedState() == USED) stgObjects[i]->Draw();
-	}
-
 	objWall->Draw();
 
 	player->ObjectOBJ::Draw();
@@ -162,6 +157,11 @@ void SceneInGame::Draw()
 		{
 			enemy[i]->ObjectOBJ::Draw();
 		}
+	}
+
+	for (int i = 0; i < stgObjects.size(); i++)
+	{
+		if (stgObjects[i]->GetUsedState() == USED) stgObjects[i]->Draw();
 	}
 
 	ObjectOBJ::PostDraw();

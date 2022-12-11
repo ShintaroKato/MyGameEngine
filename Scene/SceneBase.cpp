@@ -70,9 +70,12 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	modelGroundGrid = ModelOBJ::LoadObj("512MeshPlane");
 	modelPlayer = ModelOBJ::LoadObj("player");
 	modelEnemy = ModelOBJ::LoadObj("chr_sword");
-	modelCubeRed = ModelOBJ::LoadObj("cube64Red");
+	//modelCubeRed = ModelOBJ::LoadObj("barrier01");
+	//modelCubeGreen = ModelOBJ::LoadObj("brokenBlock");
+	//modelCubeBlue = ModelOBJ::LoadObj("tower01");
+	modelCubeRed = ModelOBJ::LoadObj("Cube64Red");
 	modelCubeGreen = ModelOBJ::LoadObj("brokenBlock");
-	modelCubeBlue = ModelOBJ::LoadObj("tower01");
+	modelCubeBlue = ModelOBJ::LoadObj("Cube64Blue");
 	modelCastle = ModelOBJ::LoadObj("small_castle");
 	modelWall = ModelOBJ::LoadObj("square_wall");
 	modelWeapon = ModelOBJ::LoadObj("sword2");
