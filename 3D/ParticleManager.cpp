@@ -130,9 +130,6 @@ void ParticleManager::Update()
 		// スケールの線形補間
 		it->scale = it->s_scale + (it->e_scale - it->s_scale) / f;
 
-		// 回転の線形補間
-		it->rotation = it->s_rotation + (it->e_rotation - it->s_rotation) / f;
-
 		// 色の変化
 		it->color = it->s_color + (it->e_color - it->s_color) / f;
 	}

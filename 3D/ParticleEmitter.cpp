@@ -1,4 +1,4 @@
-#include "ParticlePattern.h"
+#include "ParticleEmitter.h"
 
 void ParticleEmitter::EmitAllRange(int life, float velocity, float vel_rand_range, float accel_rand_range, float start_scale, float end_scale, XMFLOAT4 start_color, XMFLOAT4 end_color)
 {
