@@ -51,12 +51,22 @@ public:
 	/// <summary>
 	/// ビュー行列取得
 	/// </summary>
-	static XMMATRIX& GetViewMatrix() { return matView; }
+	static const XMMATRIX& GetViewMatrix() { return matView; }
 
 	/// <summary>
 	/// 射影行列取得
 	/// </summary>
-	static XMMATRIX& GetProjectionMatrix() { return matProjection; }
+	static const XMMATRIX& GetProjectionMatrix() { return matProjection; }
+	
+	/// <summary>
+	/// 射影行列取得
+	/// </summary>
+	static const XMMATRIX& GetViewProjectionMatrix() { return matView * matProjection; }
+
+	/// <summary>
+	/// ビルボード行列取得
+	/// </summary>
+	static const XMMATRIX& GetBillboardMatrix() { return matBillboard; }
 
 	/// <summary>
 	/// 視点座標の設定
@@ -94,6 +104,10 @@ private:
 	static XMMATRIX matView;
 	// 射影行列
 	static XMMATRIX matProjection;
+	// ビュー射影行列
+	static XMMATRIX matViewProjection;
+	// ビルボード行列
+	static XMMATRIX matBillboard;
 	// アスペクト比
 	static float aspect;
 };
