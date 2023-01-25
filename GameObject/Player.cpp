@@ -4,6 +4,8 @@
 #include "Collision.h"
 #include "CollisionManager.h"
 #include "CollisionAttribute.h"
+#include "ParticleEmitter.h"
+#include "BulletManager.h"
 
 Player* Player::Create(ModelFBX* fbx, int animationNumber)
 {
@@ -90,13 +92,24 @@ void Player::Update()
 	SetPosition(pos);
 	if (ObjectOBJ::model)
 	{
-		ObjectOBJ::rotation = rotation;
+		ObjectOBJ::rotation = rot;
 		ObjectOBJ::collider->Update();
 	}
 	if (ObjectFBX::model)
 	{
-		ObjectFBX::rotation = rotation;
+		ObjectFBX::rotation = rot;
 		ObjectFBX::collider->Update();
+	}
+
+	if(attackFlag)
+	{
+		ParticleEmitter::EmitAllRange(5 ,attackCount, weapon->GetPosition(),
+			{ 0,0,0 },
+			{ 0.6f,0.6f,1.0f,1.0f }, { 0.0f,0.0f,1.0f,1.0f }, 0.1f, 0.001f, 2.0f);
+
+		/*ParticleEmitter::EmitAllRange(4, weapon->GetPosition(),
+			{ 0.4f * -sin(XMConvertToRadians(weapon->GetRotation().y)), 0, 0.4f * -cos(XMConvertToRadians(weapon->GetRotation().y)) },
+			{ 1.0f,1.0f,1.0f,1.0f }, { 0.0f,0.0f,1.0f,1.0f }, 0.1f, 0.001f, 0.1f);*/
 	}
 
 	ObjectOBJ::Update();
@@ -108,8 +121,8 @@ void Player::Move()
 	Input* input = Input::GetInstance();
 
 	//移動ベクトルをy軸周りの角度で回転
-	move = { 0,0,0.1f,0 };
-	XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rotation.y));
+	move = move_default;
+	XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rot.y));
 	move = XMVector3TransformNormal(move, matRot);
 
 	//向いている方向に移動
@@ -118,35 +131,35 @@ void Player::Move()
 	{
 		if (input->PushKey(DIK_W))
 		{
-			rotation.y = 0 + cameraRot.y;
+			rot.y = 0 + cameraRot.y;
 		}
 		if (input->PushKey(DIK_D))
 		{
-			rotation.y = 90 + cameraRot.y;
+			rot.y = 90 + cameraRot.y;
 		}
 		if (input->PushKey(DIK_S))
 		{
-			rotation.y = 180 + cameraRot.y;
+			rot.y = 180 + cameraRot.y;
 		}
 		if (input->PushKey(DIK_A))
 		{
-			rotation.y = 270 + cameraRot.y;
+			rot.y = 270 + cameraRot.y;
 		}
 		if (input->PushKey(DIK_W) && input->PushKey(DIK_D))
 		{
-			rotation.y = 45 + cameraRot.y;
+			rot.y = 45 + cameraRot.y;
 		}
 		if (input->PushKey(DIK_D) && input->PushKey(DIK_S))
 		{
-			rotation.y = 135 + cameraRot.y;
+			rot.y = 135 + cameraRot.y;
 		}
 		if (input->PushKey(DIK_S) && input->PushKey(DIK_A))
 		{
-			rotation.y = 225 + cameraRot.y;
+			rot.y = 225 + cameraRot.y;
 		}
 		if (input->PushKey(DIK_A) && input->PushKey(DIK_W))
 		{
-			rotation.y = 315 + cameraRot.y;
+			rot.y = 315 + cameraRot.y;
 		}
 
 		pos.x += move.m128_f32[0];
@@ -289,12 +302,14 @@ void Player::Attack()
 		if (attackLevel < 3 && attackCount < 8.0f && weapon)
 		{
 			weapon->SetPosition({
-				pos.x + sin(XMConvertToRadians(rotation.y)) * 1.5f, pos.y + 1,
-				pos.z + cos(XMConvertToRadians(rotation.y)) * 1.5f });
+				pos.x + sin(XMConvertToRadians(rot.y)) * 1.5f, pos.y + 1,
+				pos.z + cos(XMConvertToRadians(rot.y)) * 1.5f });
 
 			attackLevel++;
 			attackCount = 16.0f;
 			attackFlag = true;
+
+			BulletManager::GetInstance()->Fire(pos, rot, COLLISION_ATTR_ALLIES, 1.0f, 100);
 		}
 	}
 
@@ -304,8 +319,8 @@ void Player::Attack()
 
 		if (attackCount < 14.0f && attackCount > -4.0f)
 		{
-			pos.x += move.m128_f32[0] * 0.8f;
-			pos.z += move.m128_f32[2] * 0.8f;
+			pos.x += move.m128_f32[0] * attackMove;
+			pos.z += move.m128_f32[2] * attackMove;
 		}
 
 		// カウント0で攻撃中フラグをfalseにする
@@ -316,13 +331,13 @@ void Player::Attack()
 
 		if (weapon)
 		{
-			XMFLOAT3 wPos = { pos.x + sin(XMConvertToRadians(rotation.y - 90 + (attackCount * attackCount - attackCount))),
+			XMFLOAT3 wPos = { pos.x + sin(XMConvertToRadians(rot.y - 90 + (attackCount * attackCount - attackCount))),
 				pos.y + 0.3f,
-				pos.z + cos(XMConvertToRadians(rotation.y - 90 + (attackCount * attackCount - attackCount))) };
+				pos.z + cos(XMConvertToRadians(rot.y - 90 + (attackCount * attackCount - attackCount))) };
 
-			XMFLOAT3 wRot = { rotation.x - 90,
-				rotation.y + (attackCount * attackCount - attackCount),
-				rotation.z + 90 };
+			XMFLOAT3 wRot = { rot.x - 90,
+				rot.y + (attackCount * attackCount - attackCount),
+				rot.z + 90 };
 
 			weapon->SetPosition(wPos);
 			weapon->SetRotation(wRot);
@@ -340,10 +355,10 @@ void Player::Attack()
 
 		if (weapon)
 		{
-			XMFLOAT3 wPos = { pos.x + sin(XMConvertToRadians(rotation.y + 90)),
+			XMFLOAT3 wPos = { pos.x + sin(XMConvertToRadians(rot.y + 90)),
 				pos.y + 0.2f,
-				pos.z + cos(XMConvertToRadians(rotation.y + 90)) };
-			XMFLOAT3 wRot = { rotation.x,rotation.y,rotation.z - 90 };
+				pos.z + cos(XMConvertToRadians(rot.y + 90)) };
+			XMFLOAT3 wRot = { rot.x,rot.y,rot.z - 90 };
 
 			weapon->SetPosition(wPos);
 			weapon->SetRotation(wRot);
@@ -433,16 +448,16 @@ void Player::SetScale(XMFLOAT3 scale)
 void Player::SetWeapon(Weapon* weapon)
 {
 	this->weapon = weapon;
+
 	if (ObjectOBJ::model)
 	{
 		this->weapon->SetParent((ObjectOBJ*)this);
-		this->weapon->SetPosition(pos);
-		this->ObjectOBJ::SetPower(GetPower());
 	}
 	if(ObjectFBX::model)
 	{
 		this->weapon->SetParent((ObjectFBX*)this);
-		this->weapon->SetPosition(pos);
-		this->ObjectFBX::SetPower(GetPower());
 	}
+
+	this->weapon->SetPosition(pos);
+	this->sphereColl->SetPower(GetPower());
 }

@@ -46,6 +46,11 @@ public:
 	void Update() override;
 
 	/// <summary>
+	/// 描画
+	/// </summary>
+	void Draw() override;
+
+	/// <summary>
 	/// 出現
 	/// </summary>
 	void Spawn();
@@ -106,6 +111,8 @@ public:
 	/// </summary>
 	void SetAllive(bool flag) { this->aliveFlag = flag; }
 
+	void SetRespawnCount(int respawnCountMax) { this->respawn = respawnCountMax; }
+
 	/// <summary>
 	/// 攻撃対象のオブジェクトを設定
 	/// </summary>
@@ -146,6 +153,8 @@ private:
 	const float HPMax = HP;
 	float HPRate = HP / HPMax;
 
+	int respawnCount = 0;
+	int respawn = 100;
 	bool aliveFlag = false;
 
 	// 攻撃

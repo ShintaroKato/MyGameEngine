@@ -55,6 +55,18 @@ public:
 	void OnCollision(const CollisionInfo& info) override;
 
 	/// <summary>
+	/// 座標を取得
+	/// </summary>
+	/// <returns>座標</returns>
+	XMFLOAT3 GetPosition() { return pos; }
+
+	/// <summary>
+	/// 回転を取得
+	/// </summary>
+	/// <returns>回転</returns>
+	XMFLOAT3 GetRotation() { return rot; }
+
+	/// <summary>
 	/// 座標を設定
 	/// </summary>
 	void SetPosition(XMFLOAT3 pos);
@@ -78,7 +90,7 @@ private:
 	// 座標
 	XMFLOAT3 pos{};
 	// 回転
-	XMFLOAT3 rotation{};
+	XMFLOAT3 rot{};
 	// 半径
 	float radius = 2.0f;
 	// 接地フラグ

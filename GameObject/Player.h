@@ -145,13 +145,17 @@ private:
 	// 座標
 	XMFLOAT3 pos{};
 	// 回転
-	XMFLOAT3 rotation{};
+	XMFLOAT3 rot{};
 	// 半径
 	float radius = 1.0f;
 	// 接地フラグ
 	bool onGround = true;
+	// 移動ベクトル(初期値)
+	XMVECTOR move_default = { 0,0,0.2f,0 };
 	// 移動ベクトル
-	XMVECTOR move = { 0,0,1.0f,0 };
+	XMVECTOR move{};
+	// 攻撃時の移動速度
+	float attackMove = 0.4f;
 	// 落下ベクトル
 	DirectX::XMVECTOR fallVel;
 	// コライダー

@@ -4,6 +4,7 @@
 #include "Collision.h"
 #include "CollisionManager.h"
 #include "CollisionAttribute.h"
+#include "ParticleEmitter.h"
 
 Enemy* Enemy::Create(ModelFBX* fbx, int animationNumber)
 {
@@ -106,9 +107,21 @@ void Enemy::Update()
 	ObjectFBX::Update();
 }
 
+void Enemy::Draw()
+{
+	if (!aliveFlag) return;
+
+	if(ObjectOBJ::model) ObjectOBJ::Draw();
+	//if(ObjectFBX::model) ObjectFBX::Draw();
+}
+
 void Enemy::Spawn()
 {
 	if (aliveFlag == false)
+	{
+		respawnCount++;
+	}
+	if(respawnCount >= respawn)
 	{
 		HP = 20.0f;
 
@@ -123,6 +136,7 @@ void Enemy::Spawn()
 		SetTargetPos(target);
 
 		aliveFlag = true;
+		respawnCount = 0;
 	}
 }
 
@@ -136,7 +150,7 @@ void Enemy::Move()
 	XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rotation.y));
 	move = XMVector3TransformNormal(move, matRot);
 
-	float nearLimit = 5.0f;
+	float nearLimit = 9.0f;
 
 	//‚ ‚é’ö“x‚Ì‹——£‚ğ•Û‚¿‘±‚¯‚éˆ—
 	if (abs(pos.x - targetPos.x) < nearLimit && abs(pos.z - targetPos.z) < nearLimit);
@@ -155,7 +169,7 @@ void Enemy::Jump()
 
 void Enemy::Attack()
 {
-	ObjectOBJ::SetPower(attackPower);
+	sphereColl->SetPower(attackPower);
 	CollisionManager::GetInstance()->CheckAllCollision(sphereColl, COLLISION_ATTR_OBJECT_MESH);
 }
 
@@ -192,10 +206,15 @@ void Enemy::OnCollision(const CollisionInfo& info)
 	{
 		SetTargetPos(target);
 	}
-	if (info.collider->GetAttribute() == COLLISION_ATTR_WEAPONS + COLLISION_ATTR_ALLIES)
+	if (info.collider->GetAttribute() == (COLLISION_ATTR_WEAPONS + COLLISION_ATTR_ALLIES) ||
+		info.collider->GetAttribute() == (COLLISION_ATTR_BULLET + COLLISION_ATTR_ALLIES))
 	{
-		if(info.obj) Hit(info.obj->attackPower);
-		else if(info.fbx) Hit(info.fbx->attackPower);
+		Hit(info.collider->attackPower);
+	}
+	if (info.collider->GetAttribute() == (COLLISION_ATTR_BULLET + COLLISION_ATTR_ALLIES))
+	{
+		Hit(info.collider->attackPower);
+
 	}
 }
 

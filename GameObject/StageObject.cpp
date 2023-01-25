@@ -4,6 +4,7 @@
 #include "Collision.h"
 #include "SceneManager.h"
 #include "PlaneCursor.h"
+#include "ParticleEmitter.h"
 
 bool StageObject::isDragStatic = false;
 
@@ -83,6 +84,8 @@ void StageObject::Update()
 		ResetStatus();
 		Drag();
 		Move();
+		Rotation();
+		ChangeDefault();
 	}
 
 	SetPosition(pos);
@@ -176,6 +179,75 @@ void StageObject::Move()
 	if (!isDrag) pos.y = 0;
 }
 
+void StageObject::Rotation()
+{
+	Input* input = Input::GetInstance();
+
+	if (!isDrag) return;
+
+	if (input->TriggerKey(DIK_A))		rot.y -= 90.0f;
+	else if (input->TriggerKey(DIK_D))	rot.y += 90.0f;
+
+	if (abs(rot.y) >= 360) rot.y = 0;
+
+	if (ObjectOBJ::model) ObjectOBJ::SetRotation(rot);
+	if (ObjectFBX::model) ObjectFBX::SetRotation(rot);
+}
+
+void StageObject::ChangeDefault()
+{
+	if (!isDrag || tag == CASTLE_OBJECT) return;
+
+	Input* input = Input::GetInstance();
+
+	if (input->TriggerKey(DIK_SPACE))
+	{
+		isDrag = false;
+		isDragStatic = false;
+		PlaneCursor::SetIsDrag(isDragStatic);
+
+		tag = STAGE_OBJECT_DEFAULT;
+		used = UNUSED;
+	}
+}
+
+void StageObject::ObjectType()
+{
+	switch (tag)
+	{
+	case CASTLE_OBJECT:
+		radius = 5.0f;
+		HPMax = 500;
+		HP = HPMax;
+		break;
+
+	case RED_OBJECT:
+		radius = 5.0f;
+		HPMax = 1200;
+		HP = HPMax;
+		break;
+
+	case GREEN_OBJECT:
+		radius = 3.0f;
+		HPMax = 100;
+		HP = HPMax;
+		break;
+
+	case BLUE_OBJECT:
+		radius = 3.5f;
+		HPMax = 800;
+		HP = HPMax;
+		break;
+
+	case STAGE_OBJECT_DEFAULT:
+	default:
+		radius = 0.0f;
+		HPMax = 0;
+		HP = HPMax;
+		break;
+	}
+}
+
 void StageObject::SetPosition(const XMFLOAT3& position)
 {
 	this->pos = position;
@@ -260,21 +332,18 @@ XMFLOAT3 StageObject::GetPosition()
 
 void StageObject::OnCollision(const CollisionInfo& info)
 {
-	if (info.collider->GetAttribute() == COLLISION_ATTR_OBJECT_SPHERE && isDrag)
-	{
-		//Rejection(info);
-	}
 	if (info.collider->GetAttribute() == COLLISION_ATTR_ENEMIES && tag != STAGE_OBJECT_DEFAULT)
 	{
-		if (info.obj) Hit(info.obj->attackPower);
-		else if (info.fbx) Hit(info.fbx->attackPower);
+		Hit(info.collider->attackPower);
+		ParticleEmitter::EmitY_AxisDir(3, 60,
+			{ info.inter.m128_f32[0], info.inter.m128_f32[1], info.inter.m128_f32[2] },
+			0.075f,
+			{ 1.0f, 0.5f ,0.0f, 1.0f }, { 0.7f, 0.2f, 0.0f, 0.5f },
+			0.01f, 0.001f, 1.0f, 0.1);
 	}
 }
 
 void StageObject::Rejection(const CollisionInfo& info)
 {
-	pos.x -= info.reject.m128_f32[0];
-	pos.z -= info.reject.m128_f32[2];
 
-	hit = true;
 }

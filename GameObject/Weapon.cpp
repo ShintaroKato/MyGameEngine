@@ -76,14 +76,14 @@ bool Weapon::Initialize()
 void Weapon::SetParent(ObjectOBJ* obj)
 {
 	this->obj = obj;
-	ObjectOBJ::SetPower(obj->attackPower + power);
+	sphereColl->SetPower(obj->GetCollider()->attackPower + power);
 	sphereColl->SetAttribute(COLLISION_ATTR_WEAPONS + obj->GetCollider()->GetAttribute());
 }
 
 void Weapon::SetParent(ObjectFBX* fbx)
 {
 	this->fbx = fbx;
-	ObjectFBX::SetPower(fbx->attackPower + power);
+	sphereColl->SetPower(fbx->GetCollider()->attackPower + power);
 	sphereColl->SetAttribute(COLLISION_ATTR_WEAPONS + fbx->GetCollider()->GetAttribute());
 }
 
@@ -92,12 +92,12 @@ void Weapon::Update()
 	if (ObjectOBJ::model)
 	{
 		pos = ObjectOBJ::position;
-		rotation = ObjectOBJ::rotation;
+		rot = ObjectOBJ::rotation;
 	}
 	if (ObjectFBX::model)
 	{
 		pos = ObjectFBX::position;
-		rotation = ObjectFBX::rotation;
+		rot = ObjectFBX::rotation;
 	}
 
 	SetPosition(pos);

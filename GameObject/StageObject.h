@@ -20,6 +20,7 @@ enum Tag
 	GREEN_OBJECT,
 	BLUE_OBJECT,
 	CASTLE_OBJECT,
+	OFFENCE_OBJECT,
 };
 
 class StageObject : public ObjectFBX, public ObjectOBJ
@@ -73,6 +74,21 @@ public:
 	/// 移動
 	/// </summary>
 	void Move();
+
+	/// <summary>
+	/// 回転
+	/// </summary>
+	void Rotation();
+
+	/// <summary>
+	/// デフォルトの状態に変更
+	/// </summary>
+	void ChangeDefault();
+
+	/// <summary>
+	/// オブジェクトのタイプ
+	/// </summary>
+	void ObjectType();
 
 	/// <summary>
 	/// ゲーム本編か否かを設定
@@ -130,7 +146,11 @@ public:
 	/// <summary>
 	/// タグをセット
 	/// </summary>
-	void SetTag(Tag tag) { this->tag = tag; }
+	void SetTag(Tag tag)
+	{
+		this->tag = tag;
+		ObjectType();
+	}
 
 	int GetNumber() { return number; }
 
@@ -166,9 +186,10 @@ public:
 		aliveFlag = true;
 	}
 
-private:
+protected:
 	// 座標
 	XMFLOAT3 pos{};
+	XMFLOAT3 rot{};
 	// 半径
 	float radius = 3.5f;
 	// 掴まれているか否か
