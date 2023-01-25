@@ -20,6 +20,14 @@ public:
 	/// <param name="rectSize">Ø‚èæ‚éƒTƒCƒY</param>
 	void SetSequence(int value, float x, float y, XMFLOAT2 rectSize, int space = 0);
 
+	void SetSize(const XMFLOAT2& size)
+	{
+		for (int i = 0; i < numbers.size(); i++)
+		{
+			numbers[i]->SetSize(size);
+		}
+	}
+
 	void Draw();
 
 private:

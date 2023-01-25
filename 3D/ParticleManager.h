@@ -113,6 +113,11 @@ public: // メンバ関数
 	void Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale, XMFLOAT4 s_color, XMFLOAT4 e_color);
 
 	/// <summary>
+	/// パーティクルを全て削除
+	/// </summary>
+	void Delete();
+
+	/// <summary>
 	/// デスクリプタヒープの初期化
 	/// </summary>
 	/// <returns></returns>
@@ -152,7 +157,7 @@ private: // メンバ変数
 	ComPtr<ID3D12Resource> texbuff;
 	// シェーダリソースビューのハンドル(CPU)
 	CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV;
-	// シェーダリソースビューのハンドル(CPU)
+	// シェーダリソースビューのハンドル(GPU)
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV;
 	// 頂点バッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vbView;
@@ -168,4 +173,3 @@ private:
 	~ParticleManager() = default;
 	ParticleManager& operator=(const ParticleManager&) = delete;
 };
-

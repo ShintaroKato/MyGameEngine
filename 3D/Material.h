@@ -87,7 +87,7 @@ private:
 	ComPtr<ID3D12Resource> constBuff;
 	// シェーダリソースビューのハンドル(CPU)
 	CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV;
-	// シェーダリソースビューのハンドル(CPU)
+	// シェーダリソースビューのハンドル(GPU)
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV;
 
 private:

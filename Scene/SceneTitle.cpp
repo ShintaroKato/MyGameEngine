@@ -46,11 +46,6 @@ void SceneTitle::Update()
 
 	if (input->TriggerKey(DIK_1) || buttonEdit->Click(MOUSE_LEFT))
 	{
-		//for (int i = 0; i < objTmp.size(); i++)
-		//{
-		//	SceneBase::SaveStage(objTmp[i]);
-		//}
-
 		SceneManager::SetScene(EDIT);
 
 		return;
@@ -58,11 +53,6 @@ void SceneTitle::Update()
 	if (startUnlock &&
 		(input->TriggerKey(DIK_2) || buttonStart->Click(MOUSE_LEFT)))
 	{
-		//for (int i = 0; i < objTmp.size(); i++)
-		//{
-		//	SceneBase::SaveStage(objTmp[i]);
-		//}
-
 		SceneManager::SetScene(GAME);
 
 		return;
@@ -82,7 +72,6 @@ void SceneTitle::Update()
 	if (startUnlock) buttonStart->Update();
 
 	spriteCursor->Update();
-
 
 	SceneBase::Update();
 
@@ -115,14 +104,16 @@ void SceneTitle::Draw()
 	objSkydome->Draw();
 	objGroundGrid->ObjectOBJ::Draw();
 
+	objWall->Draw();
+
 	for (int i = 0; i < stgObjects.size(); i++)
 	{
 		if (stgObjects[i]->GetUsedState() != UNUSED) stgObjects[i]->ObjectOBJ::Draw();
 	}
 
-	objWall->Draw();
-
 	ObjectOBJ::PostDraw();
+
+	particle->Draw(dxCommon->GetCmdList());
 
 	// FBXƒ‚ƒfƒ‹
 	//player->ObjectFBX::Draw(dxCommon->GetCmdList());

@@ -22,25 +22,38 @@ public:
 	static int GetWaitTimerSeconds() { return waitTimer / 60; }
 	// 守る対象のオブジェクトをセット
 	static void SetStageObject(StageObject* stageObject) { GameManager::stageObject = stageObject; }
-
+	// 最後のウェーブか否かを判定
+	static bool IsFinalWave() { return wave == waveMax; }
+	// ウェーブの番号を取得
+	static int GetWaveNumber() { return wave; }
+	// 次のウェーブに切り替え
+	static void ChangeNextWave();
+	// レベル
+	static void Level();
+	// 一度に出現する敵の数
+	static int GetEnemyCount() { return enemyMax; }
 private:
 	GameManager() = default;
 	GameManager(const GameManager&) = delete;
 	~GameManager() = default;
 	GameManager& operator=(const GameManager&) = delete;
 	// 開始前待機時間
-	static const int waitTimerMax = 10 * 60;
+	static const int waitTimerMax = 5 * 60;
 	static int waitTimer;
 	// 制限時間
-	static const int timerMax = 60 * 60;
+	static int timerMax;
 	static int timer;
 	// スコア
+	static int scoreTotal;
 	static int score;
 	// ウェーブ数
-	static const int waveMax = 1;
+	static const int waveMax = 5;
 	static int wave;
 	// ウェーブ終了
 	static int finish; // 1でクリア判定 -1で失敗判定
 	// 守る対象のオブジェクト
 	static StageObject* stageObject;
+	// レベル
+	static int level;
+	static int enemyMax;
 };

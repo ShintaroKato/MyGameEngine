@@ -32,6 +32,7 @@
 #include "PostEffect.h"
 #include "PostEffectScene.h"
 #include "RenderTexture.h"
+#include "ParticleManager.h"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -104,6 +105,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	FBXLoader::GetInstance()->Initialize(dxCommon->GetDev());
 	ObjectFBX::StaticInitialize(dxCommon->GetDev());
 
+	// パーティクルマネージャ初期化
+	ParticleManager::GetInstance()->Initialize(dxCommon->GetDev());
+
 	postEffectScene->Initialize(dxCommon, spriteCommon, input, audio);
 
 #pragma endregion 描画初期化処理
@@ -138,6 +142,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		dxCommon->PreDraw();
 
+
 		// シーン描画
 		if (SceneManager::GetInitFlag())
 		{
@@ -149,8 +154,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 
 		dxCommon->PostDraw();
-
-
 	}
 
 	FBXLoader::GetInstance()->Finalize();

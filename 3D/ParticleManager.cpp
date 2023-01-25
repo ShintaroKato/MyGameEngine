@@ -7,7 +7,7 @@
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
-static const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs)
+static const XMFLOAT3 operator+(const XMFLOAT3& lhs, const XMFLOAT3& rhs)
 {
 	XMFLOAT3 result;
 	result.x = lhs.x + rhs.x;
@@ -16,7 +16,7 @@ static const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const Dir
 	return result;
 }
 
-static const DirectX::XMFLOAT4 operator+(const DirectX::XMFLOAT4& lhs, const DirectX::XMFLOAT4& rhs)
+static const XMFLOAT4 operator+(const XMFLOAT4& lhs, const XMFLOAT4& rhs)
 {
 	XMFLOAT4 result;
 	result.x = lhs.x + rhs.x;
@@ -26,7 +26,7 @@ static const DirectX::XMFLOAT4 operator+(const DirectX::XMFLOAT4& lhs, const Dir
 	return result;
 }
 
-static const DirectX::XMFLOAT3 operator-(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs)
+static const XMFLOAT3 operator-(const XMFLOAT3& lhs, const XMFLOAT3& rhs)
 {
 	XMFLOAT3 result;
 	result.x = lhs.x - rhs.x;
@@ -35,7 +35,7 @@ static const DirectX::XMFLOAT3 operator-(const DirectX::XMFLOAT3& lhs, const Dir
 	return result;
 }
 
-static const DirectX::XMFLOAT4 operator-(const DirectX::XMFLOAT4& lhs, const DirectX::XMFLOAT4& rhs)
+static const XMFLOAT4 operator-(const XMFLOAT4& lhs, const XMFLOAT4& rhs)
 {
 	XMFLOAT4 result;
 	result.x = lhs.x - rhs.x;
@@ -45,7 +45,7 @@ static const DirectX::XMFLOAT4 operator-(const DirectX::XMFLOAT4& lhs, const Dir
 	return result;
 }
 
-const DirectX::XMFLOAT3 operator/(const DirectX::XMFLOAT3& lhs, const float rhs)
+const XMFLOAT3 operator/(const XMFLOAT3& lhs, const float rhs)
 {
 	XMFLOAT3 result;
 	result.x = lhs.x / rhs;
@@ -54,7 +54,7 @@ const DirectX::XMFLOAT3 operator/(const DirectX::XMFLOAT3& lhs, const float rhs)
 	return result;
 }
 
-const DirectX::XMFLOAT4 operator/(const DirectX::XMFLOAT4& lhs, const float rhs)
+const XMFLOAT4 operator/(const XMFLOAT4& lhs, const float rhs)
 {
 	XMFLOAT4 result;
 	result.x = lhs.x / rhs;
@@ -123,7 +123,7 @@ void ParticleManager::Update()
 
 		// 速度に加速度を加算
 		it->velocity = it->velocity + it->accel;
-		//
+
 		// 速度による移動
 		it->position = it->position + it->velocity;
 
@@ -217,6 +217,11 @@ void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOA
 	p.s_scale = start_scale;
 	p.e_scale = end_scale;
 	p.num_frame = life;
+}
+
+void ParticleManager::Delete()
+{
+	particles.clear();
 }
 
 void ParticleManager::InitializeDescriptorHeap()

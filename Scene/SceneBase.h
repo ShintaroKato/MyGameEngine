@@ -16,6 +16,8 @@
 #include "Weapon.h"
 #include "TouchableObject.h"
 #include "GameManager.h"
+#include "ParticleManager.h"
+#include "ParticleEmitter.h"
 #define OBJECT_MAX 100
 
 enum SpriteNo
@@ -28,13 +30,20 @@ enum SpriteNo
 	button_title,
 	button_start,
 	button_edit,
+	button_retry,
+	button_next,
 	cursor,
 	number,
 	player_HP,
 	castle_HP,
+	wave,
 	wave_clear,
 	wave_failed,
+	wave_final,
+	wave_number,
 	pause,
+	guide01,
+	guide02,
 };
 
 // オブジェクトのデータを保存するための構造体
@@ -69,6 +78,7 @@ public:
 	static std::vector<StageObject*> stgObjects;
 
 public:
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -111,9 +121,13 @@ protected:
 
 	Sprite* spriteTitle = nullptr;
 	Sprite* spriteCursor = nullptr;
+	Sprite* spriteWave = nullptr;
 	Sprite* spriteWaveClear = nullptr;
 	Sprite* spriteWaveFailed = nullptr;
+	Sprite* spriteWaveFinal = nullptr;
 	Sprite* spritePause = nullptr;
+	Sprite* spriteGuide1 = nullptr;
+	Sprite* spriteGuide2 = nullptr;
 
 	Button* buttonRed = nullptr;
 	Button* buttonGreen = nullptr;
@@ -121,12 +135,17 @@ protected:
 	Button* buttonTitle = nullptr;
 	Button* buttonStart = nullptr;
 	Button* buttonEdit = nullptr;
+	Button* buttonRetry = nullptr;
+	Button* buttonNext = nullptr;
 
 	Number* numberTimer = nullptr;
 	Number* numberWaitTimer = nullptr;
+	Number* numberWave = nullptr;
 
 	Meter* meterPlayerHP = nullptr;
 	Meter* meterCastleHP = nullptr;
+
+	ParticleManager* particle = nullptr;
 
 	ModelOBJ* modelSkydome = nullptr;
 	ModelOBJ* modelGround = nullptr;

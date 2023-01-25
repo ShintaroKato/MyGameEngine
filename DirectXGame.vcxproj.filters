@@ -14,6 +14,9 @@
     <FxCompile Include="Resources\shaders\RenderTextureVS.hlsl" />
     <FxCompile Include="Resources\shaders\SpritePS.hlsl" />
     <FxCompile Include="Resources\shaders\SpriteVS.hlsl" />
+    <FxCompile Include="Resources\shaders\ParticleGS.hlsl" />
+    <FxCompile Include="Resources\shaders\ParticlePS.hlsl" />
+    <FxCompile Include="Resources\shaders\ParticleVS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="2D\PostEffect.cpp" />
@@ -54,9 +57,12 @@
     <ClCompile Include="UI\Number.cpp" />
     <ClCompile Include="Scene\GameManager.cpp" />
     <ClCompile Include="UI\Meter.cpp" />
-    <ClCompile Include="GameObject\StageObjectOffensive.cpp" />
+    <ClCompile Include="GameObject\Sensor.cpp" />
     <ClCompile Include="GameObject\Bullet.cpp" />
     <ClCompile Include="UI\PlaneCursor.cpp" />
+    <ClCompile Include="3D\ParticleManager.cpp" />
+    <ClCompile Include="3D\ParticleEmitter.cpp" />
+    <ClCompile Include="GameObject\BulletManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2D\PostEffect.h" />
@@ -102,9 +108,12 @@
     <ClInclude Include="UI\Number.h" />
     <ClInclude Include="Scene\GameManager.h" />
     <ClInclude Include="UI\Meter.h" />
-    <ClInclude Include="GameObject\StageObjectOffensive.h" />
+    <ClInclude Include="GameObject\Sensor.h" />
     <ClInclude Include="GameObject\Bullet.h" />
     <ClInclude Include="UI\PlaneCursor.h" />
+    <ClInclude Include="3D\ParticleManager.h" />
+    <ClInclude Include="3D\ParticleEmitter.h" />
+    <ClInclude Include="GameObject\BulletManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli" />
@@ -113,6 +122,7 @@
     <None Include="Resources\shaders\PostEffect.hlsli" />
     <None Include="Resources\shaders\RenderTexture.hlsli" />
     <None Include="Resources\shaders\Sprite.hlsli" />
+    <None Include="Resources\shaders\Particle.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Picture2\256x256Blue.png" />

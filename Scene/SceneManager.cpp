@@ -1,5 +1,7 @@
 #include "SceneManager.h"
 #include "CollisionManager.h"
+#include "ParticleManager.h"
+#include "BulletManager.h"
 
 SceneNum SceneManager::currentScene = TITLE;
 
@@ -51,7 +53,10 @@ void SceneManager::Draw()
 
 void SceneManager::DeleteScene()
 {
+	BulletManager::GetInstance()->Delete();
 	CollisionManager::GetInstance()->DeleteCollider();
+	ParticleManager::GetInstance()->Delete();
+
 	delete scenes[currentScene];
 	scenes[currentScene] = nullptr;
 }

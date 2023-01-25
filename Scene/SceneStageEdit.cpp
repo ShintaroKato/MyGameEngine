@@ -8,7 +8,7 @@ SceneStageEdit::SceneStageEdit()
 
 SceneStageEdit::~SceneStageEdit()
 {
-	delete player;
+	delete[] stgObjectEdit;
 }
 
 void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
@@ -23,7 +23,7 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 			{
 				stgObjectEdit[i] = StageObject::Create(modelCastle);
 				stgObjectEdit[i]->SetTag(CASTLE_OBJECT);
-				stgObjectEdit[i]->SetRadius(5.0f);
+				stgObjectEdit[i]->SetRadius(9.0f);
 				stgObjectEdit[i]->SetUsedState(USED);
 				stgObjectEdit[i]->SetNumber(i);
 			}
@@ -52,6 +52,13 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 	buttonBlue->SetSize({ 64,64 });
 	buttonBlue->Update();
 
+	spriteGuide1->SetPosition({ WinApp::window_width + 64, WinApp::window_height });
+	spriteGuide1->SetAnchorPoint({ 1.0f, 1.0f });
+	spriteGuide1->Update();
+	spriteGuide2->SetPosition({ WinApp::window_width + 64, WinApp::window_height });
+	spriteGuide2->SetAnchorPoint({ 1.0f, 1.0f });
+	spriteGuide2->Update();
+
 	//for (int i = 0; i < OBJECT_MAX; i++)
 	//{
 	//	SceneBase::LoadStage(stgObject[i]);
@@ -78,6 +85,13 @@ void SceneStageEdit::Update()
 	{
 		for (int i = 0; i < OBJECT_MAX; i++)
 		{
+			if (stgObjectEdit[i]->GetTag() == STAGE_OBJECT_DEFAULT) continue;
+
+			if (stgObjectEdit[i]->GetUsedState() == WAITING)
+			{
+				stgObjectEdit[i]->SetUsedState(USED);
+			}
+
 			SceneBase::SaveStage(stgObjectEdit[i]);
 		}
 
@@ -141,6 +155,10 @@ void SceneStageEdit::Draw()
 	objSkydome->Draw();
 	objGroundGrid->ObjectOBJ::Draw();
 
+	objWall->Draw();
+
+	if(!menuON) PlaneCursor::Draw();
+
 	for (int i = 0; i < OBJECT_MAX; i++)
 	{
 		if (stgObjectEdit[i]->GetUsedState() != UNUSED)
@@ -148,10 +166,6 @@ void SceneStageEdit::Draw()
 			stgObjectEdit[i]->Draw();
 		}
 	}
-
-	objWall->Draw();
-
-	if(!menuON) PlaneCursor::Draw();
 
 	ObjectOBJ::PostDraw();
 
@@ -203,13 +217,18 @@ void SceneStageEdit::MenuUpdate()
 
 void SceneStageEdit::MenuDraw()
 {
-	if (!menuON) return;
+	if (!menuON)
+	{
+		spriteGuide2->Draw();
+		return;
+	}
 
 	buttonTitle->Draw();
 	buttonRed->Draw();
 	buttonGreen->Draw();
 	buttonBlue->Draw();
 	spriteCursor->Draw();
+	spriteGuide1->Draw();
 }
 
 bool SceneStageEdit::MakeObject(StageObject* stgObject, Button* button, ModelOBJ* model, const Tag& objectTag, const XMFLOAT2& sideLength)
