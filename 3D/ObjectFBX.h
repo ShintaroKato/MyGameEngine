@@ -224,12 +224,6 @@ protected: // メンバ変数
 	// コライダー
 	BaseCollider* collider = nullptr;
 
-public:// ゲームオブジェクト用
-	// 攻撃力
-	float attackPower = 0;
-
-	void SetPower(float attackPower) { this->attackPower = attackPower; }
-
 protected:
 	Camera* GetCamera() { return ObjectFBX::camera; }
 };

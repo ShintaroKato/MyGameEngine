@@ -28,6 +28,12 @@ public:
 		this->reject = reject;
 	}
 
+	CollisionInfo(BaseCollider* collider, const XMVECTOR& inter, const XMVECTOR& reject) {
+		this->collider = collider;
+		this->inter = inter;
+		this->reject = reject;
+	}
+
 	// 衝突相手のオブジェクト
 	ObjectOBJ* obj = nullptr;
 	ObjectFBX* fbx = nullptr;

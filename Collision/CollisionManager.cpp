@@ -28,6 +28,8 @@ bool CollisionManager::CheckAllCollision()
 			BaseCollider* colA = *itA;
 			BaseCollider* colB = *itB;
 
+			if (colA == colB) continue;
+
 			if (CheckCollision(colA, colB)) return true;
 		}
 	}
@@ -44,6 +46,8 @@ bool CollisionManager::CheckAllCollision(BaseCollider* col)
 	for (; it != colliders.end(); ++it)
 	{
 		BaseCollider* colB = *it;
+
+		if (col == colB) continue;
 
 		if (CheckCollision(col, colB)) return true;
 	}
@@ -174,15 +178,35 @@ void CollisionManager::CheckSetObject(BaseCollider* colA, BaseCollider* colB, XM
 
 		return;
 	}
+	// AがOBJ,FBXではなく、BがOBJ
 	if (!colA->fbx && !colA->obj && colB->obj)
 	{
 		colA->OnCollision(CollisionInfo(colB->GetObjectOBJ(), colB, inter, reject));
+		colB->OnCollision(CollisionInfo(colA, inter, reject));
 
 		return;
 	}
+	// AがOBJ,FBXではなく、BがFBX
 	if (!colA->fbx && !colA->obj && colB->fbx)
 	{
 		colA->OnCollision(CollisionInfo(colB->GetObjectFBX(), colB, inter, reject));
+		colB->OnCollision(CollisionInfo(colA, inter, reject));
+
+		return;
+	}
+	// BがOBJ,FBXではなく、AがOBJ
+	if (!colB->fbx && !colB->obj && colA->obj)
+	{
+		colA->OnCollision(CollisionInfo(colB, inter, reject));
+		colB->OnCollision(CollisionInfo(colA->GetObjectOBJ(), colA, inter, reject));
+
+		return;
+	}
+	// BがOBJ,FBXではなく、AがFBX
+	if (!colB->fbx && !colB->obj && colA->fbx)
+	{
+		colA->OnCollision(CollisionInfo(colB, inter, reject));
+		colB->OnCollision(CollisionInfo(colA->GetObjectFBX(), colA, inter, reject));
 
 		return;
 	}

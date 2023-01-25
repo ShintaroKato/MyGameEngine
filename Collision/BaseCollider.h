@@ -74,4 +74,10 @@ protected:
 	CollisionShapeType shapeType = SHAPE_UNKNOWN;
 	// 当たり判定属性
 	unsigned short attribute = 0b1111'1111'1111'1111;
+
+public:// ゲームオブジェクト用
+	// 攻撃力
+	float attackPower = 0;
+
+	void SetPower(float attackPower) { this->attackPower = attackPower; }
 };

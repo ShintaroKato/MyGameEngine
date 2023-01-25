@@ -211,12 +211,6 @@ protected: // メンバ変数
 	// シェーディングのモード
 	UINT shadeMode = 0;
 
-public: // ゲームオブジェクト用
-	// 攻撃力
-	float attackPower = 0;
-
-	void SetPower(float attackPower) { this->attackPower = attackPower; }
-
 protected:
 	Camera* GetCamera() { return ObjectOBJ::camera; }
 };
