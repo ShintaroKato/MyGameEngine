@@ -115,7 +115,7 @@ public: // メンバ関数
 	/// <summary>
 	/// パーティクルを全て削除
 	/// </summary>
-	void Delete();
+	void DeleteAllParticle();
 
 	/// <summary>
 	/// デスクリプタヒープの初期化

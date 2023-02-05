@@ -219,7 +219,7 @@ void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOA
 	p.num_frame = life;
 }
 
-void ParticleManager::Delete()
+void ParticleManager::DeleteAllParticle()
 {
 	particles.clear();
 }

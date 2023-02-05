@@ -19,7 +19,7 @@ public:
 	/// <param name="accel_rand_range">加速度の振れ幅</param>
 	/// <param name="start_scale">大きさ(開始時)</param>
 	/// <param name="end_scale">大きさ(終了時)</param>
-	static void EmitAllRange(
+	static void EmitRandomAllRange(
 		unsigned int count, unsigned int life, XMFLOAT3 position, XMFLOAT3 velocity, 
 		XMFLOAT4 start_color = { 1,1,1,1 }, XMFLOAT4 end_color = { 1,1,1,0 },
 		float vel_rand_range = 0, float accel_rand_range = 0,
@@ -28,6 +28,7 @@ public:
 	/// <summary>
 	/// X軸方向に飛ばす
 	/// </summary>
+	/// <param name="count">同時に発生する数</param>
 	/// <param name="life">生存する時間</param>
 	/// <param name="position">発生する位置</param>
 	/// <param name="velocity">速度</param>
@@ -46,6 +47,7 @@ public:
 	/// <summary>
 	/// Y軸方向に飛ばす
 	/// </summary>
+	/// <param name="count">同時に発生する数</param>
 	/// <param name="life">生存する時間</param>
 	/// <param name="position">発生する位置</param>
 	/// <param name="velocity">速度</param>
@@ -64,6 +66,7 @@ public:
 	/// <summary>
 	/// Z軸方向に飛ばす
 	/// </summary>
+	/// <param name="count">同時に発生する数</param>
 	/// <param name="life">生存する時間</param>
 	/// <param name="position">発生する位置</param>
 	/// <param name="velocity">速度</param>
@@ -78,4 +81,23 @@ public:
 		XMFLOAT4 start_color = { 1,1,1,1 }, XMFLOAT4 end_color = { 1,1,1,0 },
 		float vel_rand_range = 0, float accel_rand_range = 0,
 		float start_scale = 1.0f, float end_scale = 0.0f);
+
+	/// <summary>
+	/// ビーム状に飛ばす
+	/// </summary>
+	/// <param name="life">生存する時間</param>
+	/// <param name="start_position">発生する位置</param>
+	/// <param name="end_position">着弾する位置</param>
+	/// <param name="velocity">速度の倍率</param>
+	/// <param name="start_scale">色(開始時)</param>
+	/// <param name="end_scale">色(終了時)</param>
+	/// <param name="vel_rand_range">速度の振れ幅</param>
+	/// <param name="accel_rand_range">加速度の振れ幅</param>
+	/// <param name="start_scale">大きさ(開始時)</param>
+	/// <param name="end_scale">大きさ(終了時)</param>
+	static void LaserBeam(
+		unsigned int life, XMFLOAT3 start_position, XMFLOAT3 end_position, float velocity = 1.0f,
+		XMFLOAT4 start_color = { 1,1,1,1 }, XMFLOAT4 end_color = { 1,1,1,0 },
+		float vel_rand_range = 0, float accel_rand_range = 0,
+		float start_scale = 1.0f, float end_scale = 5.0f);
 };
