@@ -80,6 +80,7 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 
 	// .objからモデルデータ読み込み
 	modelSkydome = ModelOBJ::LoadObj("skydome");
+	modelSkydomeSpace = ModelOBJ::LoadObj("skydome_space");
 	modelGround = ModelOBJ::LoadObj("ground");
 	modelGroundGrid = ModelOBJ::LoadObj("512MeshPlane");
 	modelPlayer = ModelOBJ::LoadObj("robo_white");
@@ -96,8 +97,13 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	objSkydome = ObjectOBJ::Create();
 	// オブジェクトにモデルを紐づける
 	objSkydome->SetModelOBJ(modelSkydome);
-	objSkydome->SetScale({ 5,5,5 });
+	objSkydome->SetScale({ 50,50,50 });
 	objSkydome->SetShadingMode(1);
+
+	objSkydomeSpace = ObjectOBJ::Create();
+	objSkydomeSpace->SetModelOBJ(modelSkydomeSpace);
+	objSkydomeSpace->SetScale({ 4.5f,4.5f,4.5f });
+	objSkydomeSpace->SetShadingMode(1);
 
 	objWall = ObjectOBJ::Create();
 	objWall->SetModelOBJ(modelWall);
@@ -136,8 +142,23 @@ void SceneBase::Update()
 	// ゲーム用オブジェクト
 	player->Update();
 
+	skydomeRot.x += 0.002f;
+	skydomeRot.y += 0.002f;
+
+	if (skydomeRot.x >= 360)
+	{
+		skydomeRot.x = 0;
+	}
+	if (skydomeRot.y >= 360)
+	{
+		skydomeRot.y = 0;
+	}
+
+	objSkydomeSpace->SetRotation(skydomeRot);
+
 	// obj更新
 	objSkydome->Update();
+	objSkydomeSpace->Update();
 	objGroundGrid->Update();
 	objWall->Update();
 	weapon[0]->Update();
@@ -169,4 +190,11 @@ StageObject* SceneBase::LoadStage(int i)
 	stgObjects[i]->ResetStatus();
 	stgObjects[i]->SetInGameFlag(false);
 	return stgObjects[i];
+}
+
+void SceneBase::SortObjectCameraDistance()
+{
+	// ラムダ式で降順ソート
+	std::sort(stgObjects.begin(), stgObjects.end(),
+		[](StageObject* a, StageObject* b) {return a->GetCameraDistance() > b->GetCameraDistance(); });
 }

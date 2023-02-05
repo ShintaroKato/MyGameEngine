@@ -55,7 +55,7 @@ void SceneManager::DeleteScene()
 {
 	BulletManager::GetInstance()->Delete();
 	CollisionManager::GetInstance()->DeleteCollider();
-	ParticleManager::GetInstance()->Delete();
+	ParticleManager::GetInstance()->DeleteAllParticle();
 
 	delete scenes[currentScene];
 	scenes[currentScene] = nullptr;

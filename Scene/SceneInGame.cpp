@@ -185,6 +185,8 @@ void SceneInGame::Update()
 		if (stgObjects[i]->GetUsedState() != UNUSED) stgObjects[i]->Update();
 	}
 
+	SortObjectCameraDistance();
+
 	BulletManager::GetInstance()->Update();
 }
 
@@ -211,6 +213,7 @@ void SceneInGame::Draw()
 
 	//objSphere->Draw();
 	objSkydome->Draw();
+	objSkydomeSpace->Draw();
 	objGroundGrid->ObjectOBJ::Draw();
 
 	objWall->Draw();

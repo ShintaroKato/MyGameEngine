@@ -50,12 +50,18 @@ public: // メンバ関数
 	bool MakeObject(StageObject* stgObject, Button* button, ModelFBX* model, const Tag& objectTag, const XMFLOAT2& sideLength = { 3.5f, 3.5f });
 
 	/// <summary>
+	/// ステージオブジェクトをカメラからの距離で並べ替える
+	/// (遠くにあるほど配列の上に入る)
+	/// </summary>
+	void SortObjectCameraDistance();
+
+	/// <summary>
 	/// datファイルに保存
 	/// </summary>
 	void SaveDat();
 
 private:
-	StageObject* stgObjectEdit[OBJECT_MAX];
+	std::vector<StageObject*> stgObjectEdit;
 
 	bool menuON = true;
 	bool buttonClick = false;

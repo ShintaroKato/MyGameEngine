@@ -1,4 +1,5 @@
 #include "GameManager.h"
+#include "ParticleManager.h"
 
 int GameManager::waitTimer = 0;
 int GameManager::timerMax = 0;
@@ -13,15 +14,18 @@ StageObject* GameManager::stageObject = nullptr;
 
 void GameManager::Start()
 {
+	wave = 1;
+
 	Level();
 
-	wave = 1;
 	waitTimer = waitTimerMax;
 	timer = timerMax;
 	score = 0;
 	scoreTotal = 0;
 
 	finish = 0;
+
+	ParticleManager::GetInstance()->DeleteAllParticle();
 }
 
 void GameManager::Restart()
@@ -35,6 +39,8 @@ void GameManager::Restart()
 	score = 0;
 
 	finish = 0;
+
+	ParticleManager::GetInstance()->DeleteAllParticle();
 }
 
 void GameManager::Update()

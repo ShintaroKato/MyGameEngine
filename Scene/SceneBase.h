@@ -104,6 +104,12 @@ public:
 	/// </summary>
 	static StageObject* LoadStage(int i = 0);
 
+	/// <summary>
+	/// ステージオブジェクトをカメラからの距離で並べ替える
+	/// (遠くにあるほど配列の上に入る)
+	/// </summary>
+	static void SortObjectCameraDistance();
+
 protected:
 
 	DirectXCommon* dxCommon = nullptr;
@@ -148,6 +154,7 @@ protected:
 	ParticleManager* particle = nullptr;
 
 	ModelOBJ* modelSkydome = nullptr;
+	ModelOBJ* modelSkydomeSpace = nullptr;
 	ModelOBJ* modelGround = nullptr;
 	ModelOBJ* modelGroundGrid = nullptr;
 	ModelOBJ* modelPlayer = nullptr;
@@ -162,6 +169,7 @@ protected:
 
 	ObjectOBJ* objWall = nullptr;
 	ObjectOBJ* objSkydome = nullptr;
+	ObjectOBJ* objSkydomeSpace = nullptr;
 	TouchableObject* objGroundGrid = nullptr;
 
 	StageObject* objCastle;
@@ -171,4 +179,7 @@ protected:
 	Player* player = nullptr;
 	Enemy* enemy[ENEMY_MAX]{};
 	Weapon* weapon[WEAPON_MAX]{};
+
+	// 星空の天球の回転量
+	XMFLOAT3 skydomeRot{};
 };

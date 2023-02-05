@@ -8,7 +8,6 @@ SceneStageEdit::SceneStageEdit()
 
 SceneStageEdit::~SceneStageEdit()
 {
-	delete[] stgObjectEdit;
 }
 
 void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)
@@ -21,7 +20,7 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 		{
 			if (i == 0)
 			{
-				stgObjectEdit[i] = StageObject::Create(modelCastle);
+				stgObjectEdit.push_back(StageObject::Create(modelCastle));
 				stgObjectEdit[i]->SetTag(CASTLE_OBJECT);
 				stgObjectEdit[i]->SetRadius(9.0f);
 				stgObjectEdit[i]->SetUsedState(USED);
@@ -29,11 +28,11 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 			}
 			else
 			{
-				stgObjectEdit[i] = StageObject::Create(modelCubeRed);
+				stgObjectEdit.push_back(StageObject::Create(modelCubeRed));
 				stgObjectEdit[i]->SetNumber(i);
 			}
 		}
-		else stgObjectEdit[i] = LoadStage(i);
+		else stgObjectEdit.push_back(LoadStage(i));
 	}
 
 
@@ -128,6 +127,8 @@ void SceneStageEdit::Update()
 		if (stgObjectEdit[i]->GetDragFlag()) menuON = false;
 	}
 
+	SortObjectCameraDistance();
+
 	PlaneCursor::Update();
 }
 
@@ -153,6 +154,7 @@ void SceneStageEdit::Draw()
 	ObjectOBJ::PreDraw(dxCommon->GetCmdList());
 
 	objSkydome->Draw();
+	objSkydomeSpace->Draw();
 	objGroundGrid->ObjectOBJ::Draw();
 
 	objWall->Draw();
@@ -273,4 +275,11 @@ bool SceneStageEdit::MakeObject(StageObject* stgObject, Button* button, ModelFBX
 	}
 
 	return false;
+}
+
+void SceneStageEdit::SortObjectCameraDistance()
+{
+	// ラムダ式で降順ソート
+	std::sort(stgObjectEdit.begin(), stgObjectEdit.end(),
+		[](StageObject* a, StageObject* b) {return a->GetCameraDistance() > b->GetCameraDistance(); });
 }

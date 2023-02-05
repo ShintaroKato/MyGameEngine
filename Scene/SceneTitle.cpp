@@ -79,6 +79,8 @@ void SceneTitle::Update()
 	{
 		if (stgObjects[i]->GetUsedState() != UNUSED) stgObjects[i]->Update();
 	}
+
+	SortObjectCameraDistance();
 }
 
 void SceneTitle::Draw()
@@ -102,6 +104,7 @@ void SceneTitle::Draw()
 	ObjectOBJ::PreDraw(dxCommon->GetCmdList());
 
 	objSkydome->Draw();
+	objSkydomeSpace->Draw();
 	objGroundGrid->ObjectOBJ::Draw();
 
 	objWall->Draw();
