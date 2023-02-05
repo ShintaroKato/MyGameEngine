@@ -179,7 +179,7 @@ void CollisionManager::CheckSetObject(BaseCollider* colA, BaseCollider* colB, XM
 		return;
 	}
 	// AがOBJ,FBXではなく、BがOBJ
-	if (!colA->fbx && !colA->obj && colB->obj)
+	if (colA->none && colB->obj)
 	{
 		colA->OnCollision(CollisionInfo(colB->GetObjectOBJ(), colB, inter, reject));
 		colB->OnCollision(CollisionInfo(colA, inter, reject));
@@ -187,7 +187,7 @@ void CollisionManager::CheckSetObject(BaseCollider* colA, BaseCollider* colB, XM
 		return;
 	}
 	// AがOBJ,FBXではなく、BがFBX
-	if (!colA->fbx && !colA->obj && colB->fbx)
+	if (colA->none && colB->fbx)
 	{
 		colA->OnCollision(CollisionInfo(colB->GetObjectFBX(), colB, inter, reject));
 		colB->OnCollision(CollisionInfo(colA, inter, reject));
@@ -195,7 +195,7 @@ void CollisionManager::CheckSetObject(BaseCollider* colA, BaseCollider* colB, XM
 		return;
 	}
 	// BがOBJ,FBXではなく、AがOBJ
-	if (!colB->fbx && !colB->obj && colA->obj)
+	if (colB->none && colA->obj)
 	{
 		colA->OnCollision(CollisionInfo(colB, inter, reject));
 		colB->OnCollision(CollisionInfo(colA->GetObjectOBJ(), colA, inter, reject));
@@ -203,7 +203,7 @@ void CollisionManager::CheckSetObject(BaseCollider* colA, BaseCollider* colB, XM
 		return;
 	}
 	// BがOBJ,FBXではなく、AがFBX
-	if (!colB->fbx && !colB->obj && colA->fbx)
+	if (colB->none && colA->fbx)
 	{
 		colA->OnCollision(CollisionInfo(colB, inter, reject));
 		colB->OnCollision(CollisionInfo(colA->GetObjectFBX(), colA, inter, reject));

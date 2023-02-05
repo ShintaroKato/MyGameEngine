@@ -4,6 +4,7 @@
 #include "CollisionInfo.h"
 #include "ObjectOBJ.h"
 #include "ObjectFBX.h"
+#include "ObjectNone.h"
 
 /// <summary>
 /// コライダー基底クラス
@@ -32,6 +33,10 @@ public:
 		return fbx;
 	}
 
+	inline void SetObjectNone(ObjectNone* none) {
+		this->none = none;
+	}
+
 	/// <summary>
 	/// 更新
 	/// </summary>
@@ -43,10 +48,11 @@ public:
 	/// 衝突時コールバック関数
 	/// </summary>
 	/// <param name="info">衝突情報</param>
-	inline void OnCollision(const CollisionInfo& info)
+	inline virtual void OnCollision(const CollisionInfo& info)
 	{
 		if(obj) this->obj->OnCollision(info);
 		if(fbx) this->fbx->OnCollision(info);
+		if(none) this->none->OnCollision(info);
 	}
 
 	inline void SetAttribute(unsigned short attribute)
@@ -70,6 +76,7 @@ public:
 protected:
 	ObjectOBJ* obj = nullptr;
 	ObjectFBX* fbx = nullptr;
+	ObjectNone* none = nullptr;
 	// 形状タイプ
 	CollisionShapeType shapeType = SHAPE_UNKNOWN;
 	// 当たり判定属性
