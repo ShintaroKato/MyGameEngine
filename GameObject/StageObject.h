@@ -5,6 +5,7 @@
 #include "CollisionManager.h"
 #include "SphereCollider.h"
 #include "MeshCollider.h"
+#include "Sensor.h"
 
 enum UsedState
 {
@@ -89,6 +90,11 @@ public:
 	/// オブジェクトのタイプ
 	/// </summary>
 	void ObjectType();
+
+	/// <summary>
+	/// 弾を発射
+	/// </summary>
+	void Attack();
 
 	/// <summary>
 	/// ゲーム本編か否かを設定
@@ -210,6 +216,14 @@ protected:
 
 	// 衝突しているか否か
 	bool hit = false;
+
+	// 攻撃力
+	float power = 100.0f;
+	// 攻撃の間隔
+	int attackCountMax = 100.0f;
+	int attackCount = attackCountMax;
+	// 敵を検知するセンサー
+	Sensor sensor{};
 
 	// 耐久値
 	float HPMax = 100.0f;

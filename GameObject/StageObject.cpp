@@ -5,6 +5,7 @@
 #include "SceneManager.h"
 #include "PlaneCursor.h"
 #include "ParticleEmitter.h"
+#include "BulletManager.h"
 
 bool StageObject::isDragStatic = false;
 
@@ -64,7 +65,8 @@ bool StageObject::Initialize()
 	ObjectOBJ::Initialize();
 
 	// コライダーの追加
-	sphere.center = { pos.x, pos.y + radius, pos.z,0 };
+	sphere.center = XMLoadFloat3(&pos);
+	sphere.center.m128_f32[1] += radius;
 	sphere.radius = radius;
 
 	meshColl = new MeshCollider();
@@ -86,6 +88,10 @@ void StageObject::Update()
 		Move();
 		Rotation();
 		ChangeDefault();
+	}
+	if (tag == OFFENCE_OBJECT)
+	{
+		Attack();
 	}
 
 	SetPosition(pos);
@@ -149,7 +155,7 @@ void StageObject::Drag()
 		pos = PlaneCursor::GetPosition();
 		pos.y += 10.0f;
 
-		sphere.center = { pos.x, pos.y, pos.z };
+		sphere.center = XMLoadFloat3(&pos);
 		sphereColl->SetOffset(sphere.center);
 	}
 
@@ -239,6 +245,13 @@ void StageObject::ObjectType()
 		HP = HPMax;
 		break;
 
+	case OFFENCE_OBJECT:
+		sensor.Initialize(pos, 10);
+		radius = 3.0f;
+		HPMax = 100;
+		HP = HPMax;
+		break;
+
 	case STAGE_OBJECT_DEFAULT:
 	default:
 		radius = 0.0f;
@@ -248,12 +261,29 @@ void StageObject::ObjectType()
 	}
 }
 
+void StageObject::Attack()
+{
+	//if()
+	if (attackCount > 0)
+	{
+		attackCount--;
+	}
+	else
+	{
+		//rot.x = cos sensor.GetTargetPos();
+
+		BulletManager::GetInstance()->Fire(pos, rot, COLLISION_ATTR_ALLIES, 1.0f, power);
+		attackCount = attackCountMax;
+	}
+}
+
 void StageObject::SetPosition(const XMFLOAT3& position)
 {
 	this->pos = position;
 
 	// コライダーの追加
-	sphere.center = { pos.x, pos.y + 5.0f, pos.z,0 };
+	sphere.center = XMLoadFloat3(&pos);
+	sphere.center.m128_f32[1] += radius;
 	sphere.radius = radius;
 
 	if (ObjectOBJ::model)
@@ -335,11 +365,19 @@ void StageObject::OnCollision(const CollisionInfo& info)
 	if (info.collider->GetAttribute() == COLLISION_ATTR_ENEMIES && tag != STAGE_OBJECT_DEFAULT)
 	{
 		Hit(info.collider->attackPower);
-		ParticleEmitter::EmitY_AxisDir(3, 60,
+		ParticleEmitter::EmitRandomAllRange(3, 60,
 			{ info.inter.m128_f32[0], info.inter.m128_f32[1], info.inter.m128_f32[2] },
-			0.075f,
+			{0.0f,0.0f,0.0f},
 			{ 1.0f, 0.5f ,0.0f, 1.0f }, { 0.7f, 0.2f, 0.0f, 0.5f },
-			0.01f, 0.001f, 1.0f, 0.1);
+			0.1f, 0.001f, 1.0f, 0.1);
+	}
+	if (info.collider->GetAttribute() == COLLISION_ATTR_BULLET + COLLISION_ATTR_ALLIES && tag != STAGE_OBJECT_DEFAULT)
+	{
+		ParticleEmitter::EmitY_AxisDir(10, 60,
+			{ info.inter.m128_f32[0], info.inter.m128_f32[1], info.inter.m128_f32[2] },
+			0.0f,
+			{ 0.5f, 0.5f ,0.5f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f },
+			0.005f, 0.001f, 0.4f, 0.0f);
 	}
 }
 
