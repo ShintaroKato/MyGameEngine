@@ -270,6 +270,15 @@ void ObjectOBJ::Update()
 	constMap->mode = shadeMode;
 	constMap->constColor = color;
 	constBuffB0->Unmap(0, nullptr);
+
+	// カメラからの距離を計算
+	XMVECTOR vPosition = XMLoadFloat3(&position);
+	XMVECTOR vCameraPosition = XMLoadFloat3(&camera->GetEye());
+	XMVECTOR vCameraDist = XMVectorSubtract(vPosition, vCameraPosition);
+	cameraDistance = sqrtf(
+		vCameraDist.m128_f32[0] * vCameraDist.m128_f32[0] +
+		vCameraDist.m128_f32[1] * vCameraDist.m128_f32[1] +
+		vCameraDist.m128_f32[2] * vCameraDist.m128_f32[2]);
 }
 
 void ObjectOBJ::UpdateWorldMatrix()

@@ -134,6 +134,11 @@ public: // メンバ関数
 	const XMMATRIX& GetInvMatWorld() { return invMatWorld; }
 
 	/// <summary>
+	/// カメラからの距離を取得
+	/// </summary>
+	const float& GetCameraDistance() { return cameraDistance; }
+
+	/// <summary>
 	/// コライダーを取得
 	/// </summary>
 	BaseCollider* GetCollider() { return collider; }
@@ -204,7 +209,8 @@ protected: // メンバ変数
 	XMMATRIX invMatWorld{};
 	// 親オブジェクト
 	ObjectOBJ* parent = nullptr;
-
+	// カメラからの距離
+	float cameraDistance = 0;
 	// コライダー
 	BaseCollider* collider = nullptr;
 
