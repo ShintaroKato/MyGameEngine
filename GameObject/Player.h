@@ -139,7 +139,7 @@ public:
 		return max;
 	}
 
-	float GetPower() { return attackPower + weapon->GetPower(); }
+	float GetPower() { return power + weapon->GetPower(); }
 
 private:
 	// ç¿ïW
@@ -183,7 +183,7 @@ private:
 	bool attackFlag = false;
 	int attackLevel = 0;
 	float attackCount = 0;
-	float attackPower = 10.0f;
+	float power = 10.0f;
 
 	// ÉQÅ[ÉÄñ{ï“Ç©î€Ç©
 	bool isInGame = true;

@@ -31,7 +31,7 @@ bool Bullet::Initialize()
 	sphereColl = new SphereCollider(sphere);
 	sphereColl->SetAttribute(collAttribute);
 
-	CollisionManager::GetInstance()->AddCollider(sphereColl);
+	SetCollider(sphereColl);
 
 	return true;
 }
@@ -44,7 +44,6 @@ void Bullet::Update()
 void Bullet::OnCollision(const CollisionInfo& info)
 {
 	if (info.collider->GetAttribute() == COLLISION_ATTR_ENEMIES ||
-		info.collider->GetAttribute() == COLLISION_ATTR_LANDSHAPE ||
 		info.collider->GetAttribute() == COLLISION_ATTR_OBJECT_MESH)
 	{
 		frame += end_frame;
@@ -54,10 +53,13 @@ void Bullet::OnCollision(const CollisionInfo& info)
 void Bullet::SetPosition(XMFLOAT3 pos)
 {
 	// コライダーの追加
-	sphere.center = { pos.x, pos.y + radius, pos.z,0 };
+	sphere.center = XMLoadFloat3(&pos);
+	sphere.center.m128_f32[1] += radius;
 	sphere.radius = radius;
 
 	sphereColl->SetSphere(sphere);
+
+	SetCollider(sphereColl);
 }
 
 void Bullet::SetRotation(XMFLOAT3 rot)

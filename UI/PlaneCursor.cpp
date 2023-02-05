@@ -19,7 +19,8 @@ void PlaneCursor::Initialize(ObjectOBJ* object)
 	cursor = object;
 
 	// コライダーの追加
-	sphere.center = { pos.x, pos.y + radius, pos.z,0 };
+	sphere.center = XMLoadFloat3(&pos);
+	sphere.center.m128_f32[1] += radius;
 	sphere.radius = radius;
 
 	sphereColl = new SphereCollider(sphere, true);
@@ -51,7 +52,7 @@ void PlaneCursor::Move()
 	XMVECTOR inter{};
 
 	pos = { vec.m128_f32[0], 0, vec.m128_f32[2] };
-	sphere.center = { pos.x, pos.y, pos.z };
+	sphere.center = XMLoadFloat3(&pos);
 	sphereColl->SetOffset(sphere.center);
 
 	// 動かせる範囲
@@ -77,7 +78,8 @@ void PlaneCursor::SetPosition(const XMFLOAT3& position)
 	pos.y = 0.0f;
 
 	// コライダーの追加
-	sphere.center = { pos.x, pos.y, pos.z,0 };
+	sphere.center = XMLoadFloat3(&pos);
+	sphere.center.m128_f32[1] += radius;
 	sphere.radius = radius;
 
 	*sphereColl = SphereCollider(sphere, true);

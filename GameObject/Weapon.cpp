@@ -63,7 +63,8 @@ bool Weapon::Initialize()
 	ObjectOBJ::Initialize();
 
 	// コライダーの追加
-	sphere.center = { pos.x, pos.y + radius, pos.z,0 };
+	sphere.center = XMLoadFloat3(&pos);
+	sphere.center.m128_f32[1] += radius;
 	sphere.radius = radius;
 	sphereColl = new SphereCollider(sphere);
 
@@ -122,7 +123,8 @@ void Weapon::OnCollision(const CollisionInfo& info)
 void Weapon::SetPosition(XMFLOAT3 pos)
 {
 	// コライダーの追加
-	sphere.center = { pos.x, pos.y + radius, pos.z,0 };
+	sphere.center = XMLoadFloat3(&pos);
+	sphere.center.m128_f32[1] += radius;
 	sphere.radius = radius;
 
 	sphereColl->SetSphere(sphere);

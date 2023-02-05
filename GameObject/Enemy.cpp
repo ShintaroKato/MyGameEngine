@@ -64,7 +64,8 @@ bool Enemy::Initialize()
 	ObjectOBJ::Initialize();
 
 	// コライダーの追加
-	sphere.center = { pos.x, pos.y + radius, pos.z,0 };
+	sphere.center = XMLoadFloat3(&pos);
+	sphere.center.m128_f32[1] += radius;
 	sphere.radius = radius;
 	sphereColl = new SphereCollider(sphere);
 
@@ -177,9 +178,15 @@ void Enemy::Hit(float attackPower)
 {
 	HP -= attackPower;
 
+
 	if (HP <= 0)
 	{
 		aliveFlag = false;
+
+		ParticleEmitter::EmitRandomAllRange(
+			5, 5, { pos.x,pos.y + radius,pos.z }, { 0, 0, 0 },
+			{ 0.1f,0.1f,0.1f,1.0f }, { 0.0f,0.0f,3.0f,1.0f },
+			0.5f, 0.01f, 0.5f, 0.0f);
 	}
 }
 
@@ -210,18 +217,20 @@ void Enemy::OnCollision(const CollisionInfo& info)
 		info.collider->GetAttribute() == (COLLISION_ATTR_BULLET + COLLISION_ATTR_ALLIES))
 	{
 		Hit(info.collider->attackPower);
-	}
-	if (info.collider->GetAttribute() == (COLLISION_ATTR_BULLET + COLLISION_ATTR_ALLIES))
-	{
-		Hit(info.collider->attackPower);
 
+		ParticleEmitter::EmitY_AxisDir(10, 60,
+			{ info.inter.m128_f32[0], info.inter.m128_f32[1], info.inter.m128_f32[2] },
+			0.0f,
+			{ 0.5f, 0.5f ,0.5f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f },
+			0.01f, 0.001f, 0.4f, 0.0f);
 	}
 }
 
 void Enemy::SetPosition(XMFLOAT3 pos)
 {
 	// コライダーの追加
-	sphere.center = { pos.x, pos.y + radius, pos.z,0 };
+	sphere.center = XMLoadFloat3(&pos);
+	sphere.center.m128_f32[1] += radius;
 	sphere.radius = radius;
 
 	sphereColl->SetSphere(sphere);

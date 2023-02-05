@@ -29,7 +29,7 @@ void BulletManager::Update()
 	{
 		it->frame++;
 		it->position = it->position + it->velocity;
-		ParticleEmitter::EmitAllRange(1, 6, it->position, { 0,0,0 });
+		ParticleEmitter::EmitRandomAllRange(1, 6, it->position, { 0,0,0 });
 		it->Update();
 		CollisionManager::GetInstance()->CheckAllCollision(it->GetSphereCollider());
 

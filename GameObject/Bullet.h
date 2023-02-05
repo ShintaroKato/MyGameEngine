@@ -1,8 +1,10 @@
 #pragma once
+#include "ObjectNone.h"
+#include "BaseCollider.h"
 #include "SphereCollider.h"
 #include "CollisionAttribute.h"
 
-class Bullet : public SphereCollider
+class Bullet : public ObjectNone
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -36,7 +38,7 @@ public:
 	/// 衝突時コールバック関数
 	/// </summary>
 	/// <param name="info">衝突情報</param>
-	void OnCollision(const CollisionInfo& info);
+	void OnCollision(const CollisionInfo& info) override;
 
 	/// <summary>
 	/// 座標を設定
@@ -64,7 +66,7 @@ public:
 	// 回転
 	XMFLOAT3 rotation{};
 	// 半径
-	float radius = 5.0f;
+	float radius = 1.0f;
 	// 速度
 	XMVECTOR velocity = { 0, 0, 1.0f };
 	// コライダー

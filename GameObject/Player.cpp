@@ -65,7 +65,8 @@ bool Player::Initialize()
 	ObjectOBJ::Initialize();
 
 	// コライダーの追加
-	sphere.center = { pos.x, pos.y + radius, pos.z,0 };
+	sphere.center = XMLoadFloat3(&pos);
+	sphere.center.m128_f32[1] += radius;
 	sphere.radius = radius;
 	sphereColl = new SphereCollider(sphere);
 
@@ -103,13 +104,9 @@ void Player::Update()
 
 	if(attackFlag)
 	{
-		ParticleEmitter::EmitAllRange(5 ,attackCount, weapon->GetPosition(),
+		ParticleEmitter::EmitRandomAllRange(5 ,attackCount, weapon->GetPosition(),
 			{ 0,0,0 },
 			{ 0.6f,0.6f,1.0f,1.0f }, { 0.0f,0.0f,1.0f,1.0f }, 0.1f, 0.001f, 2.0f);
-
-		/*ParticleEmitter::EmitAllRange(4, weapon->GetPosition(),
-			{ 0.4f * -sin(XMConvertToRadians(weapon->GetRotation().y)), 0, 0.4f * -cos(XMConvertToRadians(weapon->GetRotation().y)) },
-			{ 1.0f,1.0f,1.0f,1.0f }, { 0.0f,0.0f,1.0f,1.0f }, 0.1f, 0.001f, 0.1f);*/
 	}
 
 	ObjectOBJ::Update();
@@ -195,7 +192,7 @@ void Player::Jump()
 
 	// 球の上端から球の下端までのレイキャスト
 	Ray ray;
-	ray.start = XMVECTOR({ pos.x,pos.y,pos.z });
+	ray.start = XMLoadFloat3(&pos);
 	ray.start.m128_f32[1] += sphereColl->GetRadius() * 2.0f;
 	ray.dir = { 0,-1,0,0 };
 	RaycastHit raycastHit;
@@ -309,7 +306,7 @@ void Player::Attack()
 			attackCount = 16.0f;
 			attackFlag = true;
 
-			BulletManager::GetInstance()->Fire(pos, rot, COLLISION_ATTR_ALLIES, 1.0f, 100);
+			BulletManager::GetInstance()->Fire(pos, rot, COLLISION_ATTR_ALLIES, 1.0f, power);
 		}
 	}
 
@@ -404,7 +401,8 @@ void Player::Rejection(const CollisionInfo& info)
 void Player::SetPosition(XMFLOAT3 pos)
 {
 	// コライダーの追加
-	sphere.center = { pos.x, pos.y + radius, pos.z,0 };
+	sphere.center = XMLoadFloat3(&pos);
+	sphere.center.m128_f32[1] += radius;
 	sphere.radius = radius;
 
 	sphereColl->SetSphere(sphere);
