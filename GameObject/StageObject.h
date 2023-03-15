@@ -46,6 +46,11 @@ public:
 
 public:
 	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns>インスタンス</returns>
+	StageObject* GetInstance() { return this; };
+	/// <summary>
 	/// 初期化
 	/// </summary>
 	/// <returns>成否</returns>
@@ -137,7 +142,11 @@ public:
 	/// </summary>
 	void Rejection(const CollisionInfo& info);
 
+	/// <summary>
+	/// 掴まれているか否かの判定
+	/// </summary>
 	bool GetDragFlag() { return isDrag; }
+
 	void ChangeDragFlagFalse()
 	{
 		isDrag = false;
@@ -220,10 +229,10 @@ protected:
 	// 攻撃力
 	float power = 100.0f;
 	// 攻撃の間隔
-	int attackCountMax = 100.0f;
-	int attackCount = attackCountMax;
+	int attackWaitCountMax = 100.0f;
+	int attackWaitCount = attackWaitCountMax;
 	// 敵を検知するセンサー
-	Sensor sensor{};
+	Sensor* sensor{};
 
 	// 耐久値
 	float HPMax = 100.0f;
@@ -232,3 +241,5 @@ protected:
 
 	bool aliveFlag = true;
 };
+
+bool operator<(StageObject l, StageObject r);

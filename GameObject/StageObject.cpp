@@ -79,6 +79,8 @@ bool StageObject::Initialize()
 
 void StageObject::Update()
 {
+	if(tag == UNUSED)
+
 	if (HP <= 0) aliveFlag = false;
 
 	if (!isInGame)
@@ -88,10 +90,37 @@ void StageObject::Update()
 		Move();
 		Rotation();
 		ChangeDefault();
+
 	}
-	if (tag == OFFENCE_OBJECT)
+	else if (aliveFlag)
 	{
-		Attack();
+		if(tag == OFFENCE_OBJECT)
+		{
+			sensor->SetPosition(pos);
+			sensor->Update();
+			Attack();
+		}
+
+		XMFLOAT3 effectPos = pos;
+		effectPos.x += (float)(rand() % 10 - 5);
+		effectPos.y += (float)(rand() % 10 - 5);
+		effectPos.z += (float)(rand() % 10 - 5);
+
+		for (int i = 0; i < 2; i++)
+		{
+			if (HP <= HPMax / 2)
+			{
+				ParticleEmitter::Spark(16, 8, 4, effectPos, effectPos, 0.4f,
+					{ 1.0f,0.0f,0.0f,1.0f }, { 1.0f,1.0f,0.5f,1.0f },
+					radius / 2, 0.0f, 0.0f, 0.2f, 0.2f);
+			}
+			if (HP <= HPMax / 4)
+			{
+				ParticleEmitter::Spark(16, 8, 4, effectPos, effectPos, 0.4f,
+					{ 1.0f,0.2f,0.2f,1.0f }, { 1.0f,0.0f,0.0f,1.0f },
+					radius / 2, 0.0f, 0.0f, 0.2f, 0.2f);
+			}
+		}
 	}
 
 	SetPosition(pos);
@@ -102,6 +131,7 @@ void StageObject::Update()
 
 void StageObject::Draw()
 {
+	if(tag == UNUSED)
 	if (!aliveFlag) return;
 
 	ObjectOBJ::Draw();
@@ -168,10 +198,6 @@ void StageObject::Drag()
 			PlaneCursor::SetColor({ 1.0f,0.0f,0.0f,0.0f }); // Ô
 		}
 	}
-	else if(!PlaneCursor::GetIsDrag())
-	{
-		PlaneCursor::SetColor({ 1.0f,1.0f,1.0f,1.0f }); // ”’
-	}
 }
 
 void StageObject::Move()
@@ -191,10 +217,27 @@ void StageObject::Rotation()
 
 	if (!isDrag) return;
 
-	if (input->TriggerKey(DIK_A))		rot.y -= 90.0f;
-	else if (input->TriggerKey(DIK_D))	rot.y += 90.0f;
+	if(input->PushKey(DIK_LSHIFT) || input->PushKey(DIK_RSHIFT))
+	{
+		if (input->TriggerKey(DIK_A))
+		{
+			if ((int)rot.y % 90 != 0) rot.y -= (int)rot.y % 90;
+			else					  rot.y -= 90.0f;
+		}
+		else if (input->TriggerKey(DIK_D))
+		{
+			if ((int)rot.y % 90 != 0) rot.y += 90 - (int)rot.y % 90;
+			else					  rot.y += 90.0f;
+		}
+	}
+	else
+	{
+		if (input->PushKey(DIK_A))		rot.y -= 2.0f;
+		else if (input->PushKey(DIK_D))	rot.y += 2.0f;
+	}
 
-	if (abs(rot.y) >= 360) rot.y = 0;
+	if (rot.y >= 360) rot.y -= 360;
+	if (rot.y <= -360) rot.y += 360;
 
 	if (ObjectOBJ::model) ObjectOBJ::SetRotation(rot);
 	if (ObjectFBX::model) ObjectFBX::SetRotation(rot);
@@ -211,6 +254,12 @@ void StageObject::ChangeDefault()
 		isDrag = false;
 		isDragStatic = false;
 		PlaneCursor::SetIsDrag(isDragStatic);
+
+		if (sensor)
+		{
+			sensor->Delete();
+			delete sensor;
+		}
 
 		tag = STAGE_OBJECT_DEFAULT;
 		used = UNUSED;
@@ -246,10 +295,11 @@ void StageObject::ObjectType()
 		break;
 
 	case OFFENCE_OBJECT:
-		sensor.Initialize(pos, 10);
+		sensor = new Sensor(pos, 32);
 		radius = 3.0f;
 		HPMax = 100;
 		HP = HPMax;
+		power = 100.0f;
 		break;
 
 	case STAGE_OBJECT_DEFAULT:
@@ -263,17 +313,64 @@ void StageObject::ObjectType()
 
 void StageObject::Attack()
 {
-	//if()
-	if (attackCount > 0)
+	if(sensor->Detection())
 	{
-		attackCount--;
+		XMFLOAT3 target = sensor->GetTargetPos();
+		XMFLOAT3 cannonPos = pos;
+		cannonPos.y += 10;
+
+		if (attackWaitCount > 0)
+		{
+			attackWaitCount--;
+		}
+		else
+		{
+
+			XMFLOAT3 dist{};
+			dist.x = target.x - cannonPos.x;
+			dist.y = target.y - cannonPos.y;
+			dist.z = target.z - cannonPos.z;
+
+			XMFLOAT3 cannonRot{};
+			cannonRot.y = XMConvertToDegrees(atan2f(dist.x, dist.z));
+			cannonRot.x = -XMConvertToDegrees(atan2f(dist.y, sqrtf(dist.x * dist.x + dist.z * dist.z)));
+
+			BulletManager::GetInstance()->Fire(cannonPos, cannonRot, COLLISION_ATTR_ALLIES, meshColl, 3.0f, power);
+			attackWaitCount = attackWaitCountMax;
+
+		}
+
+		Ray ray;
+		ray.start = XMLoadFloat3(&cannonPos);
+		ray.dir = XMLoadFloat3(&target);
+		ray.dir = XMVector3Normalize(ray.dir - ray.start);
+		RaycastHit raycast{};
+		XMFLOAT3 inter{};
+
+		CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_ALLIES, meshColl, &raycast);
+
+		XMFLOAT3 ePos{};
+		if(raycast.collider->GetAttribute() == COLLISION_ATTR_ENEMIES)
+		{
+			if (raycast.obj) ePos = raycast.obj->GetPosition();
+			if (raycast.fbx) ePos = raycast.fbx->GetPosition();
+			inter = ePos;
+		}
+		else
+		{
+			inter.x = raycast.inter.m128_f32[0];
+			inter.y = raycast.inter.m128_f32[1];
+			inter.z = raycast.inter.m128_f32[2];
+		}
+
+		ParticleEmitter::Spark(32, 8, 4, inter, cannonPos, -0.1f,
+			{ 0.0f,0.0f,1.0f,1.0f }, { 0.0f,0.1f,0.1f,1.0f }, 1.2f, 0.0f, 0.0f, 0.5f, 0.5f);
+		ParticleEmitter::LaserBeam(16, 8, cannonPos, inter, 0.5f,
+			{ 0.2f,0.2f,1.0f,0.01f }, { 0.2f,0.2f,1.0f,0.01f }, 0.0f, 0.01f, 2.0f, 2.0f);
 	}
 	else
 	{
-		//rot.x = cos sensor.GetTargetPos();
-
-		BulletManager::GetInstance()->Fire(pos, rot, COLLISION_ATTR_ALLIES, 1.0f, power);
-		attackCount = attackCountMax;
+		attackWaitCount = attackWaitCountMax;
 	}
 }
 
@@ -362,20 +459,21 @@ XMFLOAT3 StageObject::GetPosition()
 
 void StageObject::OnCollision(const CollisionInfo& info)
 {
-	if (info.collider->GetAttribute() == COLLISION_ATTR_ENEMIES && tag != STAGE_OBJECT_DEFAULT)
+	if (info.collider->GetAttribute() == COLLISION_ATTR_ENEMIES && tag != STAGE_OBJECT_DEFAULT ||
+		info.collider->GetAttribute() == COLLISION_ATTR_ENEMIES + COLLISION_ATTR_BULLET && tag != STAGE_OBJECT_DEFAULT)
 	{
 		Hit(info.collider->attackPower);
 		ParticleEmitter::EmitRandomAllRange(3, 60,
 			{ info.inter.m128_f32[0], info.inter.m128_f32[1], info.inter.m128_f32[2] },
 			{0.0f,0.0f,0.0f},
-			{ 1.0f, 0.5f ,0.0f, 1.0f }, { 0.7f, 0.2f, 0.0f, 0.5f },
+			{ 1.0f, 0.5f ,0.0f, 1.0f }, { 0.7f, 0.2f, 0.0f, 0.5f }, 
 			0.1f, 0.001f, 1.0f, 0.1);
 	}
 	if (info.collider->GetAttribute() == COLLISION_ATTR_BULLET + COLLISION_ATTR_ALLIES && tag != STAGE_OBJECT_DEFAULT)
 	{
 		ParticleEmitter::EmitY_AxisDir(10, 60,
 			{ info.inter.m128_f32[0], info.inter.m128_f32[1], info.inter.m128_f32[2] },
-			0.0f,
+			0.01f,
 			{ 0.5f, 0.5f ,0.5f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f },
 			0.005f, 0.001f, 0.4f, 0.0f);
 	}
@@ -384,4 +482,9 @@ void StageObject::OnCollision(const CollisionInfo& info)
 void StageObject::Rejection(const CollisionInfo& info)
 {
 
+}
+
+bool operator<(StageObject l, StageObject r)
+{
+	return l.GetCameraDistance() >= r.GetCameraDistance();
 }

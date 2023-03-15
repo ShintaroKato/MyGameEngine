@@ -17,11 +17,17 @@ private: // エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 
 public:
-	// 初期化
-	void Initialize(XMFLOAT3 position, float range);
+	Sensor();
+	Sensor(XMFLOAT3 position, float range);
 
 	// 更新
 	void Update();
+
+	/// <summary>
+	/// 座標を設定
+	/// </summary>
+	/// <param name="pos">座標</param>
+	void SetPosition(XMFLOAT3 pos) { this->pos = pos; }
 
 	// 敵を検知する範囲を設定
 	void SetSensorRange(float range);
@@ -36,7 +42,9 @@ public:
 	void OnCollision(const CollisionInfo& info);
 
 	// 標的の座標を取得
-	XMFLOAT3 GetTargetPos() { return *targetPos; }
+	XMFLOAT3 GetTargetPos() { return targetPos; }
+
+	void Delete();
 
 private:
 	// 座標
@@ -48,7 +56,7 @@ private:
 	SphereCollider* sensorColl = nullptr;
 
 	// 標的の座標
-	XMFLOAT3* targetPos;
+	XMFLOAT3 targetPos;
 
 	// 検知している否か
 	bool isDetecting = false;
