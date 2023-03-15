@@ -48,6 +48,7 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	spriteCommon->LoadTexture(pause, "pause.png");
 	spriteCommon->LoadTexture(guide01, "guide01.png");
 	spriteCommon->LoadTexture(guide02, "guide02.png");
+	spriteCommon->LoadTexture(ui_frame, "UI_frame.png");
 
 	// テキスト
 	text = Text::GetInstance();
@@ -77,6 +78,7 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	spritePause = Sprite::Create(spriteCommon, pause, { 0,0 }, { 0.5f,0.5f });
 	spriteGuide1 = Sprite::Create(spriteCommon, guide01, { 0,0 });
 	spriteGuide2 = Sprite::Create(spriteCommon, guide02, { 0,0 });
+	spriteUIFrame = Sprite::Create(spriteCommon, ui_frame, { 0,0 });
 
 	// .objからモデルデータ読み込み
 	modelSkydome = ModelOBJ::LoadObj("skydome");
@@ -84,7 +86,9 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	modelGround = ModelOBJ::LoadObj("ground");
 	modelGroundGrid = ModelOBJ::LoadObj("512MeshPlane");
 	modelPlayer = ModelOBJ::LoadObj("robo_white");
-	modelEnemy = ModelOBJ::LoadObj("robo_black");
+	modelEnemy[STRAIGHT] = ModelOBJ::LoadObj("robo_black");
+	modelEnemy[FLYING] = ModelOBJ::LoadObj("space_ship_01");
+	modelEnemy[ROUTE_SEARCH] = ModelOBJ::LoadObj("robo_black");
 	modelCubeRed = ModelOBJ::LoadObj("barrier01");
 	modelCubeGreen = ModelOBJ::LoadObj("brokenBlock");
 	modelCubeBlue = ModelOBJ::LoadObj("tower01");
@@ -117,13 +121,6 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	objCursor->SetShadingMode(1);
 	objCursor->SetScale({ 5.0f,5.0f,5.0f });
 
-	for (int i = 0; i < ENEMY_MAX; i++)
-	{
-		enemy[i] = Enemy::Create(modelEnemy);
-		enemy[i]->SetInGame(false);
-		enemy[i]->SetScale({ 2,2,2 });
-	}
-
 	weapon[0] = Weapon::Create(modelWeapon);
 
 	player = Player::Create(modelPlayer);
@@ -132,6 +129,14 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 
 	particle = ParticleManager::GetInstance();
 	particle->SetCamera(camera);
+
+	if (stgObjects.size() <= 0)
+	{
+		stgObjects.push_back(StageObject::Create(modelCastle));
+		stgObjects[0]->SetTag(CASTLE_OBJECT);
+		stgObjects[0]->SetRadius(9.0f);
+		stgObjects[0]->SetUsedState(USED);
+	}
 }
 
 void SceneBase::Update()
@@ -140,7 +145,6 @@ void SceneBase::Update()
 	camera->Update();
 
 	// ゲーム用オブジェクト
-	player->Update();
 
 	skydomeRot.x += 0.002f;
 	skydomeRot.y += 0.002f;
@@ -156,13 +160,12 @@ void SceneBase::Update()
 
 	objSkydomeSpace->SetRotation(skydomeRot);
 
-	// obj更新
+	player->Update();
 	objSkydome->Update();
 	objSkydomeSpace->Update();
 	objGroundGrid->Update();
 	objWall->Update();
 	weapon[0]->Update();
-	// fbx更新
 
 	// スプライト
 	spriteTitle->Update();
@@ -170,31 +173,19 @@ void SceneBase::Update()
 	particle->Update();
 }
 
-void SceneBase::SaveStage(StageObject* stageObject)
+void SceneBase::LoadStage(StageObject* stageObjectReceive, StageObject* stageObjectSend)
 {
-	if (stgObjects.size() == OBJECT_MAX - 1) return;
-
-	if (stageObject->GetTag() != STAGE_OBJECT_DEFAULT)
-	{
-		for (int i = 0; i < stgObjects.size(); i++)
-		{
-			if (stgObjects[i]->GetNumber() == stageObject->GetNumber()) return;
-		}
-
-		stgObjects.push_back(stageObject);
-	}
-}
-
-StageObject* SceneBase::LoadStage(int i)
-{
-	stgObjects[i]->ResetStatus();
-	stgObjects[i]->SetInGameFlag(false);
-	return stgObjects[i];
+	stageObjectSend->ResetStatus();
+	stageObjectSend->SetInGameFlag(false);
+	stageObjectReceive = stageObjectSend;
 }
 
 void SceneBase::SortObjectCameraDistance()
 {
 	// ラムダ式で降順ソート
 	std::sort(stgObjects.begin(), stgObjects.end(),
-		[](StageObject* a, StageObject* b) {return a->GetCameraDistance() > b->GetCameraDistance(); });
+		[](StageObject* a, StageObject* b)
+		{
+			return a->GetCameraDistance() > b->GetCameraDistance();
+		});
 }

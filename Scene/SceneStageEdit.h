@@ -44,14 +44,17 @@ public: // メンバ関数
 	void MenuDraw();
 
 	/// <summary>
-	/// オブジェクト作成
+	/// オブジェクト作成(OBJ)
 	/// </summary>
-	bool MakeObject(StageObject* stgObject, Button* button, ModelOBJ* model, const Tag& objectTag, const XMFLOAT2& sideLength = { 3.5f, 3.5f });
-	bool MakeObject(StageObject* stgObject, Button* button, ModelFBX* model, const Tag& objectTag, const XMFLOAT2& sideLength = { 3.5f, 3.5f });
+	bool MakeObject(Button* button, ModelOBJ* model, const Tag& objectTag, const XMFLOAT2& sideLength = { 3.5f, 3.5f });
+	/// <summary>
+	/// オブジェクト作成(FBX)
+	/// </summary>
+	bool MakeObject(Button* button, ModelFBX* model, const Tag& objectTag, const XMFLOAT2& sideLength = { 3.5f, 3.5f });
 
 	/// <summary>
 	/// ステージオブジェクトをカメラからの距離で並べ替える
-	/// (遠くにあるほど配列の上に入る)
+	/// (近くにあるほど配列の上に入る)
 	/// </summary>
 	void SortObjectCameraDistance();
 
@@ -61,8 +64,8 @@ public: // メンバ関数
 	void SaveDat();
 
 private:
-	std::vector<StageObject*> stgObjectEdit;
+	std::forward_list<StageObject> stgObjectEdit;
 
-	bool menuON = true;
+	bool menuActivate = true;
 	bool buttonClick = false;
 };

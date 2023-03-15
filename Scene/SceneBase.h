@@ -44,6 +44,7 @@ enum SpriteNo
 	pause,
 	guide01,
 	guide02,
+	ui_frame,
 };
 
 // オブジェクトのデータを保存するための構造体
@@ -71,7 +72,7 @@ protected: // エイリアス
 protected: // 定数
 	static const int debugTextTexNumber = 0;
 
-	static const int ENEMY_MAX = 20;
+	static const int ENEMY_TYPE_COUNT = EnemyType::TYPE_COUNT;
 	static const int WEAPON_MAX = 1;
 
 public:
@@ -95,14 +96,12 @@ public:
 	virtual void Draw() {};
 
 	/// <summary>
-	/// 作成したステージを保存
-	/// </summary>
-	static void SaveStage(StageObject* stageObject);
-
-	/// <summary>
 	/// 作成したステージを読み込み
 	/// </summary>
-	static StageObject* LoadStage(int i = 0);
+	/// <param name="stageObjectReceive">読み込まれたオブジェクトを受け取る</param>
+	/// <param name="stageObjectSend">送られるオブジェクト</param>
+	/// <returns></returns>
+	static void LoadStage(StageObject* stageObjectReceive, StageObject* stageObjectSend);
 
 	/// <summary>
 	/// ステージオブジェクトをカメラからの距離で並べ替える
@@ -134,6 +133,7 @@ protected:
 	Sprite* spritePause = nullptr;
 	Sprite* spriteGuide1 = nullptr;
 	Sprite* spriteGuide2 = nullptr;
+	Sprite* spriteUIFrame = nullptr;
 
 	Button* buttonRed = nullptr;
 	Button* buttonGreen = nullptr;
@@ -158,7 +158,7 @@ protected:
 	ModelOBJ* modelGround = nullptr;
 	ModelOBJ* modelGroundGrid = nullptr;
 	ModelOBJ* modelPlayer = nullptr;
-	ModelOBJ* modelEnemy = nullptr;
+	ModelOBJ* modelEnemy[ENEMY_TYPE_COUNT]{};
 	ModelOBJ* modelCubeRed = nullptr;
 	ModelOBJ* modelCubeGreen = nullptr;
 	ModelOBJ* modelCubeBlue = nullptr;
@@ -177,7 +177,6 @@ protected:
 	ObjectOBJ* objCursor = nullptr;
 
 	Player* player = nullptr;
-	Enemy* enemy[ENEMY_MAX]{};
 	Weapon* weapon[WEAPON_MAX]{};
 
 	// 星空の天球の回転量

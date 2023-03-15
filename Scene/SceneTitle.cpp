@@ -28,11 +28,6 @@ void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 	buttonStart->SetSize({ 128,64 });
 	buttonStart->SetAnchorPoint({ 0.5f,0.5f });
 
-	for (int i = 0; i < stgObjects.size(); i++)
-	{
-		if (stgObjects[i]->GetTag() == CASTLE_OBJECT) startUnlock = true;
-	}
-
 	buttonEdit->SetPosition({ WinApp::window_width / 2,WinApp::window_height - 256 + 64 + 20 });
 	buttonEdit->SetSize({ 128,64 });
 	buttonEdit->SetAnchorPoint({ 0.5f,0.5f });
@@ -50,8 +45,7 @@ void SceneTitle::Update()
 
 		return;
 	}
-	if (startUnlock &&
-		(input->TriggerKey(DIK_2) || buttonStart->Click(MOUSE_LEFT)))
+	if ((input->TriggerKey(DIK_2) || buttonStart->Click(MOUSE_LEFT)))
 	{
 		SceneManager::SetScene(GAME);
 
@@ -69,7 +63,7 @@ void SceneTitle::Update()
 
 	buttonEdit->Update();
 
-	if (startUnlock) buttonStart->Update();
+	buttonStart->Update();
 
 	spriteCursor->Update();
 
@@ -77,7 +71,7 @@ void SceneTitle::Update()
 
 	for (int i = 0; i < stgObjects.size(); i++)
 	{
-		if (stgObjects[i]->GetUsedState() != UNUSED) stgObjects[i]->Update();
+		stgObjects[i]->Update();
 	}
 
 	SortObjectCameraDistance();
@@ -111,7 +105,7 @@ void SceneTitle::Draw()
 
 	for (int i = 0; i < stgObjects.size(); i++)
 	{
-		if (stgObjects[i]->GetUsedState() != UNUSED) stgObjects[i]->ObjectOBJ::Draw();
+		stgObjects[i]->ObjectOBJ::Draw();
 	}
 
 	ObjectOBJ::PostDraw();
@@ -130,7 +124,7 @@ void SceneTitle::Draw()
 
 	buttonEdit->Draw();
 
-	if (startUnlock) buttonStart->Draw();
+	buttonStart->Draw();
 
 	// スプライト描画
 	spriteTitle->Draw();

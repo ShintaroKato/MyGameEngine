@@ -14,27 +14,14 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 {
 	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
 
-	for (int i = 0; i < OBJECT_MAX; i++)
+	for (int i = 0; i < stgObjects.size(); i++)
 	{
-		if(stgObjects.size() <= i)
-		{
-			if (i == 0)
-			{
-				stgObjectEdit.push_back(StageObject::Create(modelCastle));
-				stgObjectEdit[i]->SetTag(CASTLE_OBJECT);
-				stgObjectEdit[i]->SetRadius(9.0f);
-				stgObjectEdit[i]->SetUsedState(USED);
-				stgObjectEdit[i]->SetNumber(i);
-			}
-			else
-			{
-				stgObjectEdit.push_back(StageObject::Create(modelCubeRed));
-				stgObjectEdit[i]->SetNumber(i);
-			}
-		}
-		else stgObjectEdit.push_back(LoadStage(i));
+		stgObjects[i]->ResetStatus();
+		stgObjects[i]->SetInGameFlag(false);
+		stgObjectEdit.push_front(*stgObjects[i]);
 	}
-
+	// 受け渡しが終わったら配列を全消去
+	stgObjects.clear();
 
 	buttonTitle->SetPosition({ 0,0 });
 	buttonTitle->SetSize({ 128,64 });
@@ -43,13 +30,14 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 	buttonRed->SetSize({ 64,64 });
 	buttonRed->Update();
 
-	buttonGreen->SetPosition({ 20,20 + 64 * 2});
-	buttonGreen->SetSize({ 64,64 });
-	buttonGreen->Update();
-
-	buttonBlue->SetPosition({ 20,20 + 64 * 3 });
+	buttonBlue->SetPosition({ 20,20 + 64 * 2.5f });
 	buttonBlue->SetSize({ 64,64 });
 	buttonBlue->Update();
+
+	spriteUIFrame->SetPosition({ 64,20 + 32 });
+	spriteUIFrame->SetSize({ 128,64 * 3.5f });
+	spriteUIFrame->SetAnchorPoint({ 0.5f,0.0f });
+	spriteUIFrame->Update();
 
 	spriteGuide1->SetPosition({ WinApp::window_width + 64, WinApp::window_height });
 	spriteGuide1->SetAnchorPoint({ 1.0f, 1.0f });
@@ -57,11 +45,6 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 	spriteGuide2->SetPosition({ WinApp::window_width + 64, WinApp::window_height });
 	spriteGuide2->SetAnchorPoint({ 1.0f, 1.0f });
 	spriteGuide2->Update();
-
-	//for (int i = 0; i < OBJECT_MAX; i++)
-	//{
-	//	SceneBase::LoadStage(stgObject[i]);
-	//}
 
 	PlaneCursor::Initialize(objCursor);
 
@@ -82,16 +65,16 @@ void SceneStageEdit::Update()
 
 	if (input->TriggerKey(DIK_ESCAPE) || buttonTitle->Click(MOUSE_LEFT))
 	{
-		for (int i = 0; i < OBJECT_MAX; i++)
+		for (std::forward_list<StageObject>::iterator it = stgObjectEdit.begin(); it != stgObjectEdit.end(); it++)
 		{
-			if (stgObjectEdit[i]->GetTag() == STAGE_OBJECT_DEFAULT) continue;
+			if (it->GetTag() == STAGE_OBJECT_DEFAULT) continue;
 
-			if (stgObjectEdit[i]->GetUsedState() == WAITING)
+			if (it->GetUsedState() == WAITING)
 			{
-				stgObjectEdit[i]->SetUsedState(USED);
+				it->SetUsedState(USED);
 			}
 
-			SceneBase::SaveStage(stgObjectEdit[i]);
+			stgObjects.push_back(it->GetInstance());
 		}
 
 		SceneManager::SetScene(TITLE);
@@ -101,33 +84,29 @@ void SceneStageEdit::Update()
 
 	camera->SetTarget(player->GetPosition());
 	camera->SetEye({ 0,30,-100 });
-	if (input->PushMouse(MOUSE_RIGHT))
-	{
-		player->SetCameraMoveFlag(true);
-	}
-	else
-	{
-		player->SetCameraMoveFlag(false);
-	}
+
+	if (input->PushMouse(MOUSE_RIGHT))  player->SetCameraMoveFlag(true);
+	else player->SetCameraMoveFlag(false);
 
 	SceneBase::Update();
 
-	menuON = true;
+	menuActivate = true;
 	buttonClick = false;
-
 	MenuUpdate();
 
-	for (int i = 0; i < OBJECT_MAX; i++)
+	for (std::forward_list<StageObject>::iterator it = stgObjectEdit.begin(); it != stgObjectEdit.end(); it++)
 	{
-		if (stgObjectEdit[i]->GetUsedState() != UNUSED && !buttonClick)
+		if (!buttonClick)
 		{
-			stgObjectEdit[i]->Update();
+			it->Update();
 		}
 
-		if (stgObjectEdit[i]->GetDragFlag()) menuON = false;
+		if (it->GetDragFlag()) menuActivate = false;
 	}
-
+	// カメラからの距離で並べ替え
 	SortObjectCameraDistance();
+	// 未使用状態のオブジェクトを削除
+	stgObjectEdit.remove_if([](StageObject& x) { return x.GetUsedState() == UNUSED; });
 
 	PlaneCursor::Update();
 }
@@ -159,14 +138,11 @@ void SceneStageEdit::Draw()
 
 	objWall->Draw();
 
-	if(!menuON) PlaneCursor::Draw();
+	if(!menuActivate) PlaneCursor::Draw();
 
-	for (int i = 0; i < OBJECT_MAX; i++)
+	for (std::forward_list<StageObject>::iterator it = stgObjectEdit.begin(); it != stgObjectEdit.end(); it++)
 	{
-		if (stgObjectEdit[i]->GetUsedState() != UNUSED)
-		{
-			stgObjectEdit[i]->Draw();
-		}
+		it->Draw();
 	}
 
 	ObjectOBJ::PostDraw();
@@ -198,56 +174,49 @@ void SceneStageEdit::Draw()
 
 void SceneStageEdit::MenuUpdate()
 {
-	if (!menuON) return;
+	if (!menuActivate) return;
 
-
-	for (int i = 0; i < OBJECT_MAX; i++)
-	{
-		if (!menuON) break;
-
-		if (MakeObject(stgObjectEdit[i], buttonRed, modelCubeRed, RED_OBJECT, { 1.0f, 5.0f })) break;
-		if (MakeObject(stgObjectEdit[i], buttonGreen, modelCubeGreen, GREEN_OBJECT)) break;
-		if (MakeObject(stgObjectEdit[i], buttonBlue, modelCubeBlue, BLUE_OBJECT)) break;
-	}
+	MakeObject(buttonRed, modelCubeRed, RED_OBJECT, { 1.0f, 5.0f });
+	MakeObject(buttonBlue, modelCubeBlue, OFFENCE_OBJECT);
 
 	buttonTitle->Update();
 	buttonRed->Update();
-	buttonGreen->Update();
 	buttonBlue->Update();
 	spriteCursor->Update();
 }
 
 void SceneStageEdit::MenuDraw()
 {
-	if (!menuON)
+	if (!menuActivate)
 	{
 		spriteGuide2->Draw();
 		return;
 	}
 
+	spriteUIFrame->Draw();
 	buttonTitle->Draw();
 	buttonRed->Draw();
-	buttonGreen->Draw();
 	buttonBlue->Draw();
 	spriteCursor->Draw();
 	spriteGuide1->Draw();
 }
 
-bool SceneStageEdit::MakeObject(StageObject* stgObject, Button* button, ModelOBJ* model, const Tag& objectTag, const XMFLOAT2& sideLength)
+bool SceneStageEdit::MakeObject(Button* button, ModelOBJ* model, const Tag& objectTag, const XMFLOAT2& sideLength)
 {
-	if (button->Click(MOUSE_LEFT) && stgObject->GetUsedState() == UNUSED)
+	if (button->Click(MOUSE_LEFT))
 	{
-		stgObject->SetModel(model);
-		stgObject->SetTag(objectTag);
-		stgObject->SetSquareSideLength(sideLength.x, sideLength.y);
-		stgObject->SetUsedState(WAITING);
-		stgObject->Update();
+		stgObjectEdit.push_front(*StageObject::Create(model));
+		StageObject& stgObject = stgObjectEdit.front();
+		stgObject.SetTag(objectTag);
+		stgObject.SetSquareSideLength(sideLength.x, sideLength.y);
+		stgObject.SetUsedState(WAITING);
+		stgObject.Update();
 		button->SetClickFlag(false);
 
 		SetCursorPos(WinApp::window_width / 2, WinApp::window_height / 2);
 		PlaneCursor::Update();
 
-		menuON = false;
+		menuActivate = false;
 		buttonClick = true;
 		return true;
 	}
@@ -255,21 +224,22 @@ bool SceneStageEdit::MakeObject(StageObject* stgObject, Button* button, ModelOBJ
 	return false;
 }
 
-bool SceneStageEdit::MakeObject(StageObject* stgObject, Button* button, ModelFBX* model, const Tag& objectTag, const XMFLOAT2& sideLength)
+bool SceneStageEdit::MakeObject(Button* button, ModelFBX* model, const Tag& objectTag, const XMFLOAT2& sideLength)
 {
-	if (button->Click(MOUSE_LEFT) && stgObject->GetUsedState() == UNUSED)
+	if (button->Click(MOUSE_LEFT))
 	{
-		stgObject->SetModel(model);
-		stgObject->SetTag(objectTag);
-		stgObject->SetSquareSideLength(sideLength.x, sideLength.y);
-		stgObject->SetUsedState(WAITING);
-		stgObject->Update();
+		stgObjectEdit.push_front(*StageObject::Create(model));
+		StageObject& stgObject = stgObjectEdit.front();
+		stgObject.SetTag(objectTag);
+		stgObject.SetSquareSideLength(sideLength.x, sideLength.y);
+		stgObject.SetUsedState(WAITING);
+		stgObject.Update();
 		button->SetClickFlag(false);
 
 		SetCursorPos(WinApp::window_width / 2, WinApp::window_height / 2);
 		PlaneCursor::Update();
 
-		menuON = false;
+		menuActivate = false;
 		buttonClick = true;
 		return true;
 	}
@@ -279,7 +249,6 @@ bool SceneStageEdit::MakeObject(StageObject* stgObject, Button* button, ModelFBX
 
 void SceneStageEdit::SortObjectCameraDistance()
 {
-	// ラムダ式で降順ソート
-	std::sort(stgObjectEdit.begin(), stgObjectEdit.end(),
-		[](StageObject* a, StageObject* b) {return a->GetCameraDistance() > b->GetCameraDistance(); });
+	// 降順ソート
+	stgObjectEdit.sort();
 }

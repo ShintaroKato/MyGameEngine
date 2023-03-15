@@ -27,7 +27,4 @@ public: // ƒƒ“ƒoŠÖ”
 	/// •`‰æ
 	/// </summary>
 	void Draw()override;
-
-private:
-	bool startUnlock = false;
 };

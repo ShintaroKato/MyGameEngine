@@ -40,5 +40,7 @@ public: // ƒƒ“ƒoŠÖ”
 	void Menu();
 
 private:
-	bool menuON = false;
+	int UItimer = 0;
+	int UItimerMax = 10;
+	bool menuActivate = false;
 };
