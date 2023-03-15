@@ -106,7 +106,7 @@ void Player::Update()
 	{
 		ParticleEmitter::EmitRandomAllRange(5 ,attackCount, weapon->GetPosition(),
 			{ 0,0,0 },
-			{ 0.6f,0.6f,1.0f,1.0f }, { 0.0f,0.0f,1.0f,1.0f }, 0.1f, 0.001f, 2.0f);
+			{ 0.6f,0.6f,1.0f,1.0f }, { 0.0f,0.0f,1.0f,1.0f }, 0.1f, 0.01f, 0.5f);
 	}
 
 	ObjectOBJ::Update();
@@ -277,7 +277,7 @@ void Player::ControlCamera()
 		}
 	}
 
-	if (cameraMoveOn)
+	if (cameraMoveActive)
 	{
 		//ƒ}ƒEƒX‘€ì
 		cameraRotX += input->GetMouseMovement().y * 0.1f;		//ã‰ºˆÚ“®
@@ -306,7 +306,7 @@ void Player::Attack()
 			attackCount = 16.0f;
 			attackFlag = true;
 
-			BulletManager::GetInstance()->Fire(pos, rot, COLLISION_ATTR_ALLIES, 1.0f, power);
+			BulletManager::GetInstance()->Fire(pos, rot, COLLISION_ATTR_ALLIES, 1.0f, power, false);
 		}
 	}
 

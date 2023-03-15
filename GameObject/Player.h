@@ -113,11 +113,6 @@ public:
 	/// </summary>
 	void SetAllive(bool flag) { this->aliveFlag = flag; }
 
-	///// <summary>
-	///// 武器をセット
-	///// </summary>
-	void SetWeapon(Weapon* weapon);
-
 	/// <summary>
 	/// ゲーム本編か否かを設定
 	/// </summary>
@@ -128,9 +123,22 @@ public:
 		cameraRotX = 30;
 	}
 
-	void SetCameraMoveFlag(bool flag) { cameraMoveOn = flag; }
+	void SetCameraMoveFlag(bool flag) { cameraMoveActive = flag; }
 
+	///// <summary>
+	///// 武器をセット
+	///// </summary>
+	void SetWeapon(Weapon* weapon);
+
+	/// <summary>
+	/// 武器を取得
+	/// </summary>
 	Weapon* GetWeapon() { return weapon; }
+
+	/// <summary>
+	/// 攻撃力を取得
+	/// </summary>
+	float GetPower() { return power + weapon->GetPower(); }
 
 	float GetHP() { return HP; }
 	float GetHPMax()
@@ -139,7 +147,6 @@ public:
 		return max;
 	}
 
-	float GetPower() { return power + weapon->GetPower(); }
 
 private:
 	// 座標
@@ -169,7 +176,7 @@ private:
 	float cameraRotY = 0;
 	float distance = 10;
 	// カメラ操作ON・OFF
-	bool cameraMoveOn = true;
+	bool cameraMoveActive = true;
 
 	// HP
 	const float HPMax = 200.0f;

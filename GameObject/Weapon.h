@@ -103,5 +103,5 @@ private:
 	SphereCollider* sphereColl = nullptr;
 
 	// UŒ‚—Í
-	float power = 100.0f;
+	float power = 10.0f;
 };
