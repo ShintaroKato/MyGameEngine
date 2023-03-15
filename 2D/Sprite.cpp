@@ -162,13 +162,18 @@ void Sprite::SetIsFlipY(bool isFlipY)
 	TransferVertexBuffer();
 }
 
-void Sprite::SetTextureRect(XMFLOAT2 texLeftTop, XMFLOAT2 texSize)
+void Sprite::SetTextureRect(const XMFLOAT2& texLeftTop, const XMFLOAT2& texSize)
 {
 	this->texLeftTop = texLeftTop;
 	this->texSize = texSize;
 
 	// 頂点バッファへデータ転送
 	TransferVertexBuffer();
+}
+
+void Sprite::SetColor(const XMFLOAT4& color)
+{
+	constColor = color;
 }
 
 void Sprite::CreateVertexBuffer()

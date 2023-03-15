@@ -92,7 +92,13 @@ public:
 	/// </summary>
 	/// <param name="texBase">テクスチャ左上座標</param>
 	/// <param name="texSize">テクスチャサイズ</param>
-	void SetTextureRect(XMFLOAT2 texLeftTop, XMFLOAT2 texSize);
+	void SetTextureRect(const XMFLOAT2& texLeftTop, const XMFLOAT2& texSize);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="color"></param>
+	void SetColor(const XMFLOAT4& color);
 
 protected: // メンバ関数
 	/// <summary>
