@@ -48,8 +48,26 @@ public: //メンバ関数
 	/// 全ての衝突チェック
 	/// </summary>
 	bool CheckAllCollision();
+
+	/// <summary>
+	/// 特定のコライダーと、それ以外の全てのコライダーとの衝突をチェック
+	/// </summary>
+	/// <param name="col">コライダー</param>
 	bool CheckAllCollision(BaseCollider* col);
+
+	/// <summary>
+	/// 特定のコライダーと、指定した属性を持つ全てのコライダーとの衝突をチェック
+	/// </summary>
+	/// <param name="col">コライダー</param>
+	/// <param name="attr">当たり判定属性</param>
 	bool CheckAllCollision(BaseCollider* col, unsigned short attr);
+
+	/// <summary>
+	///	特定のコライダーと、指定したコライダーを除く全てのコライダーとの衝突をチェック
+	/// </summary>
+	/// <param name="col">コライダー</param>
+	/// <param name="ex_col">除外するコライダー</param>
+	bool CheckAllCollision(BaseCollider* col, BaseCollider* ex_col);
 
 	/// <summary>
 	///
@@ -81,6 +99,18 @@ public: //メンバ関数
 	/// <param name="maxDistance">最大距離</param>
 	/// <returns>判定</returns>
 	bool Raycast(const Ray& ray, unsigned short attribute, RaycastHit* hitInfo = nullptr,
+		float maxDistance = D3D12_FLOAT32_MAX);
+
+	/// <summary>
+	/// レイキャスト
+	/// </summary>
+	/// <param name="ray">レイ</param>
+	/// <param name="ex_attribute">除外する衝突属性</param>
+	/// <param name="ex_col">除外するコライダー</param>
+	/// <param name="hitInfo">衝突情報</param>
+	/// <param name="maxDistance">最大距離</param>
+	/// <returns>判定</returns>
+	bool Raycast(const Ray& ray, unsigned short ex_attribute, BaseCollider* ex_col, RaycastHit* hitInfo = nullptr,
 		float maxDistance = D3D12_FLOAT32_MAX);
 
 private:
