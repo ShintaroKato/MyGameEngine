@@ -4,7 +4,17 @@
 #include "ObjectOBJ.h"
 #include "SphereCollider.h"
 #include "StageObject.h"
-#include "GameManager.h"
+#include "Weapon.h"
+
+enum EnemyType
+{
+	STRAIGHT,
+	FLYING,
+	ROUTE_RANDOM,
+	ROUTE_SEARCH,
+	TARGET_PLAYER,
+	TYPE_COUNT
+};
 
 class Enemy : public ObjectFBX, public ObjectOBJ
 {
@@ -51,19 +61,19 @@ public:
 	void Draw() override;
 
 	/// <summary>
-	/// 出現
-	/// </summary>
-	void Spawn();
-
-	/// <summary>
 	/// 移動
 	/// </summary>
 	void Move();
 
 	/// <summary>
-	/// 落下・ジャンプ
+	/// 移動
 	/// </summary>
-	void Jump();
+	void MoveRouteSearch();
+
+	/// <summary>
+	/// 飛行
+	/// </summary>
+	void Fly();
 
 	/// <summary>
 	/// 攻撃
@@ -71,9 +81,19 @@ public:
 	void Attack();
 
 	/// <summary>
+	/// 攻撃
+	/// </summary>
+	void AttackBeam();
+
+	/// <summary>
 	/// 敵との当たり判定
 	/// </summary>
 	void Hit(float attackPower);
+
+	/// <summary>
+	/// 倒された時の処理
+	/// </summary>
+	void Defeated();
 
 	/// <summary>
 	/// 座標を取得
@@ -84,6 +104,9 @@ public:
 	/// コライダーを取得
 	/// </summary>
 	BaseCollider* GetCollider() { return sphereColl; }
+
+	// 生存フラグを取得
+	bool GetAliveFlag() { return aliveFlag; }
 
 	/// <summary>
 	/// 衝突時コールバック関数
@@ -111,7 +134,14 @@ public:
 	/// </summary>
 	void SetAllive(bool flag) { this->aliveFlag = flag; }
 
-	void SetRespawnCount(int respawnCountMax) { this->respawn = respawnCountMax; }
+	/// <summary>
+	/// 能力値を設定
+	/// </summary>
+	/// <param name="HP">体力</param>
+	/// <param name="speed">速さ(倍率で設定)</param>
+	/// <param name="power">攻撃力</param>
+	/// <param name="radius">球コライダーの半径の長さ</param>
+	void SetStatus(float HP, float speed, float power, float radius);
 
 	/// <summary>
 	/// 攻撃対象のオブジェクトを設定
@@ -119,27 +149,55 @@ public:
 	void SetTargetPos(StageObject* object)
 	{
 		this->target = object;
-		targetPos = target->GetPosition();
+		SetTargetPos(target->GetPosition());
 	}
 
 	/// <summary>
-	/// ゲーム内であるか否かを設定
+	/// 攻撃対象のオブジェクトの位置を設定
 	/// </summary>
-	void SetInGame(bool inGame)
+	void SetTargetPos(XMFLOAT3 pos)
 	{
-		this->isInGame = inGame;
-		if (!isInGame) aliveFlag = false;
+		targetPos = pos;
+		// 標的の方向を向く
+		rot.y = XMConvertToDegrees(
+			atan2f(targetPos.x - this->pos.x, targetPos.z - this->pos.z));
 	}
+
+	/// <summary>
+	/// タイプを設定
+	/// </summary>
+	void SetType(EnemyType enemyType);
+
+	/// <summary>
+	/// 武器をセット
+	/// </summary>
+	void SetWeapon(Weapon* weapon);
+
+	/// <summary>
+	/// 武器を取得
+	/// </summary>
+	Weapon* GetWeapon() { return weapon; }
+
+	/// <summary>
+	/// 攻撃力を取得
+	/// </summary>
+	float GetPower() { return attackPower + weapon->GetPower(); }
+
+	/// <summary>
+	/// タイプを取得
+	/// </summary>
+	EnemyType GetType() { return type; }
 
 private:
 	// 座標
 	XMFLOAT3 pos{};
 	// 回転
-	XMFLOAT3 rotation{};
+	XMFLOAT3 rot{};
 	// 半径
 	float radius = 1.0f;
 	// 移動ベクトル
 	XMVECTOR move = { 0,0,0.1f,0 };
+	XMVECTOR moveDefault = { 0,0,0.1f,0 };
 	// 標的のオブジェクト
 	StageObject* target{};
 	// 標的の座標
@@ -148,19 +206,29 @@ private:
 	Sphere sphere{};
 	SphereCollider* sphereColl = nullptr;
 
+	// タイプ
+	EnemyType type = STRAIGHT;
+
 	// HP
-	float HP = 20.0f;
-	const float HPMax = HP;
+	float HP = 100.0f;
+	float HPMax = HP;
 	float HPRate = HP / HPMax;
 
-	int respawnCount = 0;
-	int respawn = 100;
+	// 生存フラグ
 	bool aliveFlag = false;
 
+	// 無敵時間
+	int noDamageTime = 0;
+	int noDamageTimeMax = 10;
+
 	// 攻撃
+	Weapon* weapon = nullptr;
 	bool attackFlag = false;
 	float attackPower = 0.1f;
 
-	// ゲーム内であるか否か
-	bool isInGame = false;
+	// 攻撃の間隔
+	int attackCountMax = 600.0f;
+	int attackCount = attackCountMax;
+
+	bool isStop = false;
 };
