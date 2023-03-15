@@ -1,5 +1,16 @@
 #pragma once
+//#include <forward_list>
+//#include <vector>
+#include "Enemy.h"
 #include "StageObject.h"
+
+enum SpawnDirection
+{
+	North,
+	East,
+	South,
+	West
+};
 
 class GameManager
 {
@@ -10,6 +21,10 @@ public:
 	static void Restart();
 	// 更新
 	static void Update();
+	// 描画
+	static void Draw();
+	// エネミーを削除
+	static void DeleteEnemy();
 	// 終了フラグの状態取得
 	static int GetFinishState() { return finish; }
 	// タイマー取得
@@ -28,15 +43,56 @@ public:
 	static int GetWaveNumber() { return wave; }
 	// 次のウェーブに切り替え
 	static void ChangeNextWave();
+	// エネミーのモデルを保存(OBJ)
+	static void SetEnemyModel(ModelOBJ* model[])
+	{
+		for (int i = 0; i < EnemyType::TYPE_COUNT; i++)
+		{
+			modelObjEnemy.push_back(model[i]);
+		}
+	}
+	// エネミーのモデルを保存(FBX)
+	static void SetEnemyModel(ModelFBX* model[])
+	{
+		for (int i = 0; i < EnemyType::TYPE_COUNT; i++)
+		{
+			modelFbxEnemy.push_back(model[i]);
+		}
+	}
+
+private:
 	// レベル
 	static void Level();
-	// 一度に出現する敵の数
-	static int GetEnemyCount() { return enemyMax; }
+	// エネミー出現
+	static void Spawn();
+	// エネミーを一定数の集団として出現させる
+	static void SpawnEnemyGroup();
+	// エネミーを更新
+	static void UpdateEnemy();
 private:
-	GameManager() = default;
-	GameManager(const GameManager&) = delete;
-	~GameManager() = default;
-	GameManager& operator=(const GameManager&) = delete;
+	// 敵オブジェクト
+	static std::forward_list<Enemy> enemies;
+	static std::vector<ModelOBJ*> modelObjEnemy;
+	static std::vector<ModelFBX*> modelFbxEnemy;
+	static int spawn_dir;
+	static float spawn_angle;
+	// 守る対象のオブジェクト
+	static StageObject* stageObject;
+	// レベル
+	static int level;
+	// 敵のタイプごとの出現上限数
+	static int enemyMax[EnemyType::TYPE_COUNT];
+	// 敵の出現上限数の合計
+	static int enemyMaxAll;
+	// 敵をタイプごとにカウント
+	static int enemyCount[EnemyType::TYPE_COUNT];
+	// 敵の集団一つ分が消えてから再出現する間隔
+	static int spawnCount;
+	static int spawnCountMax;
+	// 一体が出現する間隔
+	static int spawnInterval;
+	static int spawnIntervalMax;
+	static XMFLOAT3 spawnPos;
 	// 開始前待機時間
 	static const int waitTimerMax = 5 * 60;
 	static int waitTimer;
@@ -51,9 +107,10 @@ private:
 	static int wave;
 	// ウェーブ終了
 	static int finish; // 1でクリア判定 -1で失敗判定
-	// 守る対象のオブジェクト
-	static StageObject* stageObject;
-	// レベル
-	static int level;
-	static int enemyMax;
+
+private:
+	GameManager() = default;
+	GameManager(const GameManager&) = delete;
+	~GameManager() = default;
+	GameManager& operator=(const GameManager&) = delete;
 };
