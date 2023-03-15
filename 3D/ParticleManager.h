@@ -74,7 +74,7 @@ public: // サブクラス
 	};
 
 private: // 定数
-	static const int vertexCount = 65536;		// 頂点数
+	static const int vertexCount = 0xffff;		// 頂点数
 
 public:// 静的メンバ関数
 	static ParticleManager* GetInstance();

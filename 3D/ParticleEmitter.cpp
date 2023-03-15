@@ -104,22 +104,18 @@ void ParticleEmitter::EmitZ_AxisDir(unsigned int count, unsigned int life, XMFLO
 	}
 }
 
-void ParticleEmitter::LaserBeam(unsigned int life, XMFLOAT3 start_position, XMFLOAT3 end_position, float velocity, XMFLOAT4 start_color, XMFLOAT4 end_color, float vel_rand_range, float accel_rand_range, float start_scale, float end_scale)
+void ParticleEmitter::LaserBeam(unsigned int count, unsigned int life, XMFLOAT3 start_position, XMFLOAT3 end_position, float velocity, XMFLOAT4 start_color, XMFLOAT4 end_color, float vel_rand_range, float accel_rand_range, float start_scale, float end_scale)
 {
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < count; i++)
 	{
 		// 発射地点から終端までの距離
-		XMFLOAT3 distance{};
-		distance.x = end_position.x - start_position.x;
-		distance.y = end_position.y - start_position.y;
-		distance.z = end_position.z - start_position.z;
+		XMFLOAT3 distance = CalcDistance(end_position, start_position);
 
-		// 発射地点から終端までの間にランダムに発生
-		float rnd = (float)rand() / RAND_MAX;
+		// 発射地点から終端までの間の直線上に発生
 		XMFLOAT3 position{};
-		position.x = start_position.x + rnd * distance.x;
-		position.y = start_position.y + rnd * distance.y;
-		position.z = start_position.z + rnd * distance.z;
+		position.x = start_position.x + distance.x / count * i;
+		position.y = start_position.y + distance.y / count * i;
+		position.z = start_position.z + distance.z / count * i;
 
 		// 発射する方向
 		XMFLOAT3 direct{};
@@ -152,4 +148,37 @@ void ParticleEmitter::LaserBeam(unsigned int life, XMFLOAT3 start_position, XMFL
 		// 追加
 		ParticleManager::GetInstance()->Add(life, position, vel, acc, start_scale, end_scale, s_color, e_color);
 	}
+}
+
+void ParticleEmitter::Spark(unsigned int count, unsigned int node_count, unsigned int life, XMFLOAT3 start_position, XMFLOAT3 end_position, float velocity, XMFLOAT4 start_color, XMFLOAT4 end_color, float pos_rand_range, float vel_rand_range, float accel_rand_range, float start_scale, float end_scale)
+{
+	XMFLOAT3 start = start_position;
+	XMFLOAT3 distance = CalcDistance(end_position, start_position);
+
+	for (int i = 1; i <= node_count; i++)
+	{
+		//現在の始点からランダムでずらして節目の座標を設定
+		XMFLOAT3 node = start;
+		node.x += distance.x / node_count + (float)rand() / RAND_MAX * pos_rand_range - pos_rand_range / 2;
+		node.y += distance.y / node_count + (float)rand() / RAND_MAX * pos_rand_range - pos_rand_range / 2;
+		node.z += distance.z / node_count + (float)rand() / RAND_MAX * pos_rand_range - pos_rand_range / 2;
+
+		if(i == node_count) node = end_position;
+
+		ParticleEmitter::LaserBeam(count, life, start, node, velocity,
+			start_color, end_color, vel_rand_range, accel_rand_range, start_scale, end_scale);
+
+		// 現在の終端を次の始点にする
+		start = node;
+	}
+}
+
+XMFLOAT3 ParticleEmitter::CalcDistance(XMFLOAT3 lhs, XMFLOAT3 rhs)
+{
+	XMFLOAT3 result{};
+	result.x = lhs.x - rhs.x;
+	result.y = lhs.y - rhs.y;
+	result.z = lhs.z - rhs.z;
+
+	return result;
 }
