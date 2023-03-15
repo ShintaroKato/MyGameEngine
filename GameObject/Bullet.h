@@ -73,7 +73,10 @@ public:
 	Sphere sphere{};
 	SphereCollider* sphereColl = nullptr;
 	unsigned short collAttribute = COLLISION_ATTR_BULLET;
-
+	// 判定から除外するコライダー
+	BaseCollider* ex_col = nullptr;
+	// オブジェクトを突き抜けるか否か
+	bool through = false;
 	// 攻撃力
 	float power = 0.0f;
 	// 開始フレーム

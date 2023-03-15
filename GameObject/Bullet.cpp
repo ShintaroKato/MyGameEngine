@@ -26,12 +26,17 @@ Bullet* Bullet::Create()
 bool Bullet::Initialize()
 {
 	// コライダーの追加
-	sphere.center = { position.x, position.y, position.z,0 };
+	sphere.center = XMLoadFloat3(&position);
 	sphere.radius = radius;
 	sphereColl = new SphereCollider(sphere);
 	sphereColl->SetAttribute(collAttribute);
 
 	SetCollider(sphereColl);
+
+	if (collAttribute == COLLISION_ATTR_BULLET + COLLISION_ATTR_ALLIES)
+	{
+		return true;
+	}
 
 	return true;
 }
@@ -43,8 +48,11 @@ void Bullet::Update()
 
 void Bullet::OnCollision(const CollisionInfo& info)
 {
-	if (info.collider->GetAttribute() == COLLISION_ATTR_ENEMIES ||
-		info.collider->GetAttribute() == COLLISION_ATTR_OBJECT_MESH)
+	// 何かに当たったらその場で消滅
+	if (!through &&(
+			info.collider->GetAttribute() == COLLISION_ATTR_ENEMIES ||
+			info.collider->GetAttribute() == COLLISION_ATTR_OBJECT_MESH 
+		))
 	{
 		frame += end_frame;
 	}
