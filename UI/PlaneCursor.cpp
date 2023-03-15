@@ -44,12 +44,6 @@ void PlaneCursor::Move()
 	Input* input = Input::GetInstance();
 
 	XMVECTOR vec = input->CursorPoint3D(Camera::GetViewMatrix(), Camera::GetProjectionMatrix());
-	Ray ray;
-	ray.start = input->CalcScreenToWorld(input->GetMousePos2(), 0.0f, Camera::GetViewMatrix(), Camera::GetProjectionMatrix());
-	ray.dir = input->CalcScreenToWorld(input->GetMousePos2(), 1.0f, Camera::GetViewMatrix(), Camera::GetProjectionMatrix());
-	ray.dir = XMVector3Normalize(ray.dir - ray.start);
-	float distance = 0;
-	XMVECTOR inter{};
 
 	pos = { vec.m128_f32[0], 0, vec.m128_f32[2] };
 	sphere.center = XMLoadFloat3(&pos);
