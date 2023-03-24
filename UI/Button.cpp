@@ -18,11 +18,9 @@ bool Button::Click(MouseButton mouseButton)
 {
 	Input* input = Input::GetInstance();
 
-	XMFLOAT2 mouse = input->GetMousePos2();
+	Point();
 
-	if (input->TriggerMouse(mouseButton) &&
-		mouse.x <= position.x + size.x * (1 - anchorpoint.x) && mouse.x >= position.x - size.x * anchorpoint.x &&
-		mouse.y <= position.y + size.y * (1 - anchorpoint.y) && mouse.y >= position.y - size.y * anchorpoint.y)
+	if (input->TriggerMouse(mouseButton) && point)
 	{
 		click = true;
 	}
@@ -32,4 +30,23 @@ bool Button::Click(MouseButton mouseButton)
 	}
 
 	return click;
+}
+
+bool Button::Point()
+{
+	Input* input = Input::GetInstance();
+
+	XMFLOAT2 mouse = input->GetMousePos2();
+
+	if (mouse.x <= position.x + size.x * (1 - anchorpoint.x) && mouse.x >= position.x - size.x * anchorpoint.x &&
+		mouse.y <= position.y + size.y * (1 - anchorpoint.y) && mouse.y >= position.y - size.y * anchorpoint.y)
+	{
+		point = true;
+	}
+	else
+	{
+		point = false;
+	}
+
+	return point;
 }

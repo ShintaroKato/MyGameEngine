@@ -22,8 +22,14 @@ public:
 
 	bool Click(MouseButton mouseButton);
 
+	// カーソルがボタンと重なっているかを判定
+	bool Point();
+
 	void SetClickFlag(bool flag) { click = flag; }
+
+	bool GetPointFlag() { return point; }
 
 private:
 	bool click = false;
+	bool point = false;
 };
