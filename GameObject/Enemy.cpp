@@ -310,12 +310,10 @@ void Enemy::Fly()
 	XMFLOAT3 effect = pos;
 	effect.x = effect.x - 6 * sin(XMConvertToRadians(rot.y));
 	effect.z = effect.z - 6 * cos(XMConvertToRadians(rot.y));
-	ParticleEmitter::EmitZ_AxisDir(4, 8, effect, 0,
+	ParticleEmitter::EmitZ_AxisDir(8, 16, effect, 0,
 		{ 1.0f,0.0f,0.0f,1.0f }, { 1.0f,0.5f,0.5f,1.0f },
-		0.01f, 0.001f, 8.0f, 1.0f
+		0.1f, 0.005f, 5.0f, 0.1f
 	);
-	ParticleEmitter::Spark(32, 8, 4, effect, effect, -0.1f,
-		{ 0.0f,0.0f,1.0f,1.0f }, { 0.1f,0.1f,0.1f,1.0f }, 0.2f, 0.0f, 0.0f, 0.5f, 0.5f);
 }
 
 void Enemy::Attack()
