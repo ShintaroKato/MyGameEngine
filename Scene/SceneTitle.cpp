@@ -14,9 +14,6 @@ void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 	//	SceneBase::LoadStage(objTmp[i]);
 	//}
 
-	objSkydome->SetScale({ 5,5,5 });
-	objGroundGrid->ObjectOBJ::SetScale({ 5,5,5 });
-
 	player->SetAllive(false);
 	player->SetInGameFlag(false);
 	player->SetCameraDistance(80);
@@ -101,7 +98,10 @@ void SceneTitle::Draw()
 	objSkydomeSpace->Draw();
 	objGroundGrid->ObjectOBJ::Draw();
 
-	objWall->Draw();
+	for (int i = 0; i < 8; i++)
+	{
+		objWall[i]->Draw();
+	}
 
 	for (int i = 0; i < stgObjects.size(); i++)
 	{
