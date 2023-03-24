@@ -269,14 +269,14 @@ void GameManager::Level()
 		timerMax = 60 * 30;
 		break;
 	case 2:
-		enemyMax[STRAIGHT] = 0;
+		enemyMax[STRAIGHT] = 5;
 		enemyMax[FLYING] = 3;
 		timerMax = 60 * 30;
 		break;
 	case 3:
 		enemyMax[STRAIGHT] = 10;
-		enemyMax[ROUTE_SEARCH] = 10;
-		enemyMax[FLYING] = 3;
+		enemyMax[ROUTE_SEARCH] = 5;
+		enemyMax[FLYING] = 2;
 		timerMax = 60 * 40;
 		break;
 	case 4:
@@ -285,7 +285,7 @@ void GameManager::Level()
 		timerMax = 60 * 40;
 		break;
 	case 5:
-		enemyMax[STRAIGHT] = 5;
+		enemyMax[STRAIGHT] = 10;
 		enemyMax[ROUTE_SEARCH] = 20;
 		enemyMax[FLYING] = 5;
 		timerMax = 60 * 50;
