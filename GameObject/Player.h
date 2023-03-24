@@ -158,7 +158,7 @@ private:
 	// 接地フラグ
 	bool onGround = true;
 	// 移動ベクトル(初期値)
-	XMVECTOR move_default = { 0,0,0.2f,0 };
+	XMVECTOR move_default = { 0,0,0.3f,0 };
 	// 移動ベクトル
 	XMVECTOR move{};
 	// 攻撃時の移動速度
@@ -177,6 +177,9 @@ private:
 	float distance = 10;
 	// カメラ操作ON・OFF
 	bool cameraMoveActive = true;
+	// カメラと地形との衝突判定をとるコライダー
+	Sphere sphereCamera{};
+	SphereCollider* sphereCameraColl = nullptr;
 
 	// HP
 	const float HPMax = 200.0f;

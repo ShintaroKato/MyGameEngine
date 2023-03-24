@@ -277,6 +277,15 @@ void Player::ControlCamera()
 		}
 	}
 
+	if (input->GetMouseMovement().z > 0 && distance > 10.0f)
+	{
+		distance -= 5.0f;
+	}
+	if (input->GetMouseMovement().z < 0 && distance <= 200.0f)
+	{
+		distance += 5.0f;
+	}
+
 	if (cameraMoveActive)
 	{
 		//ƒ}ƒEƒX‘€ì
