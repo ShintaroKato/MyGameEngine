@@ -95,10 +95,14 @@ public:
 	void SetTextureRect(const XMFLOAT2& texLeftTop, const XMFLOAT2& texSize);
 
 	/// <summary>
-	/// 
+	/// F‚ğİ’è
 	/// </summary>
-	/// <param name="color"></param>
+	/// <param name="color">F(RGBA)</param>
 	void SetColor(const XMFLOAT4& color);
+
+	const XMFLOAT2& GetPosition() { return position; }
+
+	const XMFLOAT2& GetSize() { return size; }
 
 protected: // ƒƒ“ƒoŠÖ”
 	/// <summary>
