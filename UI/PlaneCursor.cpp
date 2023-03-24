@@ -13,6 +13,7 @@ bool PlaneCursor::used;
 bool PlaneCursor::isInGame;
 Sphere PlaneCursor::sphere;
 SphereCollider* PlaneCursor::sphereColl;
+float PlaneCursor::movableRange = 0;
 
 void PlaneCursor::Initialize(ObjectOBJ* object)
 {
@@ -50,11 +51,11 @@ void PlaneCursor::Move()
 	sphereColl->SetOffset(sphere.center);
 
 	// “®‚©‚¹‚é”ÍˆÍ
-	if (pos.x < -60) pos.x = -60;
-	if (pos.x > 60) pos.x = 60;
+	if (pos.x < -movableRange) pos.x = -movableRange;
+	if (pos.x > movableRange) pos.x = movableRange;
 
-	if (pos.z < -60) pos.z = -60;
-	if (pos.z > 60) pos.z = 60;
+	if (pos.z < -movableRange) pos.z = -movableRange;
+	if (pos.z > movableRange) pos.z = movableRange;
 
 	if (pos.y > 0) pos.y = 0;
 }

@@ -58,6 +58,9 @@ public:
 
 	static void SetColor(const XMFLOAT4& color) { cursor->SetColor(color); }
 
+	static void SetMovableRange(const float& range) { movableRange = range; }
+
+	static float GetMovableRange() { return movableRange; }
 private:
 	static ObjectOBJ* cursor;
 	// 座標
@@ -73,4 +76,6 @@ private:
 	// コライダー
 	static Sphere sphere;
 	static SphereCollider* sphereColl;
+	// 動かせる範囲
+	static float movableRange;
 };
