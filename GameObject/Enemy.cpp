@@ -314,6 +314,8 @@ void Enemy::Fly()
 		{ 1.0f,0.0f,0.0f,1.0f }, { 1.0f,0.5f,0.5f,1.0f },
 		0.01f, 0.001f, 8.0f, 1.0f
 	);
+	ParticleEmitter::Spark(32, 8, 4, effect, effect, -0.1f,
+		{ 0.0f,0.0f,1.0f,1.0f }, { 0.1f,0.1f,0.1f,1.0f }, 0.2f, 0.0f, 0.0f, 0.5f, 0.5f);
 }
 
 void Enemy::Attack()
@@ -326,19 +328,19 @@ void Enemy::AttackBeam()
 {
 	if (!isStop) return;
 
+
 	XMFLOAT3 target = targetPos;
 	XMFLOAT3 cannonPos = pos;
+	cannonPos.x = cannonPos.x + 12 * sin(XMConvertToRadians(rot.y));
+	cannonPos.z = cannonPos.z + 12 * cos(XMConvertToRadians(rot.y));
+	cannonPos.y -= 1.5f;
 
 	if (attackCount > 0)
 	{
 		// チャージエフェクト
-		XMFLOAT3 effect = pos;
-		effect.x = effect.x + 4 * sin(XMConvertToRadians(rot.y));
-		effect.z = effect.z + 4 * cos(XMConvertToRadians(rot.y));
-		effect.y -= 3;
-		ParticleEmitter::EmitZ_AxisDir(4, 8, effect, 0,
+		ParticleEmitter::EmitZ_AxisDir(4, 8, cannonPos, 0,
 			{ 1.0f,0.0f,0.0f,1.0f }, { 1.0f,0.5f,0.5f,1.0f },
-			0.1f, 0.001f, 10.0f / (attackCount / 2), 1.0f
+			0.1f, 0.001f, 5.0f / (attackCount / 2), 1.0f
 		);
 	}
 	if (attackCount <= 0)
@@ -529,12 +531,16 @@ void Enemy::SetType(EnemyType enemyType)
 	switch (type)
 	{
 	case FLYING:
-		SetStatus(100.0f, 0.5f, 1.0f, 5.0f);
+		SetStatus(100.0f, 1.0f, 1.0f, 5.0f);
+		break;
+
+	case ROUTE_SEARCH:
+		SetStatus(100.0f, 2.5f, 0.1f, 3.0f);
 		break;
 
 	case STRAIGHT:
 	default:
-		SetStatus(100.0f, 1.5f, 0.1f, 3.0f);
+		SetStatus(100.0f, 2.8f, 0.1f, 3.0f);
 		break;
 	}
 }
