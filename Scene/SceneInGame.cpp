@@ -22,9 +22,6 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 		if (stgObjects[i]->GetTag() == CASTLE_OBJECT) objCastle = stgObjects[i];
 	}
 
-	objSkydome->SetScale({ 5,5,5 });
-	objGroundGrid->ObjectOBJ::SetScale({ 5,5,5 });
-
 	player->SetPosition({
 		objCastle->GetPosition().x,
 		objCastle->GetPosition().y + 20,
@@ -69,10 +66,10 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	spriteWaveFinal->SetPosition({ WinApp::window_width / 2, 128 });
 	spritePause->SetPosition({ WinApp::window_width / 2, 128 });
 
-	spriteUIFrame->SetSize({ 512,256 });
-	spriteUIFrame->SetAnchorPoint({ 0.5f,0.5f });
-	spriteUIFrame->SetPosition({ WinApp::window_width / 2,WinApp::window_height / 2 });
-	spriteUIFrame->Update();
+	spriteUIWindowBlue->SetSize({ 0,256 });
+	spriteUIWindowBlue->SetAnchorPoint({ 0.5f,0.5f });
+	spriteUIWindowBlue->SetPosition({ WinApp::window_width / 2,WinApp::window_height / 2 });
+	spriteUIWindowBlue->Update();
 
 	GameManager::Start();
 	GameManager::SetEnemyModel(modelEnemy);
@@ -82,7 +79,7 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 
 void SceneInGame::Update()
 {
-	Menu();
+	UpdateMenu();
 
 	if ((menuActivate || GameManager::GetFinishState() != 0) &&
 		buttonTitle->Click(MOUSE_LEFT))
@@ -100,8 +97,6 @@ void SceneInGame::Update()
 		buttonRetry->Click(MOUSE_LEFT))
 	{
 		GameManager::Restart();
-		UItimer = UItimerMax;
-		UItimer--;
 
 		player->SetPosition({
 			objCastle->GetPosition().x,
@@ -109,6 +104,7 @@ void SceneInGame::Update()
 			objCastle->GetPosition().z
 			});
 
+		windowActive = false;
 		return;
 	}
 
@@ -116,14 +112,14 @@ void SceneInGame::Update()
 		buttonNext->Click(MOUSE_LEFT))
 	{
 		GameManager::ChangeNextWave();
-		UItimer = UItimerMax;
-		UItimer--;
 
 		player->SetPosition({
 			objCastle->GetPosition().x,
 			objCastle->GetPosition().y + 20,
 			objCastle->GetPosition().z
 			});
+
+		windowActive = false;
 
 		return;
 	}
@@ -136,7 +132,7 @@ void SceneInGame::Update()
 		player->GetPosition().z
 		});
 
-	if (UItimer > 0) return;
+	if (menuActivate) return;
 
 	numberTimer->SetSequence(GameManager::GetTimerSeconds(), 0, 64, { 32,64 });
 	numberWaitTimer->SetSequence(GameManager::GetWaitTimerSeconds(), (float)WinApp::window_width / 2, 128 + 192, { 32, 64 });
@@ -190,7 +186,10 @@ void SceneInGame::Draw()
 	objSkydomeSpace->Draw();
 	objGroundGrid->ObjectOBJ::Draw();
 
-	objWall->Draw();
+	for (int i = 0; i < 8; i++)
+	{
+		objWall[i]->Draw();
+	}
 
 	player->ObjectOBJ::Draw();
 	weapon[0]->ObjectOBJ::Draw();
@@ -221,6 +220,78 @@ void SceneInGame::Draw()
 	meterCastleHP->Draw();
 	numberTimer->Draw();
 
+	DrawMenu();
+
+	spriteCommon->PostDraw();
+
+	// テキスト描画
+	//text->DrawAll(dxCommon->GetCmdList());
+
+#pragma endregion
+
+#pragma endregion グラフィックスコマンド
+}
+
+void SceneInGame::UpdateMenu()
+{
+	if (!menuActivate)
+	{
+		// マウスカーソルの座標を画面中央に固定
+		SetCursorPos(WinApp::window_width / 2, WinApp::window_height / 2);
+		player->SetCameraMoveFlag(true);
+
+		if (input->TriggerKey(DIK_ESCAPE) || GameManager::GetFinishState() != 0)
+		{
+			windowActive = true;
+		}
+	}
+	else
+	{
+		spriteCursor->SetPosition(input->GetMousePos2());
+		spriteCursor->Update();
+		player->SetCameraMoveFlag(false);
+
+		if (input->TriggerKey(DIK_ESCAPE) && GameManager::GetFinishState() == 0)
+		{
+			windowActive = false;
+		}
+	}
+
+	int count = 10;
+	float max = 512.0f;
+	float windowSizeX = spriteUIWindowBlue->GetSize().x;
+
+	if (windowActive)
+	{
+		if (windowSizeX < max)	windowSizeX += max / count;
+		menuActivate = true;
+	}
+	else
+	{
+		if (windowSizeX > 0)	windowSizeX -= max / count;
+		else					menuActivate = false;
+	}
+
+	float alpha = windowSizeX / max;
+	if ((int)(alpha * 100) % 3 == 0)
+	{
+		alpha = 0;
+	}
+
+	buttonTitle->SetColor({ 1.0f,1.0f,1.0f, alpha });
+	buttonNext->SetColor({ 1.0f,1.0f,1.0f, alpha });
+	buttonRetry->SetColor({ 1.0f,1.0f,1.0f, alpha });
+	spriteUIWindowBlue->SetColor({ 1.0f,1.0f,1.0f, alpha });
+	spriteUIWindowBlue->SetSize({ windowSizeX, 256.0f });
+
+	buttonTitle->Update();
+	buttonNext->Update();
+	buttonRetry->Update();
+	spriteUIWindowBlue->Update();
+}
+
+void SceneInGame::DrawMenu()
+{
 	if (GameManager::GetWaitTimer() > 0 && !menuActivate)
 	{
 		numberWaitTimer->Draw();
@@ -236,11 +307,11 @@ void SceneInGame::Draw()
 		}
 	}
 
-	if(UItimer % 3 && UItimer > 0)
+	if (menuActivate)
 	{
-		spriteUIFrame->Draw();
+		spriteUIWindowBlue->Draw();
 
-		if (menuActivate)
+		if(windowActive)
 		{
 			switch (GameManager::GetFinishState())
 			{
@@ -260,72 +331,8 @@ void SceneInGame::Draw()
 				buttonRetry->Draw();
 				break;
 			}
-
-			spriteCursor->Draw();
 		}
+
+		spriteCursor->Draw();
 	}
-
-	spriteCommon->PostDraw();
-
-	// テキスト描画
-	//text->DrawAll(dxCommon->GetCmdList());
-
-#pragma endregion
-
-#pragma endregion グラフィックスコマンド
-}
-
-void SceneInGame::Menu()
-{
-	if (!menuActivate)
-	{
-		// タイマーが少しでも進んでいたらカウント開始
-		if (UItimer > 0) UItimer++;
-		// タイマーが上限を超えたら停止してメニュー有効化
-		if (UItimer > UItimerMax)
-		{
-			UItimer = UItimerMax;
-			menuActivate = true;
-		}
-
-		// マウスカーソルの座標を画面中央に固定
-		SetCursorPos(WinApp::window_width / 2, WinApp::window_height / 2);
-		player->SetCameraMoveFlag(true);
-
-		if (input->TriggerKey(DIK_ESCAPE) || GameManager::GetFinishState() != 0)
-		{
-			UItimer++;
-		}
-	}
-	else
-	{
-		// タイマーが少しでも進んでいたらカウント開始
-		if (UItimer < UItimerMax) UItimer--;
-		// タイマーが上限を超えたら停止してメニュー無効化
-		if (UItimer < 0)
-		{
-			UItimer = 0;
-			menuActivate = false;
-		}
-
-		spriteCursor->SetPosition(input->GetMousePos2());
-		spriteCursor->Update();
-		player->SetCameraMoveFlag(false);
-
-		if (input->TriggerKey(DIK_ESCAPE) && GameManager::GetFinishState() == 0)
-		{
-			UItimer--;
-		}
-	}
-
-	buttonTitle->SetColor({ 1.0f,1.0f,1.0f, (float)(pow(UItimer,2) / pow(UItimerMax, 2)) });
-	buttonNext->SetColor({ 1.0f,1.0f,1.0f, (float)UItimer / UItimerMax });
-	buttonRetry->SetColor({ 1.0f,1.0f,1.0f, (float)UItimer / UItimerMax });
-	spriteUIFrame->SetColor({ 1.0f,1.0f,1.0f, (float)UItimer / UItimerMax });
-	spriteUIFrame->SetSize({ (512.0f / UItimerMax) * UItimer, 256.0f });
-
-	buttonTitle->Update();
-	buttonNext->Update();
-	buttonRetry->Update();
-	spriteUIFrame->Update();
 }

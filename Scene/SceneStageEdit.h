@@ -23,6 +23,11 @@ public: // メンバ関数
 	/// </summary>
 	void Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, Input* input, Audio* audio)override;
 
+	// 2Dオブジェクトの初期化
+	void Initialize2D();
+	// 3Dオブジェクトの初期化
+	void Initialize3D();
+
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
@@ -36,12 +41,12 @@ public: // メンバ関数
 	/// <summary>
 	/// メニュー表示更新
 	/// </summary>
-	void MenuUpdate();
+	void UpdateMenu();
 
 	/// <summary>
 	/// メニュー表示描画
 	/// </summary>
-	void MenuDraw();
+	void DrawMenu();
 
 	/// <summary>
 	/// オブジェクト作成(OBJ)
@@ -68,4 +73,6 @@ private:
 
 	bool menuActivate = true;
 	bool buttonClick = false;
+	bool windowActive = false;
+	bool listActive = false;
 };

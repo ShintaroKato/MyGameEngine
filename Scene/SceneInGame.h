@@ -37,10 +37,11 @@ public: // メンバ関数
 	/// <summary>
 	/// メニュー表示
 	/// </summary>
-	void Menu();
+	void UpdateMenu();
+
+	void DrawMenu();
 
 private:
-	int UItimer = 0;
-	int UItimerMax = 10;
+	bool windowActive = false;
 	bool menuActivate = false;
 };

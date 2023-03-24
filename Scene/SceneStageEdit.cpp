@@ -14,6 +14,64 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 {
 	SceneBase::Initialize(dxCommon, sprCommon, input, audio);
 
+	Initialize2D();
+	Initialize3D();
+}
+
+void SceneStageEdit::Initialize2D()
+{
+	buttonTitle->SetPosition({ 0,0 });
+	buttonTitle->SetSize({ 128,64 });
+
+	buttonObjects->SetPosition({ 64,96 });
+	buttonObjects->SetSize({ 128,64 });
+	buttonObjects->SetAnchorPoint({ 0.5f,0.5f });
+
+	spriteUIWindowBlue->SetPosition(buttonObjects->GetPosition());
+	spriteUIWindowBlue->SetSize({ 128,0 });
+	spriteUIWindowBlue->SetAnchorPoint({ 0.5f,0.0f });
+	spriteUIWindowBlue->Update();
+
+	XMFLOAT2 uiPos = spriteUIWindowBlue->GetPosition();
+	float pos_offset = 90;
+
+	buttonRed->SetPosition({ uiPos.x, uiPos.y + pos_offset });
+	buttonRed->SetSize({ 64,64 });
+	buttonRed->SetAnchorPoint({ 0.5f,0.5f });
+	buttonRed->Update();
+
+	buttonBlue->SetPosition({ uiPos.x, uiPos.y + pos_offset * 2.0f });
+	buttonBlue->SetSize({ 64,64 });
+	buttonBlue->SetAnchorPoint({ 0.5f,0.5f });
+	buttonBlue->Update();
+
+	spriteUIWindowYellow->SetSize({ 400, 64 * 1.5f });
+	spriteUIWindowYellow->SetAnchorPoint({ 0.0f, 0.0f });
+	spriteUIWindowYellow->Update();
+
+	spriteGuide1->SetPosition({ WinApp::window_width + 64, WinApp::window_height });
+	spriteGuide1->SetAnchorPoint({ 1.0f, 1.0f });
+	spriteGuide1->Update();
+	spriteGuide2->SetPosition({ WinApp::window_width + 64, WinApp::window_height });
+	spriteGuide2->SetAnchorPoint({ 1.0f, 1.0f });
+	spriteGuide2->Update();
+
+	spriteObjectGuideWall->SetSize({
+		spriteObjectGuideWall->GetSize().x / 1.2f,
+		spriteObjectGuideWall->GetSize().y / 1.2f });
+	spriteObjectGuideWall->SetAnchorPoint({ 0.0f,0.0f });
+	spriteObjectGuideWall->Update();
+
+	spriteObjectGuideTower->SetSize({
+		spriteObjectGuideTower->GetSize().x / 1.2f,
+		spriteObjectGuideTower->GetSize().y / 1.2f });
+	spriteObjectGuideTower->SetAnchorPoint({ 0.0f,0.0f });
+	spriteObjectGuideTower->Update();
+}
+
+void SceneStageEdit::Initialize3D()
+{
+
 	for (int i = 0; i < stgObjects.size(); i++)
 	{
 		stgObjects[i]->ResetStatus();
@@ -23,33 +81,8 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 	// 受け渡しが終わったら配列を全消去
 	stgObjects.clear();
 
-	buttonTitle->SetPosition({ 0,0 });
-	buttonTitle->SetSize({ 128,64 });
-
-	buttonRed->SetPosition({ 20,20 + 64 });
-	buttonRed->SetSize({ 64,64 });
-	buttonRed->Update();
-
-	buttonBlue->SetPosition({ 20,20 + 64 * 2.5f });
-	buttonBlue->SetSize({ 64,64 });
-	buttonBlue->Update();
-
-	spriteUIFrame->SetPosition({ 64,20 + 32 });
-	spriteUIFrame->SetSize({ 128,64 * 3.5f });
-	spriteUIFrame->SetAnchorPoint({ 0.5f,0.0f });
-	spriteUIFrame->Update();
-
-	spriteGuide1->SetPosition({ WinApp::window_width + 64, WinApp::window_height });
-	spriteGuide1->SetAnchorPoint({ 1.0f, 1.0f });
-	spriteGuide1->Update();
-	spriteGuide2->SetPosition({ WinApp::window_width + 64, WinApp::window_height });
-	spriteGuide2->SetAnchorPoint({ 1.0f, 1.0f });
-	spriteGuide2->Update();
-
 	PlaneCursor::Initialize(objCursor);
-
-	objSkydome->SetScale({ 5,5,5 });
-	objGroundGrid->ObjectOBJ::SetScale({ 5,5,5 });
+	PlaneCursor::SetMovableRange(fieldSize);
 
 	player->SetAllive(false);
 	player->SetCameraDistance(80);
@@ -92,7 +125,7 @@ void SceneStageEdit::Update()
 
 	menuActivate = true;
 	buttonClick = false;
-	MenuUpdate();
+	UpdateMenu();
 
 	for (std::forward_list<StageObject>::iterator it = stgObjectEdit.begin(); it != stgObjectEdit.end(); it++)
 	{
@@ -136,7 +169,10 @@ void SceneStageEdit::Draw()
 	objSkydomeSpace->Draw();
 	objGroundGrid->ObjectOBJ::Draw();
 
-	objWall->Draw();
+	for (int i = 0; i < 8; i++)
+	{
+		objWall[i]->Draw();
+	}
 
 	if(!menuActivate) PlaneCursor::Draw();
 
@@ -159,7 +195,7 @@ void SceneStageEdit::Draw()
 
 
 	// スプライト描画
-	MenuDraw();
+	DrawMenu();
 
 	// テキスト描画
 	text->DrawAll();
@@ -172,20 +208,75 @@ void SceneStageEdit::Draw()
 #pragma endregion グラフィックスコマンド
 }
 
-void SceneStageEdit::MenuUpdate()
+void SceneStageEdit::UpdateMenu()
 {
 	if (!menuActivate) return;
+
+	if (buttonObjects->Click(MOUSE_LEFT))
+	{
+		if (!windowActive) windowActive = true;
+		else			   windowActive = false;
+	}
+
+	// 8f でUIのウィンドウの縦幅を 256px にする
+	int count = 8;
+	float max = 256;
+	float sizeY = spriteUIWindowBlue->GetSize().y;
+
+	if (windowActive)
+	{
+		if (sizeY < max) sizeY += max / count;
+		else			 listActive = true;
+	}
+	else
+	{
+		if (sizeY > 0)	 sizeY -= max / count;
+		listActive = false;
+	}
+
+	spriteUIWindowBlue->SetSize({ 120, sizeY });
+	spriteUIWindowBlue->Update();
+	buttonTitle->Update();
+	buttonObjects->Update();
+	spriteCursor->Update();
+
+	if (!windowActive) return;
 
 	MakeObject(buttonRed, modelCubeRed, RED_OBJECT, { 1.0f, 5.0f });
 	MakeObject(buttonBlue, modelCubeBlue, OFFENCE_OBJECT);
 
-	buttonTitle->Update();
+	if (buttonRed->Point() || buttonBlue->Point())
+	{
+		spriteUIWindowYellow->Update();
+
+		if (buttonRed->Point())
+		{
+			spriteObjectGuideWall->SetPosition({
+					spriteUIWindowYellow->GetPosition().x + 16,
+					spriteUIWindowYellow->GetPosition().y
+				});
+			spriteObjectGuideWall->Update();
+		}
+		if (buttonBlue->Point())
+		{
+			spriteObjectGuideTower->SetPosition({
+					spriteUIWindowYellow->GetPosition().x + 16,
+					spriteUIWindowYellow->GetPosition().y
+				});
+			spriteObjectGuideTower->Update();
+		}
+	}
+	else
+	{
+		spriteUIWindowYellow->SetPosition(input->GetMousePos2());
+		spriteUIWindowYellow->Update();
+	}
+
 	buttonRed->Update();
 	buttonBlue->Update();
-	spriteCursor->Update();
 }
 
-void SceneStageEdit::MenuDraw()
+void SceneStageEdit::DrawMenu()
 {
 	if (!menuActivate)
 	{
@@ -193,10 +284,24 @@ void SceneStageEdit::MenuDraw()
 		return;
 	}
 
-	spriteUIFrame->Draw();
+	spriteUIWindowBlue->Draw();
+
+	if (listActive)
+	{
+		buttonRed->Draw();
+		buttonBlue->Draw();
+
+		if (buttonRed->Point() || buttonBlue->Point())
+		{
+			spriteUIWindowYellow->Draw();
+
+			if (buttonRed->Point()) spriteObjectGuideWall->Draw();
+			if (buttonBlue->Point()) spriteObjectGuideTower->Draw();
+		}
+	}
+
 	buttonTitle->Draw();
-	buttonRed->Draw();
-	buttonBlue->Draw();
+	buttonObjects->Draw();
 	spriteCursor->Draw();
 	spriteGuide1->Draw();
 }
