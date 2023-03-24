@@ -202,11 +202,12 @@ void StageObject::Drag()
 
 void StageObject::Move()
 {
-	if (pos.x < -60) pos.x = -60;
-	if (pos.x > 60) pos.x = 60;
+	float range = PlaneCursor::GetMovableRange();
+	if (pos.x < -range) pos.x = -range;
+	if (pos.x > range) pos.x = range;
 
-	if (pos.z < -60) pos.z = -60;
-	if (pos.z > 60) pos.z = 60;
+	if (pos.z < -range) pos.z = -range;
+	if (pos.z > range) pos.z = range;
 
 	if (!isDrag) pos.y = 0;
 }
@@ -465,8 +466,8 @@ void StageObject::OnCollision(const CollisionInfo& info)
 		Hit(info.collider->attackPower);
 		ParticleEmitter::EmitRandomAllRange(3, 60,
 			{ info.inter.m128_f32[0], info.inter.m128_f32[1], info.inter.m128_f32[2] },
-			{0.0f,0.0f,0.0f},
-			{ 1.0f, 0.5f ,0.0f, 1.0f }, { 0.7f, 0.2f, 0.0f, 0.5f }, 
+			{ 0.0f,0.0f,0.0f },
+			{ 1.0f, 0.5f ,0.0f, 1.0f }, { 0.7f, 0.2f, 0.0f, 0.5f },
 			0.1f, 0.001f, 1.0f, 0.1);
 	}
 	if (info.collider->GetAttribute() == COLLISION_ATTR_BULLET + COLLISION_ATTR_ALLIES && tag != STAGE_OBJECT_DEFAULT)

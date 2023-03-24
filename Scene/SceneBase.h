@@ -32,6 +32,7 @@ enum SpriteNo
 	button_edit,
 	button_retry,
 	button_next,
+	button_objects,
 	cursor,
 	number,
 	player_HP,
@@ -44,7 +45,10 @@ enum SpriteNo
 	pause,
 	guide01,
 	guide02,
+	guide_wall,
+	guide_tower,
 	ui_frame,
+	name_frame,
 };
 
 // オブジェクトのデータを保存するための構造体
@@ -133,7 +137,10 @@ protected:
 	Sprite* spritePause = nullptr;
 	Sprite* spriteGuide1 = nullptr;
 	Sprite* spriteGuide2 = nullptr;
-	Sprite* spriteUIFrame = nullptr;
+	Sprite* spriteUIWindowBlue = nullptr;
+	Sprite* spriteUIWindowYellow = nullptr;
+	Sprite* spriteObjectGuideWall = nullptr;
+	Sprite* spriteObjectGuideTower = nullptr;
 
 	Button* buttonRed = nullptr;
 	Button* buttonGreen = nullptr;
@@ -143,6 +150,7 @@ protected:
 	Button* buttonEdit = nullptr;
 	Button* buttonRetry = nullptr;
 	Button* buttonNext = nullptr;
+	Button* buttonObjects = nullptr;
 
 	Number* numberTimer = nullptr;
 	Number* numberWaitTimer = nullptr;
@@ -167,7 +175,7 @@ protected:
 	ModelOBJ* modelWeapon = nullptr;
 	ModelOBJ* modelCursor = nullptr;
 
-	ObjectOBJ* objWall = nullptr;
+	ObjectOBJ* objWall[8]{};
 	ObjectOBJ* objSkydome = nullptr;
 	ObjectOBJ* objSkydomeSpace = nullptr;
 	TouchableObject* objGroundGrid = nullptr;
@@ -181,4 +189,6 @@ protected:
 
 	// 星空の天球の回転量
 	XMFLOAT3 skydomeRot{};
+	// フィールドの広さ
+	float fieldSize = 0;
 };

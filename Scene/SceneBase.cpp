@@ -36,6 +36,7 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	spriteCommon->LoadTexture(button_edit, "button_edit.png");
 	spriteCommon->LoadTexture(button_retry, "button_retry.png");
 	spriteCommon->LoadTexture(button_next, "button_next.png");
+	spriteCommon->LoadTexture(button_objects, "button_objects.png");
 	spriteCommon->LoadTexture(cursor, "cursor.png");
 	spriteCommon->LoadTexture(number, "number.png");
 	spriteCommon->LoadTexture(player_HP, "player_HP.png");
@@ -49,6 +50,9 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	spriteCommon->LoadTexture(guide01, "guide01.png");
 	spriteCommon->LoadTexture(guide02, "guide02.png");
 	spriteCommon->LoadTexture(ui_frame, "UI_frame.png");
+	spriteCommon->LoadTexture(name_frame, "name_plate.png");
+	spriteCommon->LoadTexture(guide_wall, "guide_text_wall.png");
+	spriteCommon->LoadTexture(guide_tower, "guide_text_tower.png");
 
 	// テキスト
 	text = Text::GetInstance();
@@ -64,6 +68,7 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	buttonEdit = Button::Create(spriteCommon, button_edit, { 0,0 }, { 0,0 });
 	buttonRetry = Button::Create(spriteCommon, button_retry, { 0,0 }, { 0,0 });
 	buttonNext = Button::Create(spriteCommon, button_next, { 0,0 }, { 0,0 });
+	buttonObjects = Button::Create(spriteCommon, button_objects, { 0,0 }, { 0,0 });
 	spriteCursor = Sprite::Create(spriteCommon, cursor, { 0,0 }, { 0,0 });
 	spriteCursor->SetSize({ 16,16 });
 	numberTimer = Number::Create(spriteCommon, number, 3, { 0,0 }, { 0,0 });
@@ -78,7 +83,10 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	spritePause = Sprite::Create(spriteCommon, pause, { 0,0 }, { 0.5f,0.5f });
 	spriteGuide1 = Sprite::Create(spriteCommon, guide01, { 0,0 });
 	spriteGuide2 = Sprite::Create(spriteCommon, guide02, { 0,0 });
-	spriteUIFrame = Sprite::Create(spriteCommon, ui_frame, { 0,0 });
+	spriteUIWindowBlue = Sprite::Create(spriteCommon, ui_frame, { 0,0 });
+	spriteUIWindowYellow = Sprite::Create(spriteCommon, name_frame, { 0,0 });
+	spriteObjectGuideWall = Sprite::Create(spriteCommon, guide_wall, { 0,0 });
+	spriteObjectGuideTower = Sprite::Create(spriteCommon, guide_tower, { 0,0 });
 
 	// .objからモデルデータ読み込み
 	modelSkydome = ModelOBJ::LoadObj("skydome");
@@ -93,7 +101,7 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	modelCubeGreen = ModelOBJ::LoadObj("brokenBlock");
 	modelCubeBlue = ModelOBJ::LoadObj("tower01");
 	modelCastle = ModelOBJ::LoadObj("Castle");
-	modelWall = ModelOBJ::LoadObj("square_wall");
+	modelWall = ModelOBJ::LoadObj("wall");
 	modelWeapon = ModelOBJ::LoadObj("sword2");
 	modelCursor = ModelOBJ::LoadObj("cursor_plane");
 
@@ -101,17 +109,53 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	objSkydome = ObjectOBJ::Create();
 	// オブジェクトにモデルを紐づける
 	objSkydome->SetModelOBJ(modelSkydome);
-	objSkydome->SetScale({ 50,50,50 });
+	objSkydome->SetScale({ 8,8,8 });
 	objSkydome->SetShadingMode(1);
 
 	objSkydomeSpace = ObjectOBJ::Create();
 	objSkydomeSpace->SetModelOBJ(modelSkydomeSpace);
-	objSkydomeSpace->SetScale({ 4.5f,4.5f,4.5f });
+	objSkydomeSpace->SetScale({ 7.0f,7.0f,7.0f });
 	objSkydomeSpace->SetShadingMode(1);
 
-	objWall = ObjectOBJ::Create();
-	objWall->SetModelOBJ(modelWall);
-	objWall->SetScale({ 12,1,12 });
+	// 外壁を設置
+	fieldSize = 150.0f;
+	XMFLOAT3 scale = { 3.0f,1,2.0f };
+	for (int i = 0; i < 8; i++)
+	{
+		objWall[i] = ObjectOBJ::Create();
+		objWall[i]->SetModelOBJ(modelWall);
+		objWall[i]->SetScale(scale);
+
+		float radius = 30.0f * scale.x * 0.6f;
+		float posX = fieldSize;
+		float posZ = fieldSize;
+
+		float rot = 0;
+		if (i < 4)
+		{
+			rot += 90;
+			posZ -= radius;
+		}
+		else
+		{
+			posX -= radius;
+		}
+
+		int num = i % 4;
+
+		if (num == 2 || num == 3)
+		{
+			posX = -posX;
+		}
+		if (num == 1 || num == 3)
+		{
+			posZ = -posZ;
+		}
+
+		objWall[i]->SetRotation({ 0,rot,0 });
+		objWall[i]->SetPosition({ posX,0,posZ });
+	}
+	fieldSize = 128.0f;
 
 	objGroundGrid = TouchableObject::Create(modelGroundGrid);
 	objGroundGrid->ObjectOBJ::SetScale({ 10,10,10 });
@@ -164,7 +208,10 @@ void SceneBase::Update()
 	objSkydome->Update();
 	objSkydomeSpace->Update();
 	objGroundGrid->Update();
-	objWall->Update();
+	for (int i = 0; i < 8; i++)
+	{
+		objWall[i]->Update();
+	}
 	weapon[0]->Update();
 
 	// スプライト
