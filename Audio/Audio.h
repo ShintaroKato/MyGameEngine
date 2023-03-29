@@ -73,7 +73,8 @@ public: // メンバ関数
 	SoundData* LoadWave(const char* filename);
 
 	// サウンド再生
-	void PlayWave(IXAudio2* xAudio2, const SoundData& soundData);
+	void PlayWave(const SoundData& soundData);
+	void PlayWave(const char* filename);
 
 	void Unload(SoundData* soundData);
 

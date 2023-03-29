@@ -22,12 +22,15 @@ bool Audio::Initialize()
 // 音声読み込み
 SoundData* Audio::LoadWave(const char* filename)
 {
-	// ファイル入力ストリームのインスタンス
+	HRESULT result;
+	// ファイルストリーム
 	std::ifstream file;
-	// .wavファイルをバイナリモードで開く
+	// Waveファイルを開く
 	file.open(filename, std::ios_base::binary);
-	// ファイルオープン失敗を検出する
-	assert(file.is_open());
+	// ファイルオープン失敗をチェック
+	if (file.fail()) {
+		assert(0);
+	}
 
 	// RIFFヘッダーの読み込み
 	RiffHeader riff;
@@ -36,36 +39,14 @@ SoundData* Audio::LoadWave(const char* filename)
 	if (strncmp(riff.chunk.id, "RIFF", 4) != 0) {
 		assert(0);
 	}
-	// タイプがWAVEかチェック
-	if (strncmp(riff.type, "WAVE", 4) != 0) {
-		assert(0);
-	}
 
 	// Formatチャンクの読み込み
-	FormatChunk format = {};
-	// チャンクヘッダーの確認
-	file.read((char*)&format, sizeof(Chunk));
-	if (strncmp(format.chunk.id, "fmt ", 4) != 0) {
-		assert(0);
-	}
-	// チャンク本体の読み込み
-	assert(format.chunk.size <= sizeof(format.fmt));
-	file.read((char*)&format.fmt, format.chunk.size);
+	FormatChunk format;
+	file.read((char*)&format, sizeof(format));
 
 	// Dataチャンクの読み込み
 	Chunk data;
 	file.read((char*)&data, sizeof(data));
-	// JUNKチャンクを検出した場合
-	if (strncmp(data.id, "JUNK ", 4) == 0) {
-		// 読み取り位置をJUNKチャンクの終わりまで進める
-		file.seekg(data.size, std::ios_base::cur);
-		// 再読み込み
-		file.read((char*)&data, sizeof(data));
-	}
-
-	if (strncmp(data.id, "data ", 4) != 0) {
-		assert(0);
-	}
 
 	// Dataチャンクのデータ部（波形データ）の読み込み
 	char* pBuffer = new char[data.size];
@@ -78,6 +59,7 @@ SoundData* Audio::LoadWave(const char* filename)
 	SoundData soundData = {};
 
 	memcpy(&soundData.wfex, &format.fmt, sizeof(format.fmt));
+	soundData.wfex.wBitsPerSample = format.fmt.nBlockAlign * 8 / format.fmt.nChannels;
 	soundData.pBuffer = reinterpret_cast<BYTE*>(pBuffer);
 	soundData.bufferSize = data.size;
 
@@ -96,23 +78,96 @@ void Audio::Unload(SoundData* soundData)
 }
 
 // 音声再生
-void Audio::PlayWave(IXAudio2* xAudio2, const SoundData& soundData)
+void Audio::PlayWave(const SoundData& soundData)
 {
 
 	HRESULT result;
 
 	// 波形フォーマットを元にSourceVoiceの生成
 	IXAudio2SourceVoice* pSourceVoice = nullptr;
-	result = xAudio2->CreateSourceVoice(&pSourceVoice, &soundData.wfex);
+	result = xAudio2->CreateSourceVoice(&pSourceVoice, &soundData.wfex, 0, 2.0f, &voiceCallback);
 	assert(SUCCEEDED(result));
 
 	// 再生する波形データの設定
 	XAUDIO2_BUFFER buf{};
 	buf.pAudioData = soundData.pBuffer;
+	buf.pContext = soundData.pBuffer;
 	buf.AudioBytes = soundData.bufferSize;
 	buf.Flags = XAUDIO2_END_OF_STREAM;
 
 	// 波形データの再生
 	result = pSourceVoice->SubmitSourceBuffer(&buf);
 	result = pSourceVoice->Start();
+}
+
+void Audio::PlayWave(const char* filename)
+{
+	HRESULT result;
+	// ファイルストリーム
+	std::ifstream file;
+	// Waveファイルを開く
+	file.open(filename, std::ios_base::binary);
+	// ファイルオープン失敗をチェック
+	if (file.fail()) {
+		assert(0);
+	}
+
+	// RIFFヘッダーの読み込み
+	RiffHeader riff;
+	file.read((char*)&riff, sizeof(riff));
+	// ファイルがRIFFかチェック
+	if (strncmp(riff.chunk.id, "RIFF", 4) != 0) {
+		assert(0);
+	}
+
+	// Formatチャンクの読み込み
+	FormatChunk format;
+	file.read((char*)&format, sizeof(format));
+
+	// Dataチャンクの読み込み
+	Chunk data;
+	file.read((char*)&data, sizeof(data));
+
+	// Dataチャンクのデータ部（波形データ）の読み込み
+	char* pBuffer = new char[data.size];
+	file.read(pBuffer, data.size);
+
+	// Waveファイルを閉じる
+	file.close();
+
+	WAVEFORMATEX wfex{};
+	// 波形フォーマットの設定
+	memcpy(&wfex, &format.fmt, sizeof(format.fmt));
+	wfex.wBitsPerSample = format.fmt.nBlockAlign * 8 / format.fmt.nChannels;
+
+	// 波形フォーマットを元にSourceVoiceの生成
+	IXAudio2SourceVoice* pSourceVoice = nullptr;
+	result = xAudio2->CreateSourceVoice(&pSourceVoice, &wfex, 0, 2.0f, &voiceCallback);
+	if FAILED(result) {
+		delete[] pBuffer;
+		assert(0);
+		return;
+	}
+
+	// 再生する波形データの設定
+	XAUDIO2_BUFFER buf{};
+	buf.pAudioData = (BYTE*)pBuffer;
+	buf.pContext = pBuffer;
+	buf.Flags = XAUDIO2_END_OF_STREAM;
+	buf.AudioBytes = data.size;
+
+	// 波形データの再生
+	result = pSourceVoice->SubmitSourceBuffer(&buf);
+	if FAILED(result) {
+		delete[] pBuffer;
+		assert(0);
+		return;
+	}
+
+	result = pSourceVoice->Start();
+	if FAILED(result) {
+		delete[] pBuffer;
+		assert(0);
+		return;
+	}
 }
