@@ -7,6 +7,8 @@
 // 音声データ
 struct SoundData
 {
+	//SourceVoice
+	IXAudio2SourceVoice* pSourceVoice;
 	// 波形フォーマット
 	WAVEFORMATEX wfex;
 	// バッファの先頭アドレス
@@ -75,6 +77,8 @@ public: // メンバ関数
 	// サウンド再生
 	void PlayWave(const SoundData& soundData);
 	void PlayWave(const char* filename);
+
+	void StopWave(const SoundData& soundData);
 
 	void Unload(SoundData* soundData);
 
