@@ -4,6 +4,7 @@ cbuffer cbuff0 : register(b0)
     matrix mat;
     uint mode;
     float alpha;
+    float2 cameraMove;
 };
 
 // 頂点シェーダーからピクセルシェーダーへのやり取りに使用する構造体
