@@ -56,6 +56,11 @@ public:
 	void Jump();
 
 	/// <summary>
+	/// 壁からの押し出し
+	/// </summary>
+	void Rejection();
+
+	/// <summary>
 	/// 視点操作
 	/// </summary>
 	void ControlCamera();
@@ -123,7 +128,20 @@ public:
 		cameraRotX = 30;
 	}
 
+	/// <summary>
+	/// カメラの移動が有効か否かを設定
+	/// </summary>
 	void SetCameraMoveFlag(bool flag) { cameraMoveActive = flag; }
+
+	/// <summary>
+	/// カメラの操作ができる状態か否かを設定
+	/// </summary>
+	void SetCameraControlFlag(bool flag) { cameraControlActive = flag; }
+
+	/// <summary>
+	/// カメラの操作ができる状態か否かを取得
+	/// </summary>
+	bool GetCameraControlFlag() { return cameraControlActive; }
 
 	///// <summary>
 	///// 武器をセット
@@ -157,6 +175,9 @@ private:
 	float radius = 1.0f;
 	// 接地フラグ
 	bool onGround = true;
+	// 押し出しフラグ
+	bool rejectX = false;
+	bool rejectZ = false;
 	// 移動ベクトル(初期値)
 	XMVECTOR move_default = { 0,0,0.3f,0 };
 	// 移動ベクトル
@@ -177,6 +198,7 @@ private:
 	float distance = 10;
 	// カメラ操作ON・OFF
 	bool cameraMoveActive = true;
+	bool cameraControlActive = true;
 	// カメラと地形との衝突判定をとるコライダー
 	Sphere sphereCamera{};
 	SphereCollider* sphereCameraColl = nullptr;

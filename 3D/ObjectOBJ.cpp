@@ -332,6 +332,8 @@ void ObjectOBJ::SetCollider(BaseCollider* collider)
 	this->collider = collider;
 	// コリジョンマネージャに追加
 	CollisionManager::GetInstance()->AddCollider(this->collider);
-	// コライダーを更新しておく
+	// 行列の計算
+	UpdateWorldMatrix();
+	// コライダーを更新
 	this->collider->Update();
 }

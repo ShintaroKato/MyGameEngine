@@ -90,24 +90,29 @@ void Player::Update()
 	Jump();
 	Attack();
 
-	SetPosition(pos);
-	if (ObjectOBJ::model)
-	{
-		ObjectOBJ::rotation = rot;
-		ObjectOBJ::collider->Update();
-	}
-	if (ObjectFBX::model)
-	{
-		ObjectFBX::rotation = rot;
-		ObjectFBX::collider->Update();
-	}
-
 	if(attackFlag)
 	{
 		ParticleEmitter::EmitRandomAllRange(5 ,attackCount, weapon->GetPosition(),
 			{ 0,0,0 },
 			{ 0.6f,0.6f,1.0f,1.0f }, { 0.0f,0.0f,1.0f,1.0f }, 0.1f, 0.01f, 0.5f);
 	}
+
+	SetPosition(pos);
+
+	if (ObjectOBJ::model)
+	{
+		ObjectOBJ::rotation = rot;
+		ObjectOBJ::UpdateWorldMatrix();
+		ObjectOBJ::collider->Update();
+	}
+	if (ObjectFBX::model)
+	{
+		ObjectFBX::rotation = rot;
+		ObjectFBX::UpdateWorldMatrix();
+		ObjectFBX::collider->Update();
+	}
+
+	Rejection();
 
 	ObjectOBJ::Update();
 	ObjectFBX::Update();
@@ -231,8 +236,74 @@ void Player::Jump()
 	}
 }
 
+void Player::Rejection()
+{
+
+	// クエリコールバッククラス
+	class PlayerQueryCallback : public QueryCallback
+	{
+	public:
+		PlayerQueryCallback(Sphere* sphere) : sphere(sphere) {};
+
+		bool OnQueryHit(const QueryHit& info)
+		{
+			// ワールドの上方向
+			const XMVECTOR up = { 0.1,0,0 };
+			// 排斥方向
+			XMVECTOR rejectDir = XMVector3Normalize(info.reject);
+			// 上方向と排斥ベクトルのコサイン値
+			float cos = XMVector3Dot(rejectDir, up).m128_f32[0];
+
+			// 地面判定しきい値角度
+			const float threshold = cosf(XMConvertToRadians(30.0f));
+			// 角度差によって天井または地面と判定される場合を除いて
+			if (-threshold < cos && cos < threshold)
+			{
+				// 球を排斥
+				sphere->center += info.reject;
+				move += info.reject;
+			}
+
+			return true;
+		}
+
+		// クエリに使用する球
+		Sphere* sphere = nullptr;
+		// 排斥による移動量(累積値)
+		DirectX::XMVECTOR move = {};
+	};
+
+	// クエリコールバックの関数オブジェクト
+	PlayerQueryCallback callback(sphereColl);
+
+	// 球と地形の交差を全検索
+	CollisionManager::GetInstance()->QuerySphere(*sphereColl, &callback, COLLISION_ATTR_OBJECT_MESH);
+	// 交差のよる排斥分動かす
+	pos.x += callback.move.m128_f32[0];
+	pos.y += callback.move.m128_f32[1];
+	pos.z += callback.move.m128_f32[2];
+
+	// コライダー更新
+	SetPosition(pos);
+
+	if (ObjectOBJ::model)
+	{
+		ObjectOBJ::rotation = rot;
+		ObjectOBJ::UpdateWorldMatrix();
+		ObjectOBJ::collider->Update();
+	}
+	if (ObjectFBX::model)
+	{
+		ObjectFBX::rotation = rot;
+		ObjectFBX::UpdateWorldMatrix();
+		ObjectFBX::collider->Update();
+	}
+}
+
 void Player::ControlCamera()
 {
+	if (!cameraControlActive) return;
+
 	Input* input = Input::GetInstance();
 
 	cameraPos = ObjectOBJ::GetCamera()->GetEye();
@@ -259,6 +330,7 @@ void Player::ControlCamera()
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) ||
 		input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
 	{
+
 		if (input->PushKey(DIK_UP))
 		{
 			cameraRotX--;
@@ -277,13 +349,24 @@ void Player::ControlCamera()
 		}
 	}
 
-	if (input->GetMouseMovement().z > 0 && distance > 10.0f)
+	float distMax = 160.0f;
+	float distMin = 10.0f;
+	float distSpeed = 5.0f;
+
+	if (isInGame)
 	{
-		distance -= 5.0f;
+		distMax = 10.0f;
+		distMin = 5.0f;
+		distSpeed = 1.0f;
 	}
-	if (input->GetMouseMovement().z < 0 && distance <= 200.0f)
+
+	if (input->GetMouseMovement().z > 0 && distance > distMin)
 	{
-		distance += 5.0f;
+		distance -= distSpeed;
+	}
+	if (input->GetMouseMovement().z < 0 && distance <= distMax)
+	{
+		distance += distSpeed;
 	}
 
 	if (cameraMoveActive)

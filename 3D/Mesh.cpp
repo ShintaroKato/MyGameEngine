@@ -129,14 +129,15 @@ void Mesh::CreateBuffers()
 void Mesh::Draw(ID3D12GraphicsCommandList* cmdList)
 {
 
-	// マテリアルの定数バッファをセット
-	ID3D12Resource* constBuff = material->GetConstantBuffer();
 	// 頂点バッファをセット
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
 	// インデックスバッファをセット
 	cmdList->IASetIndexBuffer(&ibView);
 	// シェーダリソースビューをセット
 	cmdList->SetGraphicsRootDescriptorTable(2, material->GetGpuHandle());
+
+	// マテリアルの定数バッファをセット
+	ID3D12Resource* constBuff = material->GetConstantBuffer();
 	cmdList->SetGraphicsRootConstantBufferView(1, constBuff->GetGPUVirtualAddress());
 
 	// 描画コマンド

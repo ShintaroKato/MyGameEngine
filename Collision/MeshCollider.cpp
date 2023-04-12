@@ -111,7 +111,7 @@ void MeshCollider::Update()
 	}
 }
 
-bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR* inter)
+bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR* inter, DirectX::XMVECTOR* reject)
 {
 	// オブジェクトのローカル座標系での球を得る（半径はXスケールを参照)
 	Sphere localSphere = sphere;
@@ -123,9 +123,12 @@ bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR*
 	for (; it != triangles.cend(); ++it) {
 		const Triangle& triangle = *it;
 
-		if (Collision::CheckSphere2Triangle(localSphere, triangle, inter)) {
+		if (Collision::CheckSphere2Triangle(localSphere, triangle, inter, reject)) {
 			if (inter) {
 				*inter = XMVector3Transform(*inter, matWorld);
+			}
+			if (reject) {
+				*reject = XMVector3Transform(*reject, matWorld);
 			}
 			return true;
 		}

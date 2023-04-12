@@ -406,6 +406,8 @@ void ObjectFBX::SetCollider(BaseCollider* collider)
 	this->collider = collider;
 	// コリジョンマネージャに追加
 	CollisionManager::GetInstance()->AddCollider(collider);
-	// コライダーを更新しておく
+	// 行列を更新
+	UpdateWorldMatrix();
+	// コライダーを更新
 	collider->Update();
 }

@@ -111,7 +111,7 @@ bool CollisionManager::CheckCollision(BaseCollider* colA, BaseCollider* colB)
 		XMVECTOR inter;
 		XMVECTOR reject;
 
-		if (Collision::CheckShpere2Sphere(*sphereA, *sphereB, &inter, &reject))
+		if (Collision::CheckSphere2Sphere(*sphereA, *sphereB, &inter, &reject))
 		{
 			CheckSetObject(colA, colB, inter, reject);
 
@@ -379,4 +379,67 @@ bool CollisionManager::Raycast(const Ray& ray, unsigned short ex_attribute, Base
 	}
 
 	return result;
+}
+
+void CollisionManager::QuerySphere(const Sphere& sphere, QueryCallback* callback, unsigned short attribute)
+{
+	assert(callback);
+	std::forward_list<BaseCollider*>::iterator it;
+
+	// 全てのコライダーと総当たりチェック
+	it = colliders.begin();
+
+	for (; it != colliders.end(); ++it)
+	{
+		BaseCollider* col = *it;
+
+		// 属性が合わなければスキップ
+		if (!(col->attribute & attribute))
+		{
+			continue;
+		}
+
+		// 球
+		if (col->GetShapeType() == COLLISIONSHAPE_SPHERE)
+		{
+			Sphere* sphereB = dynamic_cast<Sphere*>(col);
+
+			XMVECTOR tempInter;
+			XMVECTOR tempReject;
+
+			if (!Collision::CheckSphere2Sphere(sphere, *sphereB, &tempInter, &tempReject)) continue;
+
+			// 交差情報セット
+			QueryHit info;
+			if (col->GetObjectOBJ()) info.obj = col->GetObjectOBJ();
+			if (col->GetObjectFBX()) info.fbx = col->GetObjectFBX();
+			info.collider = col;
+			info.inter = tempInter;
+			info.reject = tempReject;
+
+			// クエリコールバック呼び出し、戻り値がfalseの場合、継続せず終了
+			if (!callback->OnQueryHit(info)) return;
+		}
+		// メッシュ
+		else if (col->GetShapeType() == COLLISIONSHAPE_MESH)
+		{
+			MeshCollider* meshCollider = dynamic_cast<MeshCollider*>(col);
+
+			XMVECTOR tempInter;
+			XMVECTOR tempReject;
+
+			if (!meshCollider->CheckCollisionSphere(sphere, &tempInter, &tempReject)) continue;
+
+			// 交差情報セット
+			QueryHit info;
+			if (col->GetObjectOBJ()) info.obj = col->GetObjectOBJ();
+			if (col->GetObjectFBX()) info.fbx = col->GetObjectFBX();
+			info.collider = col;
+			info.inter = tempInter;
+			info.reject = tempReject;
+
+			// クエリコールバック呼び出し、戻り値がfalseの場合、継続せず終了
+			if (!callback->OnQueryHit(info)) return;
+		}
+	}
 }

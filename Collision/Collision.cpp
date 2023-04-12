@@ -1,7 +1,7 @@
 #include "Collision.h"
 #include <cmath>
 
-bool Collision::CheckShpere2Sphere(const Sphere& sphere1, const Sphere& sphere2, XMVECTOR* inter, XMVECTOR* reject)
+bool Collision::CheckSphere2Sphere(const Sphere& sphere1, const Sphere& sphere2, XMVECTOR* inter, XMVECTOR* reject)
 {
 	float x = sphere2.center.m128_f32[0] - sphere1.center.m128_f32[0];
 	float y = sphere2.center.m128_f32[1] - sphere1.center.m128_f32[1];
