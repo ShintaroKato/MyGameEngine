@@ -70,56 +70,51 @@ bool Player::Initialize()
 	sphere.radius = radius;
 	sphereColl = new SphereCollider(sphere);
 
+	sphereColl->SetAttribute(COLLISION_ATTR_ALLIES);
 	if (ObjectOBJ::model) ObjectOBJ::SetCollider(sphereColl);
 	if (ObjectFBX::model) ObjectFBX::SetCollider(sphereColl);
-	sphereColl->SetAttribute(COLLISION_ATTR_ALLIES);
 
 	return true;
 }
 
 void Player::Update()
 {
-	ControlCamera();
-
-	if (!aliveFlag) return;
-
-	if (ObjectOBJ::model) pos = ObjectOBJ::position;
-	if (ObjectFBX::model) pos = ObjectFBX::position;
-
-	Move();
-	Jump();
-	Attack();
-
-	if(attackFlag)
+	if (aliveFlag)
 	{
-		ParticleEmitter::EmitRandomAllRange(5 ,attackCount, weapon->GetPosition(),
-			{ 0,0,0 },
-			{ 0.6f,0.6f,1.0f,1.0f }, { 0.0f,0.0f,1.0f,1.0f }, 0.1f, 0.01f, 0.5f);
+		if (ObjectOBJ::model) pos = ObjectOBJ::position;
+		if (ObjectFBX::model) pos = ObjectFBX::position;
+
+		Move();
+		Step();
+		Jump();
+		Attack();
+
+		SetPosition(pos);
+
+		if (ObjectOBJ::model)
+		{
+			ObjectOBJ::rotation = rot;
+			ObjectOBJ::UpdateWorldMatrix();
+			ObjectOBJ::collider->Update();
+		}
+		if (ObjectFBX::model)
+		{
+			ObjectFBX::rotation = rot;
+			ObjectFBX::UpdateWorldMatrix();
+			ObjectFBX::collider->Update();
+		}
+
+		Rejection();
+
+		ObjectOBJ::Update(); 
+		ObjectFBX::Update();
 	}
-
-	SetPosition(pos);
-
-	if (ObjectOBJ::model)
-	{
-		ObjectOBJ::rotation = rot;
-		ObjectOBJ::UpdateWorldMatrix();
-		ObjectOBJ::collider->Update();
-	}
-	if (ObjectFBX::model)
-	{
-		ObjectFBX::rotation = rot;
-		ObjectFBX::UpdateWorldMatrix();
-		ObjectFBX::collider->Update();
-	}
-
-	Rejection();
-
-	ObjectOBJ::Update();
-	ObjectFBX::Update();
 }
 
 void Player::Move()
 {
+	if (stepTimer < stepEnd) return;
+
 	Input* input = Input::GetInstance();
 
 	//移動ベクトルをy軸周りの角度で回転
@@ -131,68 +126,71 @@ void Player::Move()
 	if (input->PushKey(DIK_S) || input->PushKey(DIK_W) ||
 		input->PushKey(DIK_D) || input->PushKey(DIK_A) )
 	{
+		float cameraRotY = -camera->GetRotation().y;
+
 		if (input->PushKey(DIK_W))
 		{
-			rot.y = 0 + cameraRot.y;
+			rot.y = 0 + cameraRotY;
 		}
 		if (input->PushKey(DIK_D))
 		{
-			rot.y = 90 + cameraRot.y;
+			rot.y = 90 + cameraRotY;
 		}
 		if (input->PushKey(DIK_S))
 		{
-			rot.y = 180 + cameraRot.y;
+			rot.y = 180 + cameraRotY;
 		}
 		if (input->PushKey(DIK_A))
 		{
-			rot.y = 270 + cameraRot.y;
+			rot.y = 270 + cameraRotY;
 		}
 		if (input->PushKey(DIK_W) && input->PushKey(DIK_D))
 		{
-			rot.y = 45 + cameraRot.y;
+			rot.y = 45 + cameraRotY;
 		}
 		if (input->PushKey(DIK_D) && input->PushKey(DIK_S))
 		{
-			rot.y = 135 + cameraRot.y;
+			rot.y = 135 + cameraRotY;
 		}
 		if (input->PushKey(DIK_S) && input->PushKey(DIK_A))
 		{
-			rot.y = 225 + cameraRot.y;
+			rot.y = 225 + cameraRotY;
 		}
 		if (input->PushKey(DIK_A) && input->PushKey(DIK_W))
 		{
-			rot.y = 315 + cameraRot.y;
+			rot.y = 315 + cameraRotY;
 		}
 
 		pos.x += move.m128_f32[0];
 		pos.y += move.m128_f32[1];
 		pos.z += move.m128_f32[2];
 	}
-
-	CollisionManager::GetInstance()->CheckAllCollision(sphereColl, COLLISION_ATTR_OBJECT_MESH);
 }
 
 void Player::Jump()
 {
-	// 落下処理
-	if (!onGround)
+	if(stepTimer > stepEnd)
 	{
-		// 下向き加速度
-		const float fallAcc = -0.01f;
-		const float fallVYMin = -0.5f;
-		// 加速
-		fallVel.m128_f32[1] = max(fallVel.m128_f32[1] + fallAcc, fallVYMin);
-		// 移動
-		pos.x += fallVel.m128_f32[0];
-		pos.y += fallVel.m128_f32[1];
-		pos.z += fallVel.m128_f32[2];
-	}
-	// ジャンプ操作
-	else if (Input::GetInstance()->TriggerKey(DIK_SPACE))
-	{
-		onGround = false;
-		const float jumpVYFist = 0.2f;
-		fallVel = { 0, jumpVYFist, 0, 0 };
+		// 落下処理
+		if (!onGround)
+		{
+			// 下向き加速度
+			const float fallAcc = -0.01f;
+			const float fallVYMin = -0.5f;
+			// 加速
+			fallVel.m128_f32[1] = max(fallVel.m128_f32[1] + fallAcc, fallVYMin);
+			// 移動
+			pos.x += fallVel.m128_f32[0];
+			pos.y += fallVel.m128_f32[1];
+			pos.z += fallVel.m128_f32[2];
+		}
+		// ジャンプ操作
+		else if (Input::GetInstance()->TriggerKey(DIK_SPACE))
+		{
+			onGround = false;
+			const float jumpVYFist = 0.2f;
+			fallVel = { 0, jumpVYFist, 0, 0 };
+		}
 	}
 
 	// 球の上端から球の下端までのレイキャスト
@@ -233,6 +231,38 @@ void Player::Jump()
 			sphereColl->center.m128_f32[1] = raycastHit.distance - sphereColl->GetRadius();
 			pos.y -= sphereColl->center.m128_f32[1] - sphereColl->GetRadius();
 		}
+	}
+}
+
+void Player::Step()
+{
+	Input* input = Input::GetInstance();
+
+	if (input->TriggerKey(DIK_LSHIFT) && !isStepped)
+	{
+		move_step = move_step_default;
+		stepTimer = 0;
+		isStepped = true;
+	}
+	if (isStepped)
+	{
+		if (stepTimer < stepTimerMax)
+		{
+			stepTimer++;
+
+			if (stepTimer < stepEnd)
+			{
+				move = move_step;
+				XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rot.y));
+				move = XMVector3TransformNormal(move, matRot);
+				move_step.m128_f32[2] -= 0.1f;
+
+				pos.x += move.m128_f32[0];
+				pos.y += move.m128_f32[1];
+				pos.z += move.m128_f32[2];
+			}
+		}
+		else isStepped = false;
 	}
 }
 
@@ -283,6 +313,16 @@ void Player::Rejection()
 	pos.y += callback.move.m128_f32[1];
 	pos.z += callback.move.m128_f32[2];
 
+	if (weapon)
+	{
+		XMFLOAT3 pos = weapon->GetPosition();
+		pos.x += callback.move.m128_f32[0];
+		pos.y += callback.move.m128_f32[1];
+		pos.z += callback.move.m128_f32[2];
+		weapon->SetPosition(pos);
+		weapon->Update();
+	}
+
 	// コライダー更新
 	SetPosition(pos);
 
@@ -300,90 +340,9 @@ void Player::Rejection()
 	}
 }
 
-void Player::ControlCamera()
-{
-	if (!cameraControlActive) return;
-
-	Input* input = Input::GetInstance();
-
-	cameraPos = ObjectOBJ::GetCamera()->GetEye();
-
-	cameraRot.y = XMConvertToDegrees(
-		atan2f(pos.x - ObjectOBJ::GetCamera()->GetEye().x,
-			pos.z - ObjectOBJ::GetCamera()->GetEye().z));
-
-	if (cameraRotX < -70)
-	{
-		cameraRotX = -70;
-	}
-	if (cameraRotX > 70)
-	{
-		cameraRotX = 70;
-	}
-
-	cameraPos.x = pos.x + distance * cos(XMConvertToRadians(cameraRotY - 90)) * cos(XMConvertToRadians(cameraRotX));
-	cameraPos.z = pos.z + distance * sin(XMConvertToRadians(cameraRotY - 90)) * cos(XMConvertToRadians(cameraRotX));
-
-	cameraPos.y = pos.y + 2 + distance * sin(XMConvertToRadians(cameraRotX));
-
-	//キーボード操作
-	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) ||
-		input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
-	{
-
-		if (input->PushKey(DIK_UP))
-		{
-			cameraRotX--;
-		}
-		else if (input->PushKey(DIK_DOWN))
-		{
-			cameraRotX++;
-		}
-		if (input->PushKey(DIK_LEFT))
-		{
-			cameraRotY++;
-		}
-		else if (input->PushKey(DIK_RIGHT))
-		{
-			cameraRotY--;
-		}
-	}
-
-	float distMax = 160.0f;
-	float distMin = 10.0f;
-	float distSpeed = 5.0f;
-
-	if (isInGame)
-	{
-		distMax = 10.0f;
-		distMin = 5.0f;
-		distSpeed = 1.0f;
-	}
-
-	if (input->GetMouseMovement().z > 0 && distance > distMin)
-	{
-		distance -= distSpeed;
-	}
-	if (input->GetMouseMovement().z < 0 && distance <= distMax)
-	{
-		distance += distSpeed;
-	}
-
-	if (cameraMoveActive)
-	{
-		//マウス操作
-		cameraRotX += input->GetMouseMovement().y * 0.1f;		//上下移動
-		cameraRotY -= input->GetMouseMovement().x * 0.1f;		//左右移動
-	}
-
-	ObjectOBJ::GetCamera()->SetEye(cameraPos);
-}
-
 void Player::Attack()
 {
 	Input* input = Input::GetInstance();
-
-	cameraPos = ObjectOBJ::GetCamera()->GetEye();
 
 	// 攻撃
 	if (input->TriggerButton(Button_A_Cross) || input->TriggerMouse(MOUSE_LEFT))
@@ -402,7 +361,7 @@ void Player::Attack()
 		}
 	}
 
-	if (attackFlag == true) {
+	if (attackFlag) {
 
 		attackCount -= 1.0f;
 
@@ -437,6 +396,10 @@ void Player::Attack()
 		{
 			CollisionManager::GetInstance()->CheckAllCollision(weapon->GetSphereCollider(), COLLISION_ATTR_ENEMIES);
 		}
+
+		ParticleEmitter::EmitRandomAllRange(5, attackCount, weapon->GetPosition(),
+			{ 0,0,0 },
+			{ 0.6f,0.6f,1.0f,1.0f }, { 0.0f,0.0f,1.0f,1.0f }, 0.1f, 0.01f, 0.5f);
 	}
 	else
 	{
@@ -478,16 +441,7 @@ void Player::OnCollision(const CollisionInfo& info)
 {
 	if (info.collider->GetAttribute() == COLLISION_ATTR_OBJECT_MESH)
 	{
-		Rejection(info);
 	}
-}
-
-void Player::Rejection(const CollisionInfo& info)
-{
-	pos.x += info.reject.m128_f32[0] / 2;
-	pos.z += info.reject.m128_f32[2] / 2;
-
-	SetPosition(pos);
 }
 
 void Player::SetPosition(XMFLOAT3 pos)
@@ -502,12 +456,10 @@ void Player::SetPosition(XMFLOAT3 pos)
 	if (ObjectOBJ::model)
 	{
 		ObjectOBJ::SetPosition(pos);
-		ObjectOBJ::collider = sphereColl;
 	}
 	if (ObjectFBX::model)
 	{
 		ObjectFBX::SetPosition(pos);
-		ObjectFBX::collider = sphereColl;
 	}
 }
 

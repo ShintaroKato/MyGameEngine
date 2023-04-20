@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "Input.h"
 
 using namespace DirectX;
 
@@ -9,6 +10,14 @@ XMFLOAT3 Camera::eye = { 0, 5.0f, -50.0f };
 XMFLOAT3 Camera::target = { 0, 0, 0 };
 XMFLOAT3 Camera::up = { 0, 1, 0 };
 float Camera::aspect;
+bool Camera::cameraControlActive = false;
+bool Camera::cameraMoveActive = false;
+bool Camera::isInGame = false;
+XMFLOAT3 Camera::rot{};
+float Camera::distance = 10;
+float Camera::distMax = 160.0f;
+float Camera::distMin = 10.0f;
+float Camera::distSpeed = 5.0f;
 
 void Camera::Initialize(const int& window_width, const int& window_height)
 {
@@ -19,6 +28,8 @@ void Camera::Initialize(const int& window_width, const int& window_height)
 
 void Camera::Update()
 {
+	ControlCamera();
+
 	UpdateViewMatrix();
 
 	UpdateProjectionMatrix();
@@ -127,4 +138,77 @@ void Camera::CameraMoveVector(XMFLOAT3 move)
 
 	SetEye(eye_moved);
 	SetTarget(target_moved);
+}
+
+void Camera::ControlCamera()
+{
+	if (!cameraControlActive) return;
+
+	Input* input = Input::GetInstance();
+
+	if (cameraMoveActive)
+	{
+		//マウス操作
+		rot.x += input->GetMouseMovement().y * 0.025f;		//上下移動
+		rot.y -= input->GetMouseMovement().x * 0.025f;		//左右移動
+	}
+
+	if (rot.x < -70)
+	{
+		rot.x = -70;
+	}
+	if (rot.x > 70)
+	{
+		rot.x = 70;
+	}
+
+	eye.x = target.x + distance * cos(XMConvertToRadians(rot.y - 90)) * cos(XMConvertToRadians(rot.x));
+	eye.z = target.z + distance * sin(XMConvertToRadians(rot.y - 90)) * cos(XMConvertToRadians(rot.x));
+
+	eye.y = target.y + 2 + distance * sin(XMConvertToRadians(rot.x));
+
+	//キーボード操作
+	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) ||
+		input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
+	{
+
+		if (input->PushKey(DIK_UP))
+		{
+			rot.x--;
+		}
+		else if (input->PushKey(DIK_DOWN))
+		{
+			rot.x++;
+		}
+		if (input->PushKey(DIK_LEFT))
+		{
+			rot.y++;
+		}
+		else if (input->PushKey(DIK_RIGHT))
+		{
+			rot.y--;
+		}
+	}
+
+	if(isInGame)
+	{
+		distMax = 10.0f;
+		distMin = 5.0f;
+		distSpeed = 1.0f;
+	}
+	else
+	{
+		distMax = 160.0f;
+		distMin = 10.0f;
+		distSpeed = 5.0f;
+	}
+
+	if (input->GetMouseMovement().z > 0 && distance > distMin)
+	{
+		distance -= distSpeed;
+	}
+	if (input->GetMouseMovement().z < 0 && distance <= distMax)
+	{
+		distance += distSpeed;
+	}
 }

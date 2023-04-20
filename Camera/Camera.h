@@ -92,6 +92,45 @@ public:
 	/// <param name="move">移動量</param>
 	static void CameraMoveVector(XMFLOAT3 move);
 
+	/// <summary>
+	/// 視点操作
+	/// </summary>
+	static void ControlCamera();
+
+	/// <summary>
+	/// 回転量を取得
+	/// </summary>
+	static XMFLOAT3 GetRotation() { return rot; }
+
+	/// <summary>
+	/// 回転量を設定
+	/// </summary>
+	static void SetRotation(XMFLOAT3 rotation = {}) { rot = rotation; }
+
+	/// <summary>
+	/// カメラの移動が有効か否かを設定
+	/// </summary>
+	static void SetCameraMoveFlag(bool flag) { cameraMoveActive = flag; }
+
+	/// <summary>
+	/// カメラの操作ができる状態か否かを設定
+	/// </summary>
+	static void SetCameraControlFlag(bool flag) { cameraControlActive = flag; }
+
+	/// <summary>
+	/// カメラの操作ができる状態か否かを取得
+	/// </summary>
+	static bool GetCameraControlFlag() { return cameraControlActive; }
+
+	/// <summary>
+	/// ゲーム本編か否かを設定
+	/// </summary>
+	static void SetInGameFlag(bool flag) { isInGame = flag; }
+
+	/// <summary>
+	/// ターゲットとカメラの距離
+	/// </summary>
+	static void SetCameraDistance(float length) { distance = length; }
 
 private:
 	// 視点座標
@@ -110,4 +149,18 @@ private:
 	static XMMATRIX matBillboard;
 	// アスペクト比
 	static float aspect;
+
+	// カメラ操作ON・OFF
+	static bool cameraMoveActive;
+	static bool cameraControlActive;
+
+	static XMFLOAT3 rot;
+	static float distance;
+
+	static float distMax;
+	static float distMin;
+	static float distSpeed;
+
+	// ゲーム本編か否か
+	static bool isInGame;
 };

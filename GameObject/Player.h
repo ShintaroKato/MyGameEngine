@@ -56,14 +56,14 @@ public:
 	void Jump();
 
 	/// <summary>
+	/// 横方向にステップ
+	/// </summary>
+	void Step();
+
+	/// <summary>
 	/// 壁からの押し出し
 	/// </summary>
 	void Rejection();
-
-	/// <summary>
-	/// 視点操作
-	/// </summary>
-	void ControlCamera();
 
 	/// <summary>
 	/// 攻撃
@@ -91,8 +91,6 @@ public:
 	/// <param name="info">衝突情報</param>
 	void OnCollision(const CollisionInfo& info) override;
 
-	void Rejection(const CollisionInfo& info);
-
 	/// <summary>
 	/// 座標を設定
 	/// </summary>
@@ -108,10 +106,12 @@ public:
 	/// </summary>
 	void SetScale(XMFLOAT3 scale);
 
-	/// <summary>
-	/// プレイヤーとカメラの距離
-	/// </summary>
-	void SetCameraDistance(float distance) { this->distance = distance; }
+	void SetCamera(Camera* camera)
+	{
+		this->camera = camera;
+		if (ObjectOBJ::model) ObjectOBJ::SetCamera(camera);
+		if (ObjectFBX::model) ObjectFBX::SetCamera(camera);
+	}
 
 	/// <summary>
 	/// 生存フラグを設定
@@ -124,24 +124,7 @@ public:
 	void SetInGameFlag(bool flag)
 	{
 		isInGame = flag;
-		cameraRotY = 0;
-		cameraRotX = 30;
 	}
-
-	/// <summary>
-	/// カメラの移動が有効か否かを設定
-	/// </summary>
-	void SetCameraMoveFlag(bool flag) { cameraMoveActive = flag; }
-
-	/// <summary>
-	/// カメラの操作ができる状態か否かを設定
-	/// </summary>
-	void SetCameraControlFlag(bool flag) { cameraControlActive = flag; }
-
-	/// <summary>
-	/// カメラの操作ができる状態か否かを取得
-	/// </summary>
-	bool GetCameraControlFlag() { return cameraControlActive; }
 
 	///// <summary>
 	///// 武器をセット
@@ -186,22 +169,20 @@ private:
 	float attackMove = 0.4f;
 	// 落下ベクトル
 	DirectX::XMVECTOR fallVel;
+	// ステップをしたか
+	bool isStepped = false;
+	int stepTimerMax = 30;
+	int stepTimer = stepTimerMax;
+	int stepEnd = 10;
+	XMVECTOR move_step = { 0,0,0,0 };
+	XMVECTOR move_step_default = { 0,0,5.0f,0 };
+
 	// コライダー
 	Sphere sphere{};
 	SphereCollider* sphereColl = nullptr;
 
 	// カメラ
-	XMFLOAT3 cameraPos{};
-	XMFLOAT3 cameraRot{};
-	float cameraRotX = 0;
-	float cameraRotY = 0;
-	float distance = 10;
-	// カメラ操作ON・OFF
-	bool cameraMoveActive = true;
-	bool cameraControlActive = true;
-	// カメラと地形との衝突判定をとるコライダー
-	Sphere sphereCamera{};
-	SphereCollider* sphereCameraColl = nullptr;
+	Camera* camera = nullptr;
 
 	// HP
 	const float HPMax = 200.0f;
