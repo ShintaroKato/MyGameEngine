@@ -18,6 +18,14 @@ private: // エイリアス
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
 
+	enum JumpState
+	{
+		STAY_IN_AIR,
+		ON_GROUND,
+		WALL_JUMP_BEFORE,
+		WALL_JUMP_AFTER,
+	};
+
 public:
 	/// <summary>
 	/// OBJモデル生成
@@ -45,6 +53,7 @@ public:
 	/// </summary>
 	void Update() override;
 
+private:
 	/// <summary>
 	/// 移動
 	/// </summary>
@@ -75,6 +84,7 @@ public:
 	/// </summary>
 	bool Hit();
 
+public:
 	/// <summary>
 	/// 座標を取得
 	/// </summary>
@@ -156,15 +166,15 @@ private:
 	XMFLOAT3 rot{};
 	// 半径
 	float radius = 1.0f;
-	// 接地フラグ
-	bool onGround = true;
+	// ジャンプ状態
+	JumpState jumpState = ON_GROUND;
 	// 押し出しフラグ
 	bool rejectX = false;
 	bool rejectZ = false;
 	// 移動ベクトル(初期値)
 	XMVECTOR move_default = { 0,0,0.3f,0 };
 	// 移動ベクトル
-	XMVECTOR move{};
+	XMVECTOR move = move_default;
 	// 攻撃時の移動速度
 	float attackMove = 0.4f;
 	// 落下ベクトル
@@ -174,8 +184,10 @@ private:
 	int stepTimerMax = 30;
 	int stepTimer = stepTimerMax;
 	int stepEnd = 10;
-	XMVECTOR move_step = { 0,0,0,0 };
-	XMVECTOR move_step_default = { 0,0,5.0f,0 };
+	XMFLOAT3 stepStartPos{};
+	XMFLOAT3 stepEndPos{};
+	// 壁に当たっているか否か
+	bool hitWall = false;
 
 	// コライダー
 	Sphere sphere{};

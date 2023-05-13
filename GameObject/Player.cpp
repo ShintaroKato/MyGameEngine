@@ -6,6 +6,7 @@
 #include "CollisionAttribute.h"
 #include "ParticleEmitter.h"
 #include "BulletManager.h"
+#include "Math/Easing.h"
 
 Player* Player::Create(ModelFBX* fbx, int animationNumber)
 {
@@ -117,49 +118,50 @@ void Player::Move()
 
 	Input* input = Input::GetInstance();
 
-	//移動ベクトルをy軸周りの角度で回転
-	move = move_default;
-	XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rot.y));
-	move = XMVector3TransformNormal(move, matRot);
-
 	//向いている方向に移動
 	if (input->PushKey(DIK_S) || input->PushKey(DIK_W) ||
 		input->PushKey(DIK_D) || input->PushKey(DIK_A) )
 	{
-		float cameraRotY = -camera->GetRotation().y;
-
 		if (input->PushKey(DIK_W))
 		{
-			rot.y = 0 + cameraRotY;
+			rot.y = 0;
 		}
 		if (input->PushKey(DIK_D))
 		{
-			rot.y = 90 + cameraRotY;
+			rot.y = 90;
 		}
 		if (input->PushKey(DIK_S))
 		{
-			rot.y = 180 + cameraRotY;
+			rot.y = 180;
 		}
 		if (input->PushKey(DIK_A))
 		{
-			rot.y = 270 + cameraRotY;
+			rot.y = 270;
 		}
 		if (input->PushKey(DIK_W) && input->PushKey(DIK_D))
 		{
-			rot.y = 45 + cameraRotY;
+			rot.y = 45;
 		}
 		if (input->PushKey(DIK_D) && input->PushKey(DIK_S))
 		{
-			rot.y = 135 + cameraRotY;
+			rot.y = 135;
 		}
 		if (input->PushKey(DIK_S) && input->PushKey(DIK_A))
 		{
-			rot.y = 225 + cameraRotY;
+			rot.y = 225;
 		}
 		if (input->PushKey(DIK_A) && input->PushKey(DIK_W))
 		{
-			rot.y = 315 + cameraRotY;
+			rot.y = 315;
 		}
+
+		float cameraRotY = -camera->GetRotation().y;
+		rot.y += cameraRotY;
+
+		//移動ベクトルをy軸周りの角度で回転
+		move = move_default;
+		XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rot.y));
+		move = XMVector3TransformNormal(move, matRot);
 
 		pos.x += move.m128_f32[0];
 		pos.y += move.m128_f32[1];
@@ -169,10 +171,12 @@ void Player::Move()
 
 void Player::Jump()
 {
+	if (attackFlag) return;
+
 	if(stepTimer > stepEnd)
 	{
 		// 落下処理
-		if (!onGround)
+		if (jumpState != ON_GROUND)
 		{
 			// 下向き加速度
 			const float fallAcc = -0.01f;
@@ -183,13 +187,27 @@ void Player::Jump()
 			pos.x += fallVel.m128_f32[0];
 			pos.y += fallVel.m128_f32[1];
 			pos.z += fallVel.m128_f32[2];
+
+			jumpState = STAY_IN_AIR;
+
+			if (hitWall)
+			{
+				jumpState = WALL_JUMP_BEFORE;
+			}
 		}
+		else jumpState = ON_GROUND;
+
 		// ジャンプ操作
-		else if (Input::GetInstance()->TriggerKey(DIK_SPACE))
+		if (Input::GetInstance()->TriggerKey(DIK_SPACE) && jumpState != STAY_IN_AIR)
 		{
-			onGround = false;
-			const float jumpVYFist = 0.2f;
+			jumpState = STAY_IN_AIR;
+			const float jumpVYFist = 0.3f;
 			fallVel = { 0, jumpVYFist, 0, 0 };
+
+			if(jumpState == WALL_JUMP_BEFORE)
+			{
+				jumpState = WALL_JUMP_AFTER;
+			}
 		}
 	}
 
@@ -201,7 +219,7 @@ void Player::Jump()
 	RaycastHit raycastHit;
 
 	// 接地状態
-	if (onGround)
+	if (jumpState == ON_GROUND)
 	{
 		// スムーズに坂を下る為の吸着距離
 		const float adsDistance = 0.2f;
@@ -209,14 +227,14 @@ void Player::Jump()
 		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, sphereColl->GetRadius() * 2.0f + adsDistance) ||
 			CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJECT_MESH, &raycastHit, sphereColl->GetRadius() * 2.0f + adsDistance))
 		{
-			onGround = true;
+			jumpState == ON_GROUND;
 			sphereColl->center.m128_f32[1] = raycastHit.distance - sphereColl->GetRadius();
 			pos.y -= sphereColl->center.m128_f32[1] - sphereColl->GetRadius();
 		}
 		// 地面がないので落下
 		else
 		{
-			onGround = false;
+			jumpState = STAY_IN_AIR;
 			fallVel = {};
 		}
 	}
@@ -227,7 +245,7 @@ void Player::Jump()
 			CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJECT_MESH, &raycastHit, sphereColl->GetRadius() * 2.0f))
 		{
 			// 着地
-			onGround = true;
+			jumpState = ON_GROUND;
 			sphereColl->center.m128_f32[1] = raycastHit.distance - sphereColl->GetRadius();
 			pos.y -= sphereColl->center.m128_f32[1] - sphereColl->GetRadius();
 		}
@@ -240,9 +258,38 @@ void Player::Step()
 
 	if (input->TriggerKey(DIK_LSHIFT) && !isStepped)
 	{
-		move_step = move_step_default;
 		stepTimer = 0;
 		isStepped = true;
+
+		// ステップ開始地点
+		stepStartPos = pos;
+
+		stepEndPos = pos;
+		for (int i = 0; i <= stepEnd; i++)
+		{
+			stepEndPos.x += move.m128_f32[0]*2;
+			stepEndPos.y += move.m128_f32[1]*2;
+			stepEndPos.z += move.m128_f32[2]*2;
+		}
+
+		Ray ray;
+		ray.start = XMLoadFloat3(&stepStartPos);
+		ray.start.m128_f32[1] += radius * 2;
+		ray.dir = move;
+		RaycastHit raycastHit;
+
+		float lengthStoE = sqrtf(
+			(stepEndPos.x - stepStartPos.x) * (stepEndPos.x - stepStartPos.x) +
+			(stepEndPos.y - stepStartPos.y) * (stepEndPos.y - stepStartPos.y) +
+			(stepEndPos.z - stepStartPos.z) * (stepEndPos.z - stepStartPos.z));
+
+		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJECT_MESH, &raycastHit, lengthStoE))
+		{
+			stepEndPos.x = raycastHit.inter.m128_f32[0];
+			stepEndPos.y = raycastHit.inter.m128_f32[1];
+			stepEndPos.z = raycastHit.inter.m128_f32[2];
+		}
+
 	}
 	if (isStepped)
 	{
@@ -252,14 +299,13 @@ void Player::Step()
 
 			if (stepTimer < stepEnd)
 			{
-				move = move_step;
-				XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rot.y));
-				move = XMVector3TransformNormal(move, matRot);
-				move_step.m128_f32[2] -= 0.1f;
+				XMFLOAT3 ease = Easing::EaseIn(stepTimer, stepStartPos, stepEndPos);
 
-				pos.x += move.m128_f32[0];
-				pos.y += move.m128_f32[1];
-				pos.z += move.m128_f32[2];
+				if (hitWall) 
+				{
+					stepTimer = stepEnd;
+				}
+				else pos = ease;
 			}
 		}
 		else isStepped = false;
@@ -294,6 +340,8 @@ void Player::Rejection()
 				move += info.reject;
 			}
 
+			hit = true;
+
 			return true;
 		}
 
@@ -301,6 +349,8 @@ void Player::Rejection()
 		Sphere* sphere = nullptr;
 		// 排斥による移動量(累積値)
 		DirectX::XMVECTOR move = {};
+		// 衝突していたらtrue
+		bool hit = false;
 	};
 
 	// クエリコールバックの関数オブジェクト
@@ -308,7 +358,7 @@ void Player::Rejection()
 
 	// 球と地形の交差を全検索
 	CollisionManager::GetInstance()->QuerySphere(*sphereColl, &callback, COLLISION_ATTR_OBJECT_MESH);
-	// 交差のよる排斥分動かす
+	// 交差による排斥分動かす
 	pos.x += callback.move.m128_f32[0];
 	pos.y += callback.move.m128_f32[1];
 	pos.z += callback.move.m128_f32[2];
@@ -322,6 +372,8 @@ void Player::Rejection()
 		weapon->SetPosition(pos);
 		weapon->Update();
 	}
+
+	hitWall = callback.hit;
 
 	// コライダー更新
 	SetPosition(pos);
