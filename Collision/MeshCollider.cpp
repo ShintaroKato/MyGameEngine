@@ -99,12 +99,12 @@ void MeshCollider::ConstructTriangle(ModelFBX* model)
 
 void MeshCollider::Update()
 {
-	if (obj)
+	if (GetObjectOBJ())
 	{
 		matWorld = GetObjectOBJ()->GetMatWorld();
 		invMatWorld = GetObjectOBJ()->GetInvMatWorld();
 	}
-	if (fbx)
+	if (GetObjectFBX())
 	{
 		matWorld = GetObjectFBX()->GetMatWorld();
 		invMatWorld = GetObjectFBX()->GetInvMatWorld();
@@ -128,7 +128,7 @@ bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR*
 				*inter = XMVector3Transform(*inter, matWorld);
 			}
 			if (reject) {
-				*reject = XMVector3Transform(*reject, matWorld);
+				*reject = XMVector3TransformNormal(*reject, matWorld);
 			}
 			return true;
 		}

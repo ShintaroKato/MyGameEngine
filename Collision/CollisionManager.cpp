@@ -394,7 +394,7 @@ void CollisionManager::QuerySphere(const Sphere& sphere, QueryCallback* callback
 		BaseCollider* col = *it;
 
 		// 属性が合わなければスキップ
-		if (!(col->attribute & attribute))
+		if (!(col->attribute == attribute))
 		{
 			continue;
 		}
@@ -428,18 +428,22 @@ void CollisionManager::QuerySphere(const Sphere& sphere, QueryCallback* callback
 			XMVECTOR tempInter;
 			XMVECTOR tempReject;
 
-			if (!meshCollider->CheckCollisionSphere(sphere, &tempInter, &tempReject)) continue;
-
-			// 交差情報セット
-			QueryHit info;
-			if (col->GetObjectOBJ()) info.obj = col->GetObjectOBJ();
-			if (col->GetObjectFBX()) info.fbx = col->GetObjectFBX();
-			info.collider = col;
-			info.inter = tempInter;
-			info.reject = tempReject;
-
-			// クエリコールバック呼び出し、戻り値がfalseの場合、継続せず終了
-			if (!callback->OnQueryHit(info)) return;
+			if (!meshCollider->CheckCollisionSphere(sphere, &tempInter, &tempReject))
+			{
+				continue;
+			}
+			else
+			{
+				// 交差情報セット
+				QueryHit info;
+				if (col->GetObjectOBJ()) info.obj = col->GetObjectOBJ();
+				if (col->GetObjectFBX()) info.fbx = col->GetObjectFBX();
+				info.collider = col;
+				info.inter = tempInter;
+				info.reject = tempReject;
+				// クエリコールバック呼び出し、戻り値がfalseの場合、継続せず終了
+				if (!callback->OnQueryHit(info)) return;
+			}
 		}
 	}
 }
