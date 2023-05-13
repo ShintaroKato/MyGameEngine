@@ -15,9 +15,12 @@ int GameManager::spawnInterval = 0;
 int GameManager::spawnIntervalMax = 20;
 int GameManager::spawnCount = 0;
 int GameManager::spawnCountMax = 60;
-int GameManager::enemyMax[EnemyType::TYPE_COUNT] = {};
+int GameManager::groupCount = 0;
+int GameManager::groupCountMax = 5;
+int GameManager::enemyCountMax[EnemyType::TYPE_COUNT] = {};
 int GameManager::enemyMaxAll = 0;
 int GameManager::enemyCount[EnemyType::TYPE_COUNT] = {};
+int GameManager::enemyCountTotal = 0;
 int GameManager::spawn_dir = 0;
 float GameManager::spawn_angle = 0;
 XMFLOAT3 GameManager::spawnPos{};
@@ -28,21 +31,19 @@ std::vector<ModelFBX*> GameManager::modelFbxEnemy;
 
 void GameManager::Start()
 {
-	wave = 1;
+	wave = 2;
 
 	Level();
 
+	score = 0;
+	enemyCountTotal = 0;
+	groupCount = 0;
 	waitTimer = waitTimerMax;
 	timer = timerMax;
 	score = 0;
 	scoreTotal = 0;
 
 	finish = 0;
-
-	for (int i = 0; i < EnemyType::TYPE_COUNT; i++)
-	{
-		enemyCount[i] = 0;
-	}
 
 	ParticleManager::GetInstance()->DeleteAllParticle();
 }
@@ -54,16 +55,14 @@ void GameManager::Restart()
 	DeleteEnemy();
 	stageObject->ResetStatus();
 
+	score = 0;
+	enemyCountTotal = 0;
+	groupCount = 0;
 	waitTimer = waitTimerMax;
 	timer = timerMax;
 	score = 0;
 
 	finish = 0;
-
-	for (int i = 0; i < EnemyType::TYPE_COUNT; i++)
-	{
-		enemyCount[i] = 0;
-	}
 
 	ParticleManager::GetInstance()->DeleteAllParticle();
 }
@@ -77,9 +76,11 @@ void GameManager::Update()
 	case 0: // ゲーム継続
 
 		// クリア判定の処理
+		if (score >= enemyMaxAll * groupCountMax) finish = 1;
+
 		if (waitTimer > 0) waitTimer--; // 待機時間
-		else if (timer > 0) timer--; // 制限時間
-		else finish = 1; // クリア判定
+		//else if (timer > 0) timer--; // 制限時間
+		//else finish = 1; // クリア判定
 
 		// 失敗判定の処理
 		if (stageObject != nullptr &&
@@ -120,7 +121,7 @@ void GameManager::Spawn()
 	// 決定された敵のタイプのカウントを１増やす
 	enemyCount[enemy_type]++;
 
-	if (enemyCount[enemy_type] > enemyMax[enemy_type])
+	if (enemyCount[enemy_type] > enemyCountMax[enemy_type])
 	{
 		// 余分に増えた分を減らす
 		enemyCount[enemy_type]--;
@@ -164,6 +165,8 @@ void GameManager::Spawn()
 	e.SetPosition(spawnPos);
 	e.SetType(enemy_type);
 	e.SetTargetPos(stageObject);
+
+	enemyCountTotal++;
 }
 
 void GameManager::DeleteEnemy()
@@ -189,6 +192,7 @@ void GameManager::UpdateEnemy()
 
 		it->Update();
 
+		if (it->GetDefeatFlag()) score++;
 		if (!it->GetAliveFlag())
 		{
 			enemyCount[it->GetType()]--;
@@ -204,6 +208,12 @@ void GameManager::SpawnEnemyGroup()
 	if (std::distance(enemies.begin(), enemies.end()) <= 0)
 	{
 		spawnCount++;
+
+		if (spawnCount == spawnCountMax)
+		{
+			groupCount++;
+		}
+
 	}
 	if (spawnCount > spawnCountMax)
 	{
@@ -243,6 +253,14 @@ void GameManager::ChangeNextWave()
 
 void GameManager::Level()
 {
+	// 敵の出現上限初期化
+	for (int i = 0; i < EnemyType::TYPE_COUNT; i++)
+	{
+		enemyCount[i] = 0;
+		enemyCountMax[i] = 0;
+	}
+	enemyMaxAll = 0;
+
 	switch (wave)
 	{
 	case 1:
@@ -265,36 +283,41 @@ void GameManager::Level()
 	switch (level)
 	{
 	case 1:
-		enemyMax[STRAIGHT] = 10;
-		timerMax = 60 * 30;
+		enemyCountMax[STRAIGHT] = 10;
+		groupCountMax = 1;
+		//timerMax = 60 * 30;
 		break;
 	case 2:
-		enemyMax[STRAIGHT] = 5;
-		enemyMax[FLYING] = 3;
-		timerMax = 60 * 30;
+		enemyCountMax[STRAIGHT] = 5;
+		enemyCountMax[FLYING] = 3;
+		groupCountMax = 2;
+		//timerMax = 60 * 30;
 		break;
 	case 3:
-		enemyMax[STRAIGHT] = 10;
-		enemyMax[ROUTE_SEARCH] = 5;
-		enemyMax[FLYING] = 2;
-		timerMax = 60 * 40;
+		enemyCountMax[STRAIGHT] = 10;
+		enemyCountMax[ROUTE_SEARCH] = 5;
+		enemyCountMax[FLYING] = 2;
+		groupCountMax = 2;
+		//timerMax = 60 * 40;
 		break;
 	case 4:
-		enemyMax[ROUTE_SEARCH] = 20;
-		enemyMax[FLYING] = 5;
-		timerMax = 60 * 40;
+		enemyCountMax[ROUTE_SEARCH] = 20;
+		enemyCountMax[FLYING] = 5;
+		groupCountMax = 2;
+		//timerMax = 60 * 40;
 		break;
 	case 5:
-		enemyMax[STRAIGHT] = 10;
-		enemyMax[ROUTE_SEARCH] = 20;
-		enemyMax[FLYING] = 5;
-		timerMax = 60 * 50;
+		enemyCountMax[STRAIGHT] = 10;
+		enemyCountMax[ROUTE_SEARCH] = 20;
+		enemyCountMax[FLYING] = 5;
+		groupCountMax = 3;
+		//timerMax = 60 * 50;
 		break;
 	}
 
 	// 敵の出現上限数の合計
 	for (int i = 0; i < EnemyType::TYPE_COUNT; i++)
 	{
-		enemyMaxAll += enemyMax[i];
+		enemyMaxAll += enemyCountMax[i];
 	}
 }

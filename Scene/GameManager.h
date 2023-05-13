@@ -31,6 +31,10 @@ public:
 	static int GetTimer() { return timer; }
 	// タイマー取得(秒に換算)
 	static int GetTimerSeconds() { return timer / 60; }
+	// 今までに倒した敵の合計を取得
+	static int GetEnemyCountTotal() { return score; }
+	// 敵の数の最大値を取得
+	static int GetEnemyCountMax() { return groupCountMax * enemyMaxAll; }
 	// 待機時間取得
 	static int GetWaitTimer() { return waitTimer; }
 	// 待機時間取得(秒に換算)
@@ -81,11 +85,13 @@ private:
 	// レベル
 	static int level;
 	// 敵のタイプごとの出現上限数
-	static int enemyMax[EnemyType::TYPE_COUNT];
+	static int enemyCountMax[EnemyType::TYPE_COUNT];
 	// 敵の出現上限数の合計
 	static int enemyMaxAll;
 	// 敵をタイプごとにカウント
 	static int enemyCount[EnemyType::TYPE_COUNT];
+	// 敵のが今までに出現した数
+	static int enemyCountTotal;
 	// 敵の集団一つ分が消えてから再出現する間隔
 	static int spawnCount;
 	static int spawnCountMax;
@@ -99,6 +105,9 @@ private:
 	// 制限時間
 	static int timerMax;
 	static int timer;
+	// 敵の集団の数
+	static int groupCount;
+	static int groupCountMax;
 	// スコア
 	static int scoreTotal;
 	static int score;
