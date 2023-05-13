@@ -55,10 +55,4 @@ private: // ƒƒ“ƒo•Ï”
 	Text* text;
 
 	Sprite* spriteBG = nullptr;
-
-	ModelOBJ* modelSphere = nullptr;
-	ObjectOBJ* objSphere = nullptr;
-
-	ModelFBX* fbxModelAnim = nullptr;
-	ObjectFBX* fbxAnimTest = nullptr;
 };
