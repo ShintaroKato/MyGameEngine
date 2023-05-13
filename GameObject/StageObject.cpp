@@ -94,7 +94,7 @@ void StageObject::Update()
 	}
 	else if (aliveFlag)
 	{
-		if(tag == OFFENCE_OBJECT)
+		if(tag == STAGE_OBJECT_OFFENCE)
 		{
 			sensor->SetPosition(pos);
 			sensor->Update();
@@ -127,6 +127,9 @@ void StageObject::Update()
 
 	ObjectOBJ::Update();
 	ObjectFBX::Update();
+
+	if(meshColl) meshColl->Update();
+	if(sphereColl) sphereColl->Update();
 }
 
 void StageObject::Draw()
@@ -153,6 +156,11 @@ void StageObject::Drag()
 	if (used == UNUSED) return;
 
 	Input* input = Input::GetInstance();
+
+	XMVECTOR vec = input->CursorPoint3D(Camera::GetViewMatrix(), Camera::GetProjectionMatrix());
+	Ray ray{};
+	ray.start = XMLoadFloat3(&Camera::GetEye());
+	ray.dir = XMVector3Normalize(vec - ray.start);
 
 	if (!CollisionManager::GetInstance()->CheckAllCollision(sphereColl, COLLISION_ATTR_OBJECT_SPHERE) &&
 		input->TriggerMouse(MOUSE_LEFT) && isDrag)
@@ -246,7 +254,7 @@ void StageObject::Rotation()
 
 void StageObject::ChangeDefault()
 {
-	if (!isDrag || tag == CASTLE_OBJECT) return;
+	if (!isDrag || tag == STAGE_OBJECT_CASTLE) return;
 
 	Input* input = Input::GetInstance();
 
@@ -271,33 +279,33 @@ void StageObject::ObjectType()
 {
 	switch (tag)
 	{
-	case CASTLE_OBJECT:
+	case STAGE_OBJECT_CASTLE:
 		radius = 5.0f;
 		HPMax = 500;
 		HP = HPMax;
 		break;
 
-	case RED_OBJECT:
+	case STAGE_OBJECT_WALL:
 		radius = 5.0f;
 		HPMax = 1200;
 		HP = HPMax;
 		break;
 
-	case GREEN_OBJECT:
-		radius = 3.0f;
+	case STAGE_OBJECT_BUILDING:
+		radius = 4.0f;
 		HPMax = 100;
 		HP = HPMax;
 		break;
 
 	case BLUE_OBJECT:
-		radius = 3.5f;
+		radius = 5.0f;
 		HPMax = 800;
 		HP = HPMax;
 		break;
 
-	case OFFENCE_OBJECT:
+	case STAGE_OBJECT_OFFENCE:
 		sensor = new Sensor(pos, 32);
-		radius = 3.0f;
+		radius = 4.0f;
 		HPMax = 100;
 		HP = HPMax;
 		power = 100.0f;
