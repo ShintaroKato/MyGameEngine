@@ -31,6 +31,8 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	spriteCommon->LoadTexture(square_red, "256x256Red.png");
 	spriteCommon->LoadTexture(square_green, "256x256Green.png");
 	spriteCommon->LoadTexture(square_blue, "256x256Blue.png");
+	spriteCommon->LoadTexture(button_wall, "barrier01.png");
+	spriteCommon->LoadTexture(button_tower01, "tower01.png");
 	spriteCommon->LoadTexture(button_title, "button_title.png");
 	spriteCommon->LoadTexture(button_start, "button_start.png");
 	spriteCommon->LoadTexture(button_edit, "button_edit.png");
@@ -38,14 +40,14 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	spriteCommon->LoadTexture(button_next, "button_next.png");
 	spriteCommon->LoadTexture(button_objects, "button_objects.png");
 	spriteCommon->LoadTexture(cursor, "cursor.png");
-	spriteCommon->LoadTexture(number, "number.png");
 	spriteCommon->LoadTexture(player_HP, "player_HP.png");
 	spriteCommon->LoadTexture(castle_HP, "castle_HP.png");
 	spriteCommon->LoadTexture(wave, "wave.png");
 	spriteCommon->LoadTexture(wave_clear, "wave_clear.png");
 	spriteCommon->LoadTexture(wave_failed, "wave_failed.png");
 	spriteCommon->LoadTexture(wave_final, "wave_final.png");
-	spriteCommon->LoadTexture(wave_number, "wave_number.png");
+	spriteCommon->LoadTexture(number, "number.png");
+	spriteCommon->LoadTexture(fraction_bar, "fraction_bar.png");
 	spriteCommon->LoadTexture(pause, "pause.png");
 	spriteCommon->LoadTexture(guide01, "guide01.png");
 	spriteCommon->LoadTexture(guide02, "guide02.png");
@@ -60,9 +62,10 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 
 	// スプライト
 	spriteTitle = Sprite::Create(spriteCommon, title, { 0,0 }, { 0,0 });
-	buttonRed = Button::Create(spriteCommon, square_red, { 0,0 }, { 0,0 });
+	buttonWall = Button::Create(spriteCommon, button_wall, { 0,0 }, { 0,0 });
 	buttonGreen = Button::Create(spriteCommon, square_green, { 0,0 }, { 0,0 });
-	buttonBlue = Button::Create(spriteCommon, square_blue, { 0,0 }, { 0,0 });
+	buttonTower01 = Button::Create(spriteCommon, button_tower01, { 0,0 }, { 0,0 });
+	buttonBlack = Button::Create(spriteCommon, square_blue, { 0,0 }, { 0,0 });
 	buttonTitle = Button::Create(spriteCommon, button_title, { 0,0 }, { 0,0 });
 	buttonStart = Button::Create(spriteCommon, button_start, { 0,0 }, { 0,0 });
 	buttonEdit = Button::Create(spriteCommon, button_edit, { 0,0 }, { 0,0 });
@@ -71,11 +74,13 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	buttonObjects = Button::Create(spriteCommon, button_objects, { 0,0 }, { 0,0 });
 	spriteCursor = Sprite::Create(spriteCommon, cursor, { 0,0 }, { 0,0 });
 	spriteCursor->SetSize({ 16,16 });
-	numberTimer = Number::Create(spriteCommon, number, 3, { 0,0 }, { 0,0 });
+	numberEnemyCount = Number::Create(spriteCommon, number, 3, { 0,0 }, { 0,0 });
+	numberEnemyCountMax = Number::Create(spriteCommon, number, 3, { 0,0 }, { 0,0 });
 	numberWaitTimer = Number::Create(spriteCommon, number, 1, { 0,0 }, { 0.5f,0.5f });
-	numberWave = Number::Create(spriteCommon, wave_number, 1, { 0,0 }, { 0.5f,0.5f });
+	numberWave = Number::Create(spriteCommon, number, 1, { 0,0 }, { 0.5f,0.5f });
 	meterPlayerHP = Meter::Create(spriteCommon, square_red, square_blue, player_HP, { 0,0 });
 	meterCastleHP = Meter::Create(spriteCommon, square_red, square_blue, castle_HP, { 0,0 });
+	spriteFractionBar = Sprite::Create(spriteCommon, fraction_bar, { 0,0 }, { 0,0 });
 	spriteWave = Sprite::Create(spriteCommon, wave, { 0,0 }, { 0.5f,0.5f });
 	spriteWaveClear = Sprite::Create(spriteCommon, wave_clear, { 0,0 }, { 0.5f,0.5f });
 	spriteWaveFailed = Sprite::Create(spriteCommon, wave_failed, { 0,0 }, { 0.5f,0.5f });
@@ -89,17 +94,17 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	spriteObjectGuideTower = Sprite::Create(spriteCommon, guide_tower, { 0,0 });
 
 	// .objからモデルデータ読み込み
-	modelSkydome = ModelOBJ::LoadObj("skydome");
-	modelSkydomeSpace = ModelOBJ::LoadObj("skydome_space");
+	modelSkydome = ModelOBJ::LoadObj("skydome", true);
+	modelSkydomeSpace = ModelOBJ::LoadObj("skydome_space", true);
 	modelGround = ModelOBJ::LoadObj("ground");
 	modelGroundGrid = ModelOBJ::LoadObj("512MeshPlane");
 	modelPlayer = ModelOBJ::LoadObj("robo_white");
 	modelEnemy[STRAIGHT] = ModelOBJ::LoadObj("robo_black");
 	modelEnemy[FLYING] = ModelOBJ::LoadObj("space_ship_01");
 	modelEnemy[ROUTE_SEARCH] = ModelOBJ::LoadObj("robo_black");
-	modelCubeRed = ModelOBJ::LoadObj("barrier01");
-	modelCubeGreen = ModelOBJ::LoadObj("brokenBlock");
-	modelCubeBlue = ModelOBJ::LoadObj("tower01");
+	modelBarrier = ModelOBJ::LoadObj("barrier01");
+	modelBuilding = ModelOBJ::LoadObj("building_01");
+	modelTower = ModelOBJ::LoadObj("tower01");
 	modelCastle = ModelOBJ::LoadObj("Castle");
 	modelWall = ModelOBJ::LoadObj("wall");
 	modelWeapon = ModelOBJ::LoadObj("sword2");
@@ -168,7 +173,7 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	weapon[0] = Weapon::Create(modelWeapon);
 
 	player = Player::Create(modelPlayer);
-	player->ObjectOBJ::SetCamera(camera);
+	player->SetCamera(camera);
 	player->SetWeapon(weapon[0]);
 
 	particle = ParticleManager::GetInstance();
@@ -177,17 +182,18 @@ void SceneBase::Initialize(DirectXCommon* dxCommon, SpriteCommon* spriteCommon, 
 	if (stgObjects.size() <= 0)
 	{
 		stgObjects.push_back(StageObject::Create(modelCastle));
-		stgObjects[0]->SetTag(CASTLE_OBJECT);
+		stgObjects[0]->SetTag(STAGE_OBJECT_CASTLE);
 		stgObjects[0]->SetRadius(9.0f);
 		stgObjects[0]->SetUsedState(USED);
 	}
+
+	camera->SetInGameFlag(false);
+	camera->SetCameraControlFlag(true);
+	camera->SetRotation();
 }
 
 void SceneBase::Update()
 {
-	// カメラ
-	camera->Update();
-
 	// ゲーム用オブジェクト
 
 	skydomeRot.x += 0.002f;
@@ -218,6 +224,13 @@ void SceneBase::Update()
 	spriteTitle->Update();
 	// パーティクル
 	particle->Update();
+	// カメラ
+	camera->SetTarget({
+		player->GetPosition().x,
+		player->GetPosition().y + 2,
+		player->GetPosition().z });
+
+	camera->Update();
 }
 
 void SceneBase::LoadStage(StageObject* stageObjectReceive, StageObject* stageObjectSend)

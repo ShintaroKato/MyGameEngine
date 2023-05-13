@@ -18,6 +18,8 @@
 #include "GameManager.h"
 #include "ParticleManager.h"
 #include "ParticleEmitter.h"
+#include "Math/Interpolate.h"
+
 #define OBJECT_MAX 100
 
 enum SpriteNo
@@ -27,6 +29,8 @@ enum SpriteNo
 	square_red,
 	square_green,
 	square_blue,
+	button_wall,
+	button_tower01,
 	button_title,
 	button_start,
 	button_edit,
@@ -35,13 +39,13 @@ enum SpriteNo
 	button_objects,
 	cursor,
 	number,
+	fraction_bar, // 分数の線
 	player_HP,
 	castle_HP,
 	wave,
 	wave_clear,
 	wave_failed,
 	wave_final,
-	wave_number,
 	pause,
 	guide01,
 	guide02,
@@ -111,7 +115,7 @@ public:
 	/// ステージオブジェクトをカメラからの距離で並べ替える
 	/// (遠くにあるほど配列の上に入る)
 	/// </summary>
-	static void SortObjectCameraDistance();
+	void SortObjectCameraDistance();
 
 protected:
 
@@ -125,7 +129,6 @@ protected:
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-
 	Text* text = nullptr;
 
 	Sprite* spriteTitle = nullptr;
@@ -134,6 +137,7 @@ protected:
 	Sprite* spriteWaveClear = nullptr;
 	Sprite* spriteWaveFailed = nullptr;
 	Sprite* spriteWaveFinal = nullptr;
+	Sprite* spriteFractionBar = nullptr; // 分数の線
 	Sprite* spritePause = nullptr;
 	Sprite* spriteGuide1 = nullptr;
 	Sprite* spriteGuide2 = nullptr;
@@ -142,9 +146,10 @@ protected:
 	Sprite* spriteObjectGuideWall = nullptr;
 	Sprite* spriteObjectGuideTower = nullptr;
 
-	Button* buttonRed = nullptr;
+	Button* buttonWall = nullptr;
 	Button* buttonGreen = nullptr;
-	Button* buttonBlue = nullptr;
+	Button* buttonTower01 = nullptr;
+	Button* buttonBlack = nullptr;
 	Button* buttonTitle = nullptr;
 	Button* buttonStart = nullptr;
 	Button* buttonEdit = nullptr;
@@ -152,7 +157,8 @@ protected:
 	Button* buttonNext = nullptr;
 	Button* buttonObjects = nullptr;
 
-	Number* numberTimer = nullptr;
+	Number* numberEnemyCount = nullptr;
+	Number* numberEnemyCountMax = nullptr;
 	Number* numberWaitTimer = nullptr;
 	Number* numberWave = nullptr;
 
@@ -167,9 +173,9 @@ protected:
 	ModelOBJ* modelGroundGrid = nullptr;
 	ModelOBJ* modelPlayer = nullptr;
 	ModelOBJ* modelEnemy[ENEMY_TYPE_COUNT]{};
-	ModelOBJ* modelCubeRed = nullptr;
-	ModelOBJ* modelCubeGreen = nullptr;
-	ModelOBJ* modelCubeBlue = nullptr;
+	ModelOBJ* modelBarrier = nullptr;
+	ModelOBJ* modelBuilding = nullptr;
+	ModelOBJ* modelTower = nullptr;
 	ModelOBJ* modelCastle = nullptr;
 	ModelOBJ* modelWall = nullptr;
 	ModelOBJ* modelWeapon = nullptr;
