@@ -19,7 +19,7 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	{
 		stgObjects[i]->SetInGameFlag(true);
 		stgObjects[i]->ResetStatus();
-		if (stgObjects[i]->GetTag() == CASTLE_OBJECT) objCastle = stgObjects[i];
+		if (stgObjects[i]->GetTag() == STAGE_OBJECT_CASTLE) objCastle = stgObjects[i];
 	}
 
 	player->SetPosition({
@@ -29,10 +29,11 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 		});
 	player->Update();
 
+	camera->SetCameraDistance(10);
 	camera->SetTarget(player->GetPosition());
 	camera->SetEye({ 0,2,5 });
 
-	menuActivate = false;
+	menuActive = false;
 
 	buttonTitle->SetPosition({ WinApp::window_width / 2, 400 });
 	buttonTitle->SetAnchorPoint({ 0.5f,0.5f });
@@ -60,6 +61,7 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 		{ 320, 64 });
 	meterCastleHP->SetValue(objCastle->GetHP(), objCastle->GetHPMax());
 
+	spriteFractionBar->SetPosition({ 32 * 3, 64 });
 	spriteWave->SetPosition({ WinApp::window_width / 2, 128 });
 	spriteWaveClear->SetPosition({ WinApp::window_width / 2, 128 });
 	spriteWaveFailed->SetPosition({ WinApp::window_width / 2, 128 });
@@ -74,6 +76,8 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	GameManager::Start();
 	GameManager::SetEnemyModel(modelEnemy);
 
+	camera->SetInGameFlag(true);
+
 	SceneBase::Update();
 }
 
@@ -81,7 +85,7 @@ void SceneInGame::Update()
 {
 	UpdateMenu();
 
-	if ((menuActivate || GameManager::GetFinishState() != 0) &&
+	if ((menuActive || GameManager::GetFinishState() != 0) &&
 		buttonTitle->Click(MOUSE_LEFT))
 	{
 		for (int i = 0; i < stgObjects.size(); i++)
@@ -93,7 +97,7 @@ void SceneInGame::Update()
 		return;
 	}
 
-	if (((menuActivate && GameManager::GetFinishState() == 0) || GameManager::GetFinishState() == -1) &&
+	if (((menuActive && GameManager::GetFinishState() == 0) || GameManager::GetFinishState() == -1) &&
 		buttonRetry->Click(MOUSE_LEFT))
 	{
 		GameManager::Restart();
@@ -126,15 +130,10 @@ void SceneInGame::Update()
 
 	GameManager::SetStageObject(objCastle);
 
-	camera->SetTarget({
-		player->GetPosition().x,
-		player->GetPosition().y + 2,
-		player->GetPosition().z
-		});
+	if (menuActive) return;
 
-	if (menuActivate) return;
-
-	numberTimer->SetSequence(GameManager::GetTimerSeconds(), 0, 64, { 32,64 });
+	numberEnemyCount->SetSequence(GameManager::GetEnemyCountTotal(), 0, 64, { 32,64 });
+	numberEnemyCountMax->SetSequence(GameManager::GetEnemyCountMax(),32 * 4, 64, { 32,64 });
 	numberWaitTimer->SetSequence(GameManager::GetWaitTimerSeconds(), (float)WinApp::window_width / 2, 128 + 192, { 32, 64 });
 	numberWave->SetSequence(GameManager::GetWaveNumber(), (float)WinApp::window_width / 2, 128 + 64, { 32, 64 });
 	numberWave->SetSize({ 32,96 });
@@ -145,13 +144,13 @@ void SceneInGame::Update()
 	meterCastleHP->SetValue(objCastle->GetHP(), objCastle->GetHPMax());
 	meterCastleHP->Update();
 
+	spriteFractionBar->Update();
 	spriteWave->Update();
 	spriteWaveClear->Update();
 	spriteWaveFailed->Update();
 	spriteWaveFinal->Update();
 	spritePause->Update();
 
-	SceneBase::Update();
 	for (int i = 0; i < stgObjects.size(); i++)
 	{
 		if (stgObjects[i]->GetUsedState() != UNUSED) stgObjects[i]->Update();
@@ -159,6 +158,7 @@ void SceneInGame::Update()
 	SortObjectCameraDistance();
 	GameManager::Update();
 	BulletManager::GetInstance()->Update();
+	SceneBase::Update();
 }
 
 void SceneInGame::Draw()
@@ -192,6 +192,7 @@ void SceneInGame::Draw()
 	}
 
 	player->ObjectOBJ::Draw();
+	player->ObjectOBJ::Draw();
 	weapon[0]->ObjectOBJ::Draw();
 	GameManager::Draw();
 
@@ -218,7 +219,9 @@ void SceneInGame::Draw()
 	// スプライト描画
 	meterPlayerHP->Draw();
 	meterCastleHP->Draw();
-	numberTimer->Draw();
+	numberEnemyCount->Draw();
+	numberEnemyCountMax->Draw();
+	spriteFractionBar->Draw();
 
 	DrawMenu();
 
@@ -234,11 +237,11 @@ void SceneInGame::Draw()
 
 void SceneInGame::UpdateMenu()
 {
-	if (!menuActivate)
+	if (!menuActive)
 	{
 		// マウスカーソルの座標を画面中央に固定
 		SetCursorPos(WinApp::window_width / 2, WinApp::window_height / 2);
-		player->SetCameraMoveFlag(true);
+		camera->SetCameraMoveFlag(true);
 
 		if (input->TriggerKey(DIK_ESCAPE) || GameManager::GetFinishState() != 0)
 		{
@@ -249,7 +252,7 @@ void SceneInGame::UpdateMenu()
 	{
 		spriteCursor->SetPosition(input->GetMousePos2());
 		spriteCursor->Update();
-		player->SetCameraMoveFlag(false);
+		camera->SetCameraMoveFlag(false);
 
 		if (input->TriggerKey(DIK_ESCAPE) && GameManager::GetFinishState() == 0)
 		{
@@ -264,12 +267,12 @@ void SceneInGame::UpdateMenu()
 	if (windowActive)
 	{
 		if (windowSizeX < max)	windowSizeX += max / count;
-		menuActivate = true;
+		menuActive = true;
 	}
 	else
 	{
 		if (windowSizeX > 0)	windowSizeX -= max / count;
-		else					menuActivate = false;
+		else					menuActive = false;
 	}
 
 	float alpha = windowSizeX / max;
@@ -292,7 +295,7 @@ void SceneInGame::UpdateMenu()
 
 void SceneInGame::DrawMenu()
 {
-	if (GameManager::GetWaitTimer() > 0 && !menuActivate)
+	if (GameManager::GetWaitTimer() > 0 && !menuActive)
 	{
 		numberWaitTimer->Draw();
 
@@ -307,7 +310,7 @@ void SceneInGame::DrawMenu()
 		}
 	}
 
-	if (menuActivate)
+	if (menuActive)
 	{
 		spriteUIWindowBlue->Draw();
 

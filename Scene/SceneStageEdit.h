@@ -71,7 +71,7 @@ public: // ƒƒ“ƒoŠÖ”
 private:
 	std::forward_list<StageObject> stgObjectEdit;
 
-	bool menuActivate = true;
+	bool menuActive = true;
 	bool buttonClick = false;
 	bool windowActive = false;
 	bool listActive = false;

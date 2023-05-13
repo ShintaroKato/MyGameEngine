@@ -96,7 +96,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	postEffect->SetTexSize({ 1,1 });
 
 	// ポストエフェクト用シーン生成
-	PostEffectScene* postEffectScene = new PostEffectScene();
+	PostEffectScene* loadScene = new PostEffectScene();
 
 	//// 3Dオブジェクト静的初期化
 	ObjectOBJ::StaticInitialize(dxCommon->GetDev());
@@ -108,7 +108,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// パーティクルマネージャ初期化
 	ParticleManager::GetInstance()->Initialize(dxCommon->GetDev());
 
-	postEffectScene->Initialize(dxCommon, spriteCommon, input, audio);
+	loadScene->Initialize(dxCommon, spriteCommon, input, audio);
 
 #pragma endregion 描画初期化処理
 
@@ -128,30 +128,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		// シーン更新
 		SceneManager::Update();
-		postEffectScene->Update();
+		loadScene->Update();
+		postEffect->mode = 0;
 
 		//描画
-
-
 		if (!SceneManager::GetInitFlag())
 		{
 			postEffect->PreDrawScene(dxCommon->GetCmdList());
-			postEffectScene->Draw();
+			loadScene->Draw();
+			postEffect->PostDrawScene(dxCommon->GetCmdList());
+		}
+		if (SceneManager::GetInitFlag())
+		{
+			postEffect->PreDrawScene(dxCommon->GetCmdList());
+			SceneManager::Draw();
 			postEffect->PostDrawScene(dxCommon->GetCmdList());
 		}
 
 		dxCommon->PreDraw();
 
-
 		// シーン描画
-		if (SceneManager::GetInitFlag())
-		{
-			SceneManager::Draw();
-		}
-		else
-		{
-			postEffect->Draw();
-		}
+		postEffect->Draw();
+		//SceneManager::Draw();
 
 		dxCommon->PostDraw();
 	}

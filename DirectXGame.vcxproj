@@ -187,6 +187,7 @@
     <ClCompile Include="GameObject\Weapon.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Math\Interpolate.cpp" />
     <ClCompile Include="Scene\GameManager.cpp" />
     <ClCompile Include="Scene\PostEffectScene.cpp" />
     <ClCompile Include="Scene\SceneInGame.cpp" />
@@ -322,6 +323,7 @@
     <ClInclude Include="3D\ObjectNone.h" />
     <ClInclude Include="3D\ParticleEmitter.h" />
     <ClInclude Include="3D\ParticleManager.h" />
+    <ClInclude Include="Collision\QueryCallback.h" />
     <ClInclude Include="GameObject\Bullet.h" />
     <ClInclude Include="GameObject\BulletManager.h" />
     <ClInclude Include="GameObject\StageObject.h" />
@@ -352,6 +354,8 @@
     <ClInclude Include="GameObject\Player.h" />
     <ClInclude Include="GameObject\Weapon.h" />
     <ClInclude Include="Input\Input.h" />
+    <ClInclude Include="Math\Easing.h" />
+    <ClInclude Include="Math\Interpolate.h" />
     <ClInclude Include="Scene\GameManager.h" />
     <ClInclude Include="Scene\PostEffectScene.h" />
     <ClInclude Include="Scene\SceneBase.h" />

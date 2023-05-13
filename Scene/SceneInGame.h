@@ -43,5 +43,5 @@ public: // ƒƒ“ƒoŠÖ”
 
 private:
 	bool windowActive = false;
-	bool menuActivate = false;
+	bool menuActive = false;
 };
