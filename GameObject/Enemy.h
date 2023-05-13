@@ -96,6 +96,11 @@ public:
 	void Defeated();
 
 	/// <summary>
+	/// 出現時のアニメーション
+	/// </summary>
+	void SpawnAnimation();
+
+	/// <summary>
 	/// 座標を取得
 	/// </summary>
 	XMFLOAT3 GetPosition();
@@ -174,6 +179,11 @@ public:
 	void SetWeapon(Weapon* weapon);
 
 	/// <summary>
+	/// 出現時のアニメーションが有効か否かを設定
+	/// </summary>
+	void SetSpawnAnimationActiveFlag(bool flag) { spawnAnimActive = flag; }
+
+	/// <summary>
 	/// 武器を取得
 	/// </summary>
 	Weapon* GetWeapon() { return weapon; }
@@ -187,6 +197,11 @@ public:
 	/// タイプを取得
 	/// </summary>
 	EnemyType GetType() { return type; }
+
+	/// <summary>
+	/// 倒されたか否かを取得
+	/// </summary>
+	bool GetDefeatFlag() { return defeated; }
 
 private:
 	// 座標
@@ -217,6 +232,9 @@ private:
 	// 生存フラグ
 	bool aliveFlag = false;
 
+	// 撃破フラグ
+	bool defeated = false;
+
 	// 無敵時間
 	int noDamageTime = 0;
 	int noDamageTimeMax = 10;
@@ -231,4 +249,7 @@ private:
 	int attackCount = attackCountMax;
 
 	bool isStop = false;
+
+	// 出現時のアニメーション
+	bool spawnAnimActive = false;
 };

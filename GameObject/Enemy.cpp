@@ -414,7 +414,13 @@ void Enemy::Defeated()
 			8, 20, { pos.x,pos.y + radius,pos.z }, { 0, 0, 0 },
 			{ 0.1f,0.1f,0.1f,1.0f }, { 0.0f,0.0f,3.0f,1.0f },
 			0.5f, 0.01f, 1.0f, 0.0f);
+		defeated = true;
 	}
+}
+
+void Enemy::SpawnAnimation()
+{
+	
 }
 
 XMFLOAT3 Enemy::GetPosition()
