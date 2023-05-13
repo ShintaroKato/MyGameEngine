@@ -162,11 +162,6 @@ void Camera::ControlCamera()
 		rot.x = 70;
 	}
 
-	eye.x = target.x + distance * cos(XMConvertToRadians(rot.y - 90)) * cos(XMConvertToRadians(rot.x));
-	eye.z = target.z + distance * sin(XMConvertToRadians(rot.y - 90)) * cos(XMConvertToRadians(rot.x));
-
-	eye.y = target.y + 2 + distance * sin(XMConvertToRadians(rot.x));
-
 	//キーボード操作
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) ||
 		input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
@@ -190,11 +185,17 @@ void Camera::ControlCamera()
 		}
 	}
 
+	eye.x = target.x + distance * cos(XMConvertToRadians(rot.y - 90)) * cos(XMConvertToRadians(rot.x));
+	eye.z = target.z + distance * sin(XMConvertToRadians(rot.y - 90)) * cos(XMConvertToRadians(rot.x));
+
+	eye.y = target.y + 2 + distance * sin(XMConvertToRadians(rot.x));
+
+
 	if(isInGame)
 	{
-		distMax = 10.0f;
+		distMax = 6.0f;
 		distMin = 5.0f;
-		distSpeed = 1.0f;
+		distSpeed = 0.1f;
 	}
 	else
 	{
