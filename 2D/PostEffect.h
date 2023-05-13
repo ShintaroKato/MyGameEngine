@@ -54,9 +54,7 @@ private:
 public:
 
 	bool isDraw = true;
-
 	XMFLOAT2 size = { 0.5f,0.5f };
-
-	UINT mode = 2;
+	UINT mode = 0;
 	float alpha = 1.0f;
 };
