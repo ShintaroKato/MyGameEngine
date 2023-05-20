@@ -47,39 +47,38 @@ void Trail::Update()
 
 void Trail::Draw(ID3D12GraphicsCommandList* cmdList)
 {
-	UINT drawNum = (UINT)std::distance(particles.begin(), particles.end());
-	if (drawNum > vertexCount) {
-		drawNum = vertexCount;
-	}
+	//UINT drawNum = (UINT)std::distance(particles.begin(), particles.end());
+	//if (drawNum > vertexCount) {
+	//	drawNum = vertexCount;
+	//}
 
-	// パーティクルが1つもない場合
-	if (drawNum == 0) {
-		return;
-	}
+	//if (drawNum == 0) {
+	//	return;
+	//}
 
-	// nullptrチェック
-	assert(cmdList);
+	//// nullptrチェック
+	//assert(cmdList);
 
-	// パイプラインステートの設定
-	cmdList->SetPipelineState(pipelinestate.Get());
-	// ルートシグネチャの設定
-	cmdList->SetGraphicsRootSignature(rootsignature.Get());
-	// プリミティブ形状を設定
-	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
+	//// パイプラインステートの設定
+	//cmdList->SetPipelineState(pipelinestate.Get());
+	//// ルートシグネチャの設定
+	//cmdList->SetGraphicsRootSignature(rootsignature.Get());
+	//// プリミティブ形状を設定
+	//cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 
-	// 頂点バッファの設定
-	cmdList->IASetVertexBuffers(0, 1, &vbView);
+	//// 頂点バッファの設定
+	//cmdList->IASetVertexBuffers(0, 1, &vbView);
 
-	// デスクリプタヒープの配列
-	ID3D12DescriptorHeap* ppHeaps[] = { descHeap.Get() };
-	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+	//// デスクリプタヒープの配列
+	//ID3D12DescriptorHeap* ppHeaps[] = { descHeap.Get() };
+	//cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 
-	// 定数バッファビューをセット
-	cmdList->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
-	// シェーダリソースビューをセット
-	cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandleSRV);
-	// 描画コマンド
-	cmdList->DrawInstanced(drawNum, 1, 0, 0);
+	//// 定数バッファビューをセット
+	//cmdList->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
+	//// シェーダリソースビューをセット
+	//cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandleSRV);
+	//// 描画コマンド
+	//cmdList->DrawInstanced(drawNum, 1, 0, 0);
 }
 
 void Trail::InitializeDescriptorHeap()
