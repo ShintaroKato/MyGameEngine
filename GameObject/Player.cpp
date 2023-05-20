@@ -208,6 +208,10 @@ void Player::Jump()
 			{
 				jumpState = WALL_JUMP_AFTER;
 			}
+
+			ParticleEmitter::CircleXZ(64, 8, pos, 0.5f,-0.01f,
+				{ 0.5f,0.5f,1.0f,1.0f }, { 0.0f,0.0f,1.0f,1.0f },
+				1.0f, 0.5f);
 		}
 	}
 
@@ -262,37 +266,39 @@ void Player::Step()
 		isStepped = true;
 
 		// ステップ開始地点
+		pos.y += 0.1f;
 		stepStartPos = pos;
-
 		stepEndPos = pos;
-		for (int i = 0; i <= stepEnd; i++)
-		{
-			stepEndPos.x += move.m128_f32[0]*2;
-			stepEndPos.y += move.m128_f32[1]*2;
-			stepEndPos.z += move.m128_f32[2]*2;
-		}
-
-		Ray ray;
-		ray.start = XMLoadFloat3(&stepStartPos);
-		ray.start.m128_f32[1] += radius * 2;
-		ray.dir = move;
-		RaycastHit raycastHit;
-
-		float lengthStoE = sqrtf(
-			(stepEndPos.x - stepStartPos.x) * (stepEndPos.x - stepStartPos.x) +
-			(stepEndPos.y - stepStartPos.y) * (stepEndPos.y - stepStartPos.y) +
-			(stepEndPos.z - stepStartPos.z) * (stepEndPos.z - stepStartPos.z));
-
-		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJECT_MESH, &raycastHit, lengthStoE))
-		{
-			stepEndPos.x = raycastHit.inter.m128_f32[0];
-			stepEndPos.y = raycastHit.inter.m128_f32[1];
-			stepEndPos.z = raycastHit.inter.m128_f32[2];
-		}
-
 	}
 	if (isStepped)
 	{
+		if (stepTimer == 0)
+		{
+			for (int i = 0; i <= stepEnd; i++)
+			{
+				stepEndPos.x += move.m128_f32[0] * 2;
+				stepEndPos.y += move.m128_f32[1] * 2;
+				stepEndPos.z += move.m128_f32[2] * 2;
+			}
+
+			Ray ray;
+			ray.start = XMLoadFloat3(&stepStartPos);
+			ray.start.m128_f32[1] += radius * 2;
+			ray.dir = move;
+			RaycastHit raycastHit;
+
+			float lengthStoE = sqrtf(
+				(stepEndPos.x - stepStartPos.x) * (stepEndPos.x - stepStartPos.x) +
+				(stepEndPos.y - stepStartPos.y) * (stepEndPos.y - stepStartPos.y) +
+				(stepEndPos.z - stepStartPos.z) * (stepEndPos.z - stepStartPos.z));
+
+			if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJECT_MESH, &raycastHit, lengthStoE))
+			{
+				stepEndPos.x = raycastHit.inter.m128_f32[0];
+				stepEndPos.y = raycastHit.inter.m128_f32[1];
+				stepEndPos.z = raycastHit.inter.m128_f32[2];
+			}
+		}
 		if (stepTimer < stepTimerMax)
 		{
 			stepTimer++;

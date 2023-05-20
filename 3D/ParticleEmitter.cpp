@@ -1,4 +1,5 @@
 #include "ParticleEmitter.h"
+#define PI 3.141592;
 
 void ParticleEmitter::EmitRandomAllRange(unsigned int count, unsigned int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT4 start_color, XMFLOAT4 end_color, float vel_rand_range, float accel_rand_range, float start_scale, float end_scale)
 {
@@ -170,6 +171,36 @@ void ParticleEmitter::Spark(unsigned int count, unsigned int node_count, unsigne
 
 		// 現在の終端を次の始点にする
 		start = node;
+	}
+}
+
+void ParticleEmitter::CircleXZ(unsigned int count, unsigned int life, XMFLOAT3 position, float velocity, float accel, XMFLOAT4 start_color, XMFLOAT4 end_color, float start_scale, float end_scale)
+{
+	if (count <= 0) return;
+
+	float angle = 360.0f / count;
+	float radian = XMConvertToRadians(angle);
+
+	for (int i = 0; i < count; i++)
+	{
+		// 速度
+		XMFLOAT3 vel = { velocity, 0, velocity };
+		vel.x *= cosf(radian * i);
+		vel.y = 0;
+		vel.z *= sinf(radian * i);
+
+		// 加速度
+		XMFLOAT3 acc = { accel, 0, accel };
+		acc.x *= cosf(radian * i);
+		acc.y = 0;
+		acc.z *= sinf(radian * i);
+
+		//カラー
+		XMFLOAT4 s_color = start_color;
+		XMFLOAT4 e_color = end_color;
+
+		// 追加
+		ParticleManager::GetInstance()->Add(life, position, vel, acc, start_scale, end_scale, s_color, e_color);
 	}
 }
 

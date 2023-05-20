@@ -124,6 +124,21 @@ public:
 		float pos_rand_range = 5.0f, float vel_rand_range = 0, float accel_rand_range = 0,
 		float start_scale = 1.0f, float end_scale = 1.0f);
 
+	/// <summary>
+	/// 円形に発生させる
+	/// </summary>
+	/// <param name="count">同時に発生する数</param>
+	/// <param name="life">生存する時間</param>
+	/// <param name="position">発生する位置</param>
+	/// <param name="velocity">速度の倍率</param>
+	/// <param name="start_scale">色(開始時)</param>
+	/// <param name="end_scale">色(終了時)</param>
+	/// <param name="start_scale">大きさ(開始時)</param>
+	/// <param name="end_scale">大きさ(終了時)</param>
+	static void CircleXZ(unsigned int count, unsigned int life, XMFLOAT3 position, float velocity = 1.0f, float accel = 0,
+		XMFLOAT4 start_color = { 1,1,1,1 }, XMFLOAT4 end_color = { 1,1,1,0 },
+		float start_scale = 1.0f, float end_scale = 1.0f);
+
 private:
 	/// <summary>
 	/// 二点間の距離を計算
