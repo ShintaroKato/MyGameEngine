@@ -65,6 +65,7 @@
     <ClCompile Include="GameObject\BulletManager.cpp" />
     <ClCompile Include="3D\ObjectNone.cpp" />
     <ClCompile Include="Math\Interpolate.cpp" />
+    <ClCompile Include="3D\Trail.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2D\PostEffect.h" />
@@ -120,6 +121,7 @@
     <ClInclude Include="Math\Interpolate.h" />
     <ClInclude Include="Math\Easing.h" />
     <ClInclude Include="Collision\QueryCallback.h" />
+    <ClInclude Include="3D\Trail.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli" />
