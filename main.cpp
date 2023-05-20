@@ -132,24 +132,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		postEffect->mode = 0;
 
 		//描画
-		if (!SceneManager::GetInitFlag())
-		{
-			postEffect->PreDrawScene(dxCommon->GetCmdList());
-			loadScene->Draw();
-			postEffect->PostDrawScene(dxCommon->GetCmdList());
-		}
-		if (SceneManager::GetInitFlag())
-		{
-			postEffect->PreDrawScene(dxCommon->GetCmdList());
-			SceneManager::Draw();
-			postEffect->PostDrawScene(dxCommon->GetCmdList());
-		}
+		postEffect->PreDrawScene(dxCommon->GetCmdList());
+
+		if (SceneManager::GetInitFlag())	SceneManager::Draw();
+		else								loadScene->Draw();
+
+		postEffect->PostDrawScene(dxCommon->GetCmdList());
 
 		dxCommon->PreDraw();
 
 		// シーン描画
 		postEffect->Draw();
-		//SceneManager::Draw();
 
 		dxCommon->PostDraw();
 	}
