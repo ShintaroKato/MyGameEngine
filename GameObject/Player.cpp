@@ -188,9 +188,11 @@ void Player::Jump()
 			pos.y += fallVel.m128_f32[1];
 			pos.z += fallVel.m128_f32[2];
 
-			jumpState = STAY_IN_AIR;
-
-			if (hitWall)
+			if(jumpState != WALL_JUMP_AFTER)
+			{
+				jumpState = STAY_IN_AIR;
+			}
+			if (jumpState == STAY_IN_AIR && hitWall)
 			{
 				jumpState = WALL_JUMP_BEFORE;
 			}
@@ -198,15 +200,19 @@ void Player::Jump()
 		else jumpState = ON_GROUND;
 
 		// ƒWƒƒƒ“ƒv‘€ì
-		if (Input::GetInstance()->TriggerKey(DIK_SPACE) && jumpState != STAY_IN_AIR)
+		if (Input::GetInstance()->TriggerKey(DIK_SPACE) &&
+			(jumpState != STAY_IN_AIR && jumpState != WALL_JUMP_AFTER))
 		{
-			jumpState = STAY_IN_AIR;
 			const float jumpVYFist = 0.3f;
 			fallVel = { 0, jumpVYFist, 0, 0 };
 
 			if(jumpState == WALL_JUMP_BEFORE)
 			{
 				jumpState = WALL_JUMP_AFTER;
+			}
+			else if(jumpState != WALL_JUMP_AFTER)
+			{
+				jumpState = STAY_IN_AIR;
 			}
 
 			ParticleEmitter::CircleXZ(64, 8, pos, 0.5f,-0.01f,
@@ -262,6 +268,8 @@ void Player::Step()
 
 	if (input->TriggerKey(DIK_LSHIFT) && !isStepped)
 	{
+		jumpState = STAY_IN_AIR;
+
 		stepTimer = 0;
 		isStepped = true;
 
