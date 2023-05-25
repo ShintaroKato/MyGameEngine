@@ -98,6 +98,11 @@ public:
 	static void ControlCamera();
 
 	/// <summary>
+	/// •Ç‚Æ‚ÌÕ“Ë“_‚ğŒvZ
+	/// </summary>
+	static XMFLOAT3 CalcWallCollisionPoint();
+
+	/// <summary>
 	/// ‰ñ“]—Ê‚ğæ“¾
 	/// </summary>
 	static XMFLOAT3 GetRotation() { return rot; }

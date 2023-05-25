@@ -1,5 +1,8 @@
 #include "Camera.h"
 #include "Input.h"
+#include "CollisionManager.h"
+#include "CollisionAttribute.h"
+#include "ParticleEmitter.h"
 
 using namespace DirectX;
 
@@ -18,6 +21,16 @@ float Camera::distance = 10;
 float Camera::distMax = 160.0f;
 float Camera::distMin = 10.0f;
 float Camera::distSpeed = 5.0f;
+
+XMVECTOR operator-(XMFLOAT3 l, XMFLOAT3 r)
+{
+	XMVECTOR result{};
+	result.m128_f32[0] = l.x - r.x;
+	result.m128_f32[1] = l.y - r.y;
+	result.m128_f32[2] = l.z - r.z;
+
+	return result;
+}
 
 void Camera::Initialize(const int& window_width, const int& window_height)
 {
@@ -212,4 +225,38 @@ void Camera::ControlCamera()
 	{
 		distance += distSpeed;
 	}
+
+	eye = CalcWallCollisionPoint();
+}
+
+XMFLOAT3 Camera::CalcWallCollisionPoint()
+{
+	Ray ray{};
+	ray.start = XMLoadFloat3(&target);
+	ray.dir = XMVector3Normalize(eye - target);
+	RaycastHit raycast{};
+
+	XMFLOAT3 pos{};
+
+	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJECT_MESH, &raycast, distance))
+	{
+		pos = {
+			raycast.inter.m128_f32[0],
+			raycast.inter.m128_f32[1],
+			raycast.inter.m128_f32[2] };
+
+	}
+	else if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycast, distance))
+	{
+		pos = {
+			raycast.inter.m128_f32[0],
+			raycast.inter.m128_f32[1] + 0.05f,
+			raycast.inter.m128_f32[2] };
+	}
+	else
+	{
+		pos = eye;
+	}
+
+	return pos;
 }
