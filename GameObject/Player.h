@@ -126,7 +126,7 @@ public:
 	/// <summary>
 	/// 生存フラグを設定
 	/// </summary>
-	void SetAllive(bool flag) { this->aliveFlag = flag; }
+	void SetAlive(bool flag) { this->aliveFlag = flag; }
 
 	/// <summary>
 	/// ゲーム本編か否かを設定
@@ -158,6 +158,12 @@ public:
 		return max;
 	}
 
+	/// <summary>
+	/// 出現時の演出
+	/// </summary>
+	bool SpawnAnimation();
+
+	void AnimationTimerReset() { animTimer = 0; }
 
 private:
 	// 座標
@@ -212,4 +218,9 @@ private:
 
 	// ゲーム本編か否か
 	bool isInGame = true;
+
+	// 出現時のアニメーション用タイマー
+	float animTimer = 0;
+	float animTimerMax = 90;
+	bool isAnimated = false;
 };

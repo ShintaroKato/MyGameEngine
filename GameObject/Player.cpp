@@ -85,10 +85,13 @@ void Player::Update()
 		if (ObjectOBJ::model) pos = ObjectOBJ::position;
 		if (ObjectFBX::model) pos = ObjectFBX::position;
 
-		Move();
-		Step();
-		Jump();
-		Attack();
+		if (!isAnimated)
+		{
+			Move();
+			Step();
+			Jump();
+			Attack();
+		}
 
 		SetPosition(pos);
 
@@ -107,7 +110,9 @@ void Player::Update()
 
 		Rejection();
 
-		ObjectOBJ::Update(); 
+		SetColor({ 1,1,1,GetCameraDistance() / 2 });
+
+		ObjectOBJ::Update();
 		ObjectFBX::Update();
 	}
 }
@@ -215,7 +220,7 @@ void Player::Jump()
 				jumpState = STAY_IN_AIR;
 			}
 
-			ParticleEmitter::CircleXZ(64, 8, pos, 0.5f,-0.01f,
+			ParticleEmitter::CircleXZ(64, 8, pos, 0.0f, 0.2f,-0.01f,
 				{ 0.5f,0.5f,1.0f,1.0f }, { 0.0f,0.0f,1.0f,1.0f },
 				1.0f, 0.5f);
 		}
@@ -274,7 +279,6 @@ void Player::Step()
 		isStepped = true;
 
 		// ステップ開始地点
-		pos.y += 0.1f;
 		stepStartPos = pos;
 		stepEndPos = pos;
 	}
@@ -291,7 +295,7 @@ void Player::Step()
 
 			Ray ray;
 			ray.start = XMLoadFloat3(&stepStartPos);
-			ray.start.m128_f32[1] += radius * 2;
+			ray.start.m128_f32[1] += radius;
 			ray.dir = move;
 			RaycastHit raycastHit;
 
@@ -305,6 +309,12 @@ void Player::Step()
 				stepEndPos.x = raycastHit.inter.m128_f32[0];
 				stepEndPos.y = raycastHit.inter.m128_f32[1];
 				stepEndPos.z = raycastHit.inter.m128_f32[2];
+
+				ParticleEmitter::LaserBeam(10, 10, pos, stepEndPos, 2.0f,
+					{ 1,1,1,1 }, { 1,1,1,1 }, 0, 0, 0.5f, 0.5f);
+
+				ParticleEmitter::EmitRandomAllRange(4, 4, stepEndPos, { 0,0,0 },
+					{ 1.0f,1.0f,0.8f,1.0f }, { 1.0f,1.0f,0.0f,1.0f }, 0, 0, 1.0f, 2.0f);
 			}
 		}
 		if (stepTimer < stepTimerMax)
@@ -352,9 +362,13 @@ void Player::Rejection()
 				// 球を排斥
 				sphere->center += info.reject;
 				move += info.reject;
+				hit = true;
+			}
+			else
+			{
+				hit = false;
 			}
 
-			hit = true;
 
 			return true;
 		}
@@ -568,4 +582,37 @@ void Player::SetWeapon(Weapon* weapon)
 
 	this->weapon->SetPosition(pos);
 	this->sphereColl->SetPower(GetPower());
+}
+
+bool Player::SpawnAnimation()
+{
+	float rate = animTimer / animTimerMax;
+
+
+	if (animTimer < animTimerMax)
+	{
+
+		animTimer++;
+
+		XMFLOAT3 effectPos = pos;
+		effectPos.y += radius / 2;
+		ParticleEmitter::CircleXZ(64, 8, effectPos, 10.0f, 0.2f, -0.01f,
+			{ 0.5f,0.5f,1.0f,1.0f }, { 0.0f,0.0f,1.0f,1.0f },
+			0.5f / (animTimer / 10), 0.1f / (animTimer / 10));
+		ParticleEmitter::EmitRandomAllRange(5, attackCount, effectPos,
+			{ 0,0,0 },
+			{ 0.6f,0.6f,1.0f,1.0f }, { 0.0f,0.0f,1.0f,1.0f }, 0.1f, 0.01f,
+			0.5f, 0.2f);
+
+		isAnimated = true;
+	}
+	else
+	{
+		isAnimated = false;
+	}
+
+	SetColor({ rate,rate,1.0f,1.0f });
+	ObjectOBJ::Update();
+
+	return isAnimated;
 }
