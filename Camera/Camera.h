@@ -98,9 +98,14 @@ public:
 	static void ControlCamera();
 
 	/// <summary>
+	/// 地面との衝突点を計算
+	/// </summary>
+	static void CalcGroundCollisionPoint();
+
+	/// <summary>
 	/// 壁との衝突点を計算
 	/// </summary>
-	static XMFLOAT3 CalcWallCollisionPoint();
+	static void CalcWallCollisionPoint();
 
 	/// <summary>
 	/// 回転量を取得

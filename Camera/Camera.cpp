@@ -164,37 +164,37 @@ void Camera::ControlCamera()
 		//マウス操作
 		rot.x += input->GetMouseMovement().y * 0.025f;		//上下移動
 		rot.y -= input->GetMouseMovement().x * 0.025f;		//左右移動
-	}
 
-	if (rot.x < -70)
-	{
-		rot.x = -70;
-	}
-	if (rot.x > 70)
-	{
-		rot.x = 70;
-	}
+		//キーボード操作
+		if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) ||
+			input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
+		{
 
-	//キーボード操作
-	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) ||
-		input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT))
-	{
+			if (input->PushKey(DIK_UP))
+			{
+				rot.x--;
+			}
+			else if (input->PushKey(DIK_DOWN))
+			{
+				rot.x++;
+			}
+			if (input->PushKey(DIK_LEFT))
+			{
+				rot.y++;
+			}
+			else if (input->PushKey(DIK_RIGHT))
+			{
+				rot.y--;
+			}
+		}
 
-		if (input->PushKey(DIK_UP))
+		if (rot.x < -70)
 		{
-			rot.x--;
+			rot.x = -70;
 		}
-		else if (input->PushKey(DIK_DOWN))
+		if (rot.x > 70)
 		{
-			rot.x++;
-		}
-		if (input->PushKey(DIK_LEFT))
-		{
-			rot.y++;
-		}
-		else if (input->PushKey(DIK_RIGHT))
-		{
-			rot.y--;
+			rot.x = 70;
 		}
 	}
 
@@ -226,37 +226,53 @@ void Camera::ControlCamera()
 		distance += distSpeed;
 	}
 
-	eye = CalcWallCollisionPoint();
+	CalcGroundCollisionPoint();
+	CalcWallCollisionPoint();
 }
 
-XMFLOAT3 Camera::CalcWallCollisionPoint()
+void Camera::CalcGroundCollisionPoint()
 {
 	Ray ray{};
 	ray.start = XMLoadFloat3(&target);
 	ray.dir = XMVector3Normalize(eye - target);
 	RaycastHit raycast{};
 
-	XMFLOAT3 pos{};
+	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycast, distance))
+	{
+		XMVECTOR vec = raycast.inter - ray.dir;
+
+		eye = {
+			vec.m128_f32[0],
+			vec.m128_f32[1],
+			vec.m128_f32[2] };
+	}
+}
+
+void Camera::CalcWallCollisionPoint()
+{
+	Ray ray{};
+	ray.start = XMLoadFloat3(&eye);
+	ray.dir = XMVector3Normalize(target - eye);
+	RaycastHit raycast{};
 
 	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJECT_MESH, &raycast, distance))
 	{
-		pos = {
-			raycast.inter.m128_f32[0],
-			raycast.inter.m128_f32[1],
-			raycast.inter.m128_f32[2] };
-
-	}
-	else if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycast, distance))
-	{
-		pos = {
-			raycast.inter.m128_f32[0],
-			raycast.inter.m128_f32[1] + 0.05f,
-			raycast.inter.m128_f32[2] };
-	}
-	else
-	{
-		pos = eye;
+		return;
 	}
 
-	return pos;
+	ray = {};
+	ray.start = XMLoadFloat3(&target);
+	ray.dir = XMVector3Normalize(eye - target);
+
+
+	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJECT_MESH, &raycast, distance))
+	{
+		XMVECTOR vec = raycast.inter - ray.dir;
+
+		eye = {
+			vec.m128_f32[0],
+			vec.m128_f32[1],
+			vec.m128_f32[2] };
+
+	}
 }
