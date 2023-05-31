@@ -60,5 +60,5 @@ float4 PhongShading(VSOutput input) : SV_TARGET
 
     float4 texcolor = tex.Sample(smp, input.uv);
 
-    return float4(ads.rgb, texcolor.a * m_alpha);
+    return float4(ads.rgb * constColor.rgb, texcolor.a * m_alpha * constColor.a);
 }
