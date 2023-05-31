@@ -33,10 +33,25 @@ public: // メンバ関数
 	/// </summary>
 	void CameraAnimation();
 
+	void UpdateMenu();
+
+	void DrawMenu();
+
 private:
+	typedef struct CameraPos
+	{
+		XMFLOAT3 pos;
+		float distance;
+	};
+
 	// カメラ制御用
 	XMFLOAT3 startPos{};
 	float nowCount = 0;
 	float maxCount = 30;
 	size_t startIndex = 1;
+	bool cameraMoveEnd = false;
+
+	// メニュー
+	bool windowActive = false;
+	bool menuActive = false;
 };
