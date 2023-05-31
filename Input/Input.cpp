@@ -121,6 +121,19 @@ bool Input::TriggerKey(BYTE keyNumber)
 	return false;
 }
 
+bool Input::PushKeyAll()
+{
+	for(int i = 0;i<256;i++)
+	{
+		if (key[i])
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 bool Input::PushMouse(MouseButton button)
 {
 	// 0‚Å‚È‚¯‚ê‚Î‰Ÿ‚µ‚Ä‚¢‚é

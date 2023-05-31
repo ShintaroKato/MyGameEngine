@@ -8,14 +8,6 @@
 
 using namespace DirectX;
 
-#pragma once
-
-#include <Windows.h>
-#include <wrl.h>
-
-#define DIRECTINPUT_VERSION     0x0800          // DirectInputのバージョン指定
-#include <dinput.h>
-
 #define STICK_X_DEFAULT 32767	//スティック(X方向)の中央
 #define STICK_Y_DEFAULT 0		//スティック(Y方向)の中央
 
@@ -122,19 +114,21 @@ public:
 	static Input* GetInstance();
 	void Initialize(WinApp* winApp);
 	void Update();
-	// どのキーが押されているか
+	// 指定したキーが押されているか否か
 	bool PushKey(BYTE keyNumber);
-	// どのキーが押された瞬間か
+	// 指定したキーが押された瞬間か否か
 	bool TriggerKey(BYTE keyNumber);
-	// どのマウスのボタンが押されているか
+	// どれか一つでもキーが押されているか否か
+	bool PushKeyAll();
+	// 指定したマウスのボタンが押されているか否か
 	bool PushMouse(MouseButton button);
-	// どのマウスのボタンが押された瞬間か
+	// 指定したマウスのボタンが押された瞬間か否か
 	bool TriggerMouse(MouseButton button);
-	// どのマウスのボタンが離された瞬間か
+	// 指定したマウスのボタンが離された瞬間か否か
 	bool ReleaseMouse(MouseButton button);
-	// どのパッドのボタンが押されているか
+	// 指定したパッドのボタンが押されているか否か
 	bool PushButton(BYTE buttonNumber);
-	// どのパッドのボタンが押された瞬間か
+	// 指定したパッドのボタンが押された瞬間か否か
 	bool TriggerButton(BYTE buttonNumber);
 
 	bool PushCrossButton(int buttonNumber);
