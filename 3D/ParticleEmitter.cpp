@@ -174,7 +174,7 @@ void ParticleEmitter::Spark(unsigned int count, unsigned int node_count, unsigne
 	}
 }
 
-void ParticleEmitter::CircleXZ(unsigned int count, unsigned int life, XMFLOAT3 position, float velocity, float accel, XMFLOAT4 start_color, XMFLOAT4 end_color, float start_scale, float end_scale)
+void ParticleEmitter::CircleXZ(unsigned int count, unsigned int life, XMFLOAT3 position, float radius, float velocity, float accel, XMFLOAT4 start_color, XMFLOAT4 end_color, float start_scale, float end_scale)
 {
 	if (count <= 0) return;
 
@@ -183,6 +183,10 @@ void ParticleEmitter::CircleXZ(unsigned int count, unsigned int life, XMFLOAT3 p
 
 	for (int i = 0; i < count; i++)
 	{
+		XMFLOAT3 startPos = position;
+		startPos.x += radius * cosf(radian * i);
+		startPos.z += radius * sinf(radian * i);
+
 		// ‘¬“x
 		XMFLOAT3 vel = { velocity, 0, velocity };
 		vel.x *= cosf(radian * i);
