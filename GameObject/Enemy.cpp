@@ -82,6 +82,7 @@ void Enemy::Update()
 	if (ObjectOBJ::model) pos = ObjectOBJ::position;
 	if (ObjectFBX::model) pos = ObjectFBX::position;
 
+	SpawnAnimation();
 
 	switch (type)
 	{
@@ -420,7 +421,21 @@ void Enemy::Defeated()
 
 void Enemy::SpawnAnimation()
 {
-	
+	if (!spawnAnimActive) return;
+	if (effectTimer < 0)
+	{
+		spawnAnimActive = false;
+		return;
+	}
+
+	XMFLOAT3 effectPosHead = effectPos;
+	XMFLOAT3 effectPosTail = effectPos;
+	effectPosHead.y += 60;
+	effectPosTail.y -= 10;
+	ParticleEmitter::LaserBeam(16, 32, effectPosHead, effectPosTail,0.5f,
+		{ 1.0f,0.2f,0.2f,0.01f }, { 1.0f,0.2f,0.2f,0.01f }, 0.1f, 0.01f, 3.0f, 1.0f);
+
+	effectTimer--;
 }
 
 XMFLOAT3 Enemy::GetPosition()
@@ -526,6 +541,8 @@ void Enemy::SetStatus(float HP, float speed, float power, float radius)
 	this->radius = radius;
 	SetScale({ radius,radius,radius });
 	sphereColl->SetAttribute(COLLISION_ATTR_ENEMIES);
+
+	effectPos = pos;
 }
 
 void Enemy::SetType(EnemyType enemyType)

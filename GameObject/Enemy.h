@@ -252,4 +252,8 @@ private:
 
 	// 出現時のアニメーション
 	bool spawnAnimActive = false;
+
+	// エフェクト用タイマー
+	int effectTimer = 10;
+	XMFLOAT3 effectPos{};
 };

@@ -327,7 +327,7 @@ void Player::Step()
 
 				if (hitWall) 
 				{
-					stepTimer = stepEnd;
+  					stepTimer = stepEnd;
 				}
 				else pos = ease;
 			}
@@ -370,7 +370,7 @@ void Player::Rejection()
 			}
 
 
-			return true;
+			return hit;
 		}
 
 		// クエリに使用する球
@@ -588,21 +588,30 @@ bool Player::SpawnAnimation()
 {
 	float rate = animTimer / animTimerMax;
 
-
 	if (animTimer < animTimerMax)
 	{
-
 		animTimer++;
 
 		XMFLOAT3 effectPos = pos;
 		effectPos.y += radius / 2;
-		ParticleEmitter::CircleXZ(64, 8, effectPos, 10.0f, 0.2f, -0.01f,
+		// 周囲に輪
+		ParticleEmitter::CircleXZ(64, 8, effectPos, 80.0f, 0.2f, -0.01f,
 			{ 0.5f,0.5f,1.0f,1.0f }, { 0.0f,0.0f,1.0f,1.0f },
 			0.5f / (animTimer / 10), 0.1f / (animTimer / 10));
+		// 光を放つ感じ
 		ParticleEmitter::EmitRandomAllRange(5, attackCount, effectPos,
 			{ 0,0,0 },
 			{ 0.6f,0.6f,1.0f,1.0f }, { 0.0f,0.0f,1.0f,1.0f }, 0.1f, 0.01f,
 			0.5f, 0.2f);
+
+
+		XMFLOAT3 effectPosHead = pos;
+		XMFLOAT3 effectPosTail = pos;
+		effectPosHead.y += 10;
+		effectPosTail.y -= 10;
+		ParticleEmitter::LaserBeam(16, 16, effectPosTail, effectPosHead, 0.1f,
+			{ 0.2f,0.2f,1.0f,0.01f }, { 0.2f,0.2f,1.0f,0.01f }, 0.1f, 0.0f,
+			(animTimerMax / 10) / (animTimer + 0.01), (animTimerMax / 10) / (animTimer + 0.01));
 
 		isAnimated = true;
 	}

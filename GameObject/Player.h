@@ -221,6 +221,6 @@ private:
 
 	// 出現時のアニメーション用タイマー
 	float animTimer = 0;
-	float animTimerMax = 90;
+	float animTimerMax = 120;
 	bool isAnimated = false;
 };
