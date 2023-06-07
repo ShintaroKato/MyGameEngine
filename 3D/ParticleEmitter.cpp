@@ -107,27 +107,24 @@ void ParticleEmitter::EmitZ_AxisDir(unsigned int count, unsigned int life, XMFLO
 
 void ParticleEmitter::LaserBeam(unsigned int count, unsigned int life, XMFLOAT3 start_position, XMFLOAT3 end_position, float velocity, XMFLOAT4 start_color, XMFLOAT4 end_color, float vel_rand_range, float accel_rand_range, float start_scale, float end_scale)
 {
+	// 発射地点から終端までの距離
+	XMFLOAT3 distance = CalcDistance(end_position, start_position);
+
+	// 発射する方向
+	XMVECTOR direct{ distance.x,distance.y,distance.z };
+	direct = XMVector3Normalize(direct);
+
 	for (int i = 0; i < count; i++)
 	{
-		// 発射地点から終端までの距離
-		XMFLOAT3 distance = CalcDistance(end_position, start_position);
-
 		// 発射地点から終端までの間の直線上に発生
 		XMFLOAT3 position{};
 		position.x = start_position.x + distance.x / count * i;
 		position.y = start_position.y + distance.y / count * i;
 		position.z = start_position.z + distance.z / count * i;
 
-		// 発射する方向
-		XMFLOAT3 direct{};
-		direct.x = cos(atan2f(distance.z, distance.x));
-		direct.z = sin(atan2f(distance.z, distance.x));
-		direct.y = sin(atan2f(distance.y,
-			sqrtf(distance.x * distance.x + distance.z * distance.z)));
-
 		// X,Y,Z全て設定した数値内でランダムに分布
 		const XMFLOAT3 rnd_vel = { vel_rand_range, vel_rand_range, vel_rand_range };
-		XMFLOAT3 vel = direct;
+		XMFLOAT3 vel = { direct.m128_f32[0],direct.m128_f32[1], direct.m128_f32[2] };
 		vel.x += (float)rand() / RAND_MAX * rnd_vel.x - rnd_vel.x / 2.0f;
 		vel.y += (float)rand() / RAND_MAX * rnd_vel.y - rnd_vel.y / 2.0f;
 		vel.z += (float)rand() / RAND_MAX * rnd_vel.z - rnd_vel.z / 2.0f;
