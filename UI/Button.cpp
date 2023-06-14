@@ -14,19 +14,57 @@ Button* Button::Create(SpriteCommon* spriteCommon, UINT texNumber, XMFLOAT2 posi
 	return instance;
 }
 
+void Button::Update()
+{
+	if (Point() && !hold)
+	{
+		SetColor({ 1.2f, 1.2f, 1.2f, 1.0f });
+	}
+	else
+	{
+		SetColor({ 1,1,1,1 });
+	}
+
+	Sprite::Update();
+}
+
 bool Button::Click(MouseButton mouseButton)
 {
 	Input* input = Input::GetInstance();
 
-	Point();
-
 	if (input->TriggerMouse(mouseButton) && point)
 	{
+		SetColor({ 0.5f, 0.5f, 0.5f, 1.0f });
+
 		click = true;
 	}
 	else
 	{
 		click = false;
+	}
+
+	return click;
+}
+
+bool Button::Hold(MouseButton mouseButton)
+{
+	Input* input = Input::GetInstance();
+
+	if (input->PushMouse(mouseButton) && point)
+	{
+		SetColor({ 0.5f, 0.5f, 0.5f, 1.0f });
+
+		hold = true;
+	}
+	else
+	{
+		hold = false;
+	}
+
+	if (input->ReleaseMouse(mouseButton) && point)
+	{
+		hold = false;
+		click = true;
 	}
 
 	return click;

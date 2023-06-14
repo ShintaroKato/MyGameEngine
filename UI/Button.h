@@ -20,7 +20,11 @@ public:
 	static Button* Create(SpriteCommon* spriteCommon, UINT texNumber, XMFLOAT2 position, XMFLOAT2 anchorpoint,
 		bool isFlipX = false, bool isFlipY = false);
 
+	void Update();
+
 	bool Click(MouseButton mouseButton);
+
+	bool Hold(MouseButton mouseButton);
 
 	// カーソルがボタンと重なっているかを判定
 	bool Point();
@@ -31,5 +35,6 @@ public:
 
 private:
 	bool click = false;
+	bool hold = false;
 	bool point = false;
 };
