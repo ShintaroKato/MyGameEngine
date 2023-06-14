@@ -28,6 +28,11 @@ public:
 		}
 	}
 
+	/// <summary>
+	/// Œ…”İ’è
+	/// </summary>
+	void SetDigit(unsigned int digit);
+
 	void Draw();
 
 private:

@@ -53,6 +53,17 @@ void Number::SetSequence(int value, float x, float y, XMFLOAT2 rectSize, int spa
 	}
 }
 
+void Number::SetDigit(unsigned int digit)
+{
+	this->digit = digit;
+
+	numbers.clear();
+	for (int i = 0; i < this->digit; i++)
+	{
+		numbers.push_back(Sprite::Create(spriteCommon, texNumber, position, anchorpoint, isFlipX, isFlipY));
+	}
+}
+
 void Number::Draw()
 {
 	for (int i = 0; i < digit; i++)
