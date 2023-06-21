@@ -162,8 +162,8 @@ void Camera::ControlCamera()
 	if (cameraMoveActive)
 	{
 		//マウス操作
-		rot.x += input->GetMouseMovement().y * 0.025f;		//上下移動
-		rot.y -= input->GetMouseMovement().x * 0.025f;		//左右移動
+		rot.x += input->GetMouseCursorMovement().y * 0.025f;		//上下移動
+		rot.y -= input->GetMouseCursorMovement().x * 0.025f;		//左右移動
 
 		//キーボード操作
 		if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) ||
@@ -217,11 +217,11 @@ void Camera::ControlCamera()
 		distSpeed = 5.0f;
 	}
 
-	if (input->GetMouseMovement().z > 0 && distance > distMin)
+	if (input->GetMouseWheelMovement() > 0 && distance > distMin)
 	{
 		distance -= distSpeed;
 	}
-	if (input->GetMouseMovement().z < 0 && distance <= distMax)
+	if (input->GetMouseWheelMovement() < 0 && distance <= distMax)
 	{
 		distance += distSpeed;
 	}

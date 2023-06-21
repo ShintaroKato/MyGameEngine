@@ -147,7 +147,11 @@ public:
 	XMVECTOR CalcScreenToXZ(XMFLOAT2 scrPos, XMMATRIX view, XMMATRIX prj);
 
 	/// <summary>
-	/// マウスの移動量を取得
+	/// マウスカーソルの移動量を取得
 	/// </summary>
-	XMFLOAT3 GetMouseMovement();
+	XMFLOAT2 GetMouseCursorMovement();
+	/// <summary>
+	/// マウスホイールの回転量を取得
+	/// </summary>
+	float GetMouseWheelMovement();
 };

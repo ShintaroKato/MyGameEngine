@@ -156,13 +156,19 @@ bool Input::TriggerMouse(MouseButton button)
 	return false;
 }
 
-XMFLOAT3 Input::GetMouseMovement()
+XMFLOAT2 Input::GetMouseCursorMovement()
 {
-	XMFLOAT3 move = {
+	XMFLOAT2 move = {
 		(float)mouseState.lX,
 		(float)mouseState.lY,
-		(float)mouseState.lZ
 	};
+
+	return move;
+}
+
+float Input::GetMouseWheelMovement()
+{
+	float move = (float)mouseState.lZ - mouseStatePre.lZ;
 
 	return move;
 }
