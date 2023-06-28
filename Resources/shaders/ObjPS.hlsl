@@ -20,7 +20,7 @@ float4 main(VSOutput input) : SV_TARGET
         float3 shade_color;
         shade_color = m_ambient; // アンビエント項
         shade_color += m_diffuse * light_diffuse;	// ディフューズ項
-        float4 texcolor = tex.Sample(smp, input.uv);
+        float4 texcolor = tex.Sample(smp, input.uv + uvOffset);
 
         result = float4(texcolor.rgb * shade_color * constColor.rgb, texcolor.a * m_alpha);
     }
@@ -58,7 +58,7 @@ float4 PhongShading(VSOutput input) : SV_TARGET
     // アンビエント、ディフューズ、スペキュラーを加算
     float4 ads = ambient + diffuse + specular;
 
-    float4 texcolor = tex.Sample(smp, input.uv);
+    float4 texcolor = tex.Sample(smp, input.uv + uvOffset);
 
     return float4(ads.rgb * constColor.rgb, texcolor.a * m_alpha * constColor.a);
 }

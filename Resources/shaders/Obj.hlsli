@@ -5,6 +5,7 @@ cbuffer cbuff0 : register(b0)
 	float3 camPos;
 	uint mode;
 	float4 constColor;
+	float2 uvOffset;
 };
 
 cbuffer cbuff0 : register(b1)
