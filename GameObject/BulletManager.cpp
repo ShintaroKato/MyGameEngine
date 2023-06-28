@@ -53,10 +53,8 @@ void BulletManager::Fire(XMFLOAT3 position, XMFLOAT3 rotation, unsigned short co
 	// 角度から速度のベクトルを計算
 	XMMATRIX matRotX = XMMatrixRotationX(XMConvertToRadians(rotation.x));
 	XMMATRIX matRotY = XMMatrixRotationY(XMConvertToRadians(rotation.y));
-	//XMMATRIX matRotZ = XMMatrixRotationZ(XMConvertToRadians(rotation.z));
 	bullet.velocity = XMVector3TransformNormal(bullet.velocity, matRotX);
 	bullet.velocity = XMVector3TransformNormal(bullet.velocity, matRotY);
-	//bullet.velocity = XMVector3TransformNormal(bullet.velocity, matRotZ);
 	bullet.velocity *= velocityMagnification;
 	bullet.collAttribute += collisionAttribute;
 	bullet.Initialize();
