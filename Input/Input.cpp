@@ -168,7 +168,7 @@ XMFLOAT2 Input::GetMouseCursorMovement()
 
 float Input::GetMouseWheelMovement()
 {
-	float move = (float)mouseState.lZ - mouseStatePre.lZ;
+	float move = (float)mouseState.lZ;
 
 	return move;
 }
