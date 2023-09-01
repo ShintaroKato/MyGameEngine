@@ -29,9 +29,12 @@ enum SpriteNo
 	square_red,
 	square_green,
 	square_blue,
-	button_wall,
+	button_barrier,
 	button_tower01,
+	button_building,
+	button_wall,
 	button_title,
+	button_back,
 	button_start,
 	button_edit,
 	button_retry,
@@ -49,10 +52,23 @@ enum SpriteNo
 	pause,
 	guide01,
 	guide02,
+	guide03,
+	guide_menu,
+	guide_title,
 	guide_wall,
 	guide_tower,
 	ui_frame,
 	name_frame,
+};
+
+enum NumberSprite
+{
+	enemy_count,
+	enemy_count_max,
+	wait_timer,
+	wave_number,
+
+	NumberSpriteCount
 };
 
 // オブジェクトのデータを保存するための構造体
@@ -87,6 +103,8 @@ public:
 	static std::vector<StageObject*> stgObjects;
 
 public:
+
+	~SceneBase();
 
 	/// <summary>
 	/// 初期化
@@ -141,26 +159,28 @@ protected:
 	Sprite* spritePause = nullptr;
 	Sprite* spriteGuide1 = nullptr;
 	Sprite* spriteGuide2 = nullptr;
+	Sprite* spriteGuide3 = nullptr;
+	Sprite* spriteGuideMenu = nullptr;
+	Sprite* spriteGuideTitle = nullptr;
 	Sprite* spriteUIWindowBlue = nullptr;
 	Sprite* spriteUIWindowYellow = nullptr;
 	Sprite* spriteObjectGuideWall = nullptr;
 	Sprite* spriteObjectGuideTower = nullptr;
 
-	Button* buttonWall = nullptr;
-	Button* buttonGreen = nullptr;
+	Button* buttonBarrier = nullptr;
+	Button* buttonBuilding = nullptr;
 	Button* buttonTower01 = nullptr;
+	Button* buttonWall = nullptr;
 	Button* buttonBlack = nullptr;
 	Button* buttonTitle = nullptr;
+	Button* buttonBack = nullptr;
 	Button* buttonStart = nullptr;
 	Button* buttonEdit = nullptr;
 	Button* buttonRetry = nullptr;
 	Button* buttonNext = nullptr;
 	Button* buttonObjects = nullptr;
 
-	Number* numberEnemyCount = nullptr;
-	Number* numberEnemyCountMax = nullptr;
-	Number* numberWaitTimer = nullptr;
-	Number* numberWave = nullptr;
+	Number* numbers[NumberSpriteCount];
 
 	Meter* meterPlayerHP = nullptr;
 	Meter* meterCastleHP = nullptr;
@@ -169,8 +189,8 @@ protected:
 
 	ModelOBJ* modelSkydome = nullptr;
 	ModelOBJ* modelSkydomeSpace = nullptr;
-	ModelOBJ* modelGround = nullptr;
 	ModelOBJ* modelGroundGrid = nullptr;
+	ModelOBJ* modelGroundGridLine = nullptr;
 	ModelOBJ* modelPlayer = nullptr;
 	ModelOBJ* modelEnemy[ENEMY_TYPE_COUNT]{};
 	ModelOBJ* modelBarrier = nullptr;
@@ -178,13 +198,17 @@ protected:
 	ModelOBJ* modelTower = nullptr;
 	ModelOBJ* modelCastle = nullptr;
 	ModelOBJ* modelWall = nullptr;
+	ModelOBJ* modelStageWall = nullptr;
 	ModelOBJ* modelWeapon = nullptr;
 	ModelOBJ* modelCursor = nullptr;
 
 	ObjectOBJ* objWall[8]{};
 	ObjectOBJ* objSkydome = nullptr;
 	ObjectOBJ* objSkydomeSpace = nullptr;
+	ObjectOBJ* objGroundGridLine[2]{};
 	TouchableObject* objGroundGrid = nullptr;
+
+	ModelFBX* modelFbxPlayer = nullptr;
 
 	StageObject* objCastle;
 
@@ -193,8 +217,8 @@ protected:
 	Player* player = nullptr;
 	Weapon* weapon[WEAPON_MAX]{};
 
-	// 星空の天球の回転量
-	XMFLOAT3 skydomeRot{};
 	// フィールドの広さ
 	float fieldSize = 0;
+
+	std::vector<Triangle> tri{};
 };
