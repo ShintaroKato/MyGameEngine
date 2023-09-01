@@ -17,6 +17,8 @@
     <FxCompile Include="Resources\shaders\ParticleGS.hlsl" />
     <FxCompile Include="Resources\shaders\ParticlePS.hlsl" />
     <FxCompile Include="Resources\shaders\ParticleVS.hlsl" />
+    <FxCompile Include="Resources\shaders\TrailPS.hlsl" />
+    <FxCompile Include="Resources\shaders\TrailVS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="2D\PostEffect.cpp" />
@@ -122,6 +124,7 @@
     <ClInclude Include="Math\Easing.h" />
     <ClInclude Include="Collision\QueryCallback.h" />
     <ClInclude Include="3D\Trail.h" />
+    <ClInclude Include="Base\SafeDelete.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli" />
@@ -131,6 +134,7 @@
     <None Include="Resources\shaders\RenderTexture.hlsli" />
     <None Include="Resources\shaders\Sprite.hlsli" />
     <None Include="Resources\shaders\Particle.hlsli" />
+    <None Include="Resources\shaders\Trail.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Picture2\256x256Blue.png" />
