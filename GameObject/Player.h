@@ -53,6 +53,11 @@ public:
 	/// </summary>
 	void Update() override;
 
+	/// <summary>
+	/// •`‰æ
+	/// </summary>
+	void Draw() override;
+
 private:
 	/// <summary>
 	/// ˆÚ“®
@@ -78,6 +83,11 @@ private:
 	/// UŒ‚
 	/// </summary>
 	void Attack();
+
+	/// <summary>
+	/// UŒ‚ƒGƒtƒFƒNƒg
+	/// </summary>
+	void AttackEffect();
 
 	/// <summary>
 	/// “G‚Æ‚Ì“–‚½‚è”»’è

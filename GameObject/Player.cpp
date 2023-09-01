@@ -7,6 +7,7 @@
 #include "ParticleEmitter.h"
 #include "BulletManager.h"
 #include "Math/Easing.h"
+#include "Text.h"
 
 Player* Player::Create(ModelFBX* fbx, int animationNumber)
 {
@@ -87,6 +88,7 @@ void Player::Update()
 
 		if (!isAnimated)
 		{
+			AnimationStop();
 			Move();
 			Step();
 			Jump();
@@ -106,6 +108,16 @@ void Player::Update()
 			ObjectFBX::rotation = rot;
 			ObjectFBX::UpdateWorldMatrix();
 			ObjectFBX::collider->Update();
+
+			//if(weapon)
+			//{
+			//	XMFLOAT3 wPos{};
+			//	XMMATRIX mat = GetBoneMatrix(0);
+			//	wPos = { mat.r[3].m128_f32[0], mat.r[3].m128_f32[1], mat.r[3].m128_f32[2] };
+			//	SetPosition(wPos);
+			//	weapon->SetPosition(wPos);
+			//	weapon->Update();
+			//}
 		}
 
 		Rejection();
@@ -114,7 +126,15 @@ void Player::Update()
 
 		ObjectOBJ::Update();
 		ObjectFBX::Update();
+
+		//ParticleEmitter::LaserBeam(8, 8, pos, weapon->GetPosition());
 	}
+}
+
+void Player::Draw()
+{
+	if (ObjectOBJ::model) ObjectOBJ::Draw();
+	if (ObjectFBX::model) ObjectFBX::Draw();
 }
 
 void Player::Move()
@@ -171,7 +191,9 @@ void Player::Move()
 		pos.x += move.m128_f32[0];
 		pos.y += move.m128_f32[1];
 		pos.z += move.m128_f32[2];
+		AnimationPlay();
 	}
+
 }
 
 void Player::Jump()
@@ -284,6 +306,7 @@ void Player::Step()
 	}
 	if (isStepped)
 	{
+		// ステップ開始
 		if (stepTimer == 0)
 		{
 			for (int i = 0; i <= stepEnd; i++)
@@ -459,16 +482,20 @@ void Player::Attack()
 
 		if (weapon)
 		{
-			XMFLOAT3 wPos = { pos.x + sin(XMConvertToRadians(rot.y - 90 + (attackCount * attackCount - attackCount))),
-				pos.y + 0.3f,
-				pos.z + cos(XMConvertToRadians(rot.y - 90 + (attackCount * attackCount - attackCount))) };
+			//if (ObjectOBJ::model)
+			{
+				XMFLOAT3 wPos = { pos.x + sin(XMConvertToRadians(rot.y - 90 + (attackCount * attackCount - attackCount))),
+					pos.y + 0.3f,
+					pos.z + cos(XMConvertToRadians(rot.y - 90 + (attackCount * attackCount - attackCount))) };
 
-			XMFLOAT3 wRot = { rot.x - 90,
-				rot.y + (attackCount * attackCount - attackCount),
-				rot.z + 90 };
+				XMFLOAT3 wRot = { rot.x - 90,
+					rot.y + (attackCount * attackCount - attackCount),
+					rot.z + 90 };
 
-			weapon->SetPosition(wPos);
-			weapon->SetRotation(wRot);
+				weapon->SetPosition(wPos);
+				weapon->SetRotation(wRot);
+			}
+
 			weapon->Update();
 		}
 
@@ -477,9 +504,7 @@ void Player::Attack()
 			CollisionManager::GetInstance()->CheckAllCollision(weapon->GetSphereCollider(), COLLISION_ATTR_ENEMIES);
 		}
 
-		ParticleEmitter::EmitRandomAllRange(5, attackCount, weapon->GetPosition(),
-			{ 0,0,0 },
-			{ 0.6f,0.6f,1.0f,1.0f }, { 0.0f,0.0f,1.0f,1.0f }, 0.1f, 0.01f, 0.5f);
+		AttackEffect();
 	}
 	else
 	{
@@ -487,16 +512,41 @@ void Player::Attack()
 
 		if (weapon)
 		{
-			XMFLOAT3 wPos = { pos.x + sin(XMConvertToRadians(rot.y + 90)),
-				pos.y + 0.2f,
-				pos.z + cos(XMConvertToRadians(rot.y + 90)) };
-			XMFLOAT3 wRot = { rot.x,rot.y,rot.z - 90 };
+			//if(ObjectOBJ::model)
+			{
+				XMFLOAT3 wPos = { pos.x + sin(XMConvertToRadians(rot.y + 90)),
+					pos.y + 0.2f,
+					pos.z + cos(XMConvertToRadians(rot.y + 90)) };
+				XMFLOAT3 wRot = { rot.x,rot.y,rot.z - 90 };
+				weapon->SetPosition(wPos);
+				weapon->SetRotation(wRot);
+			}
 
-			weapon->SetPosition(wPos);
-			weapon->SetRotation(wRot);
 			weapon->Update();
 		}
 	}
+}
+
+void Player::AttackEffect()
+{
+	XMFLOAT3 wPos = weapon->GetPosition();
+	XMFLOAT3 wRot = weapon->GetRotation();
+
+	XMFLOAT3 effCenterPos = pos;
+	effCenterPos.y = wPos.y;
+	XMVECTOR effVec =
+		XMVECTOR({ wPos.x - effCenterPos.x, wPos.y - effCenterPos.y, wPos.z - effCenterPos.z });
+	effVec = XMVector3Normalize(effVec);
+	effVec = effVec * 1.5f;
+
+	XMFLOAT3 effStartPos = wPos;
+	XMFLOAT3 effEndPos = XMFLOAT3(
+		effStartPos.x + effVec.m128_f32[0],
+		effStartPos.y + effVec.m128_f32[1],
+		effStartPos.z + effVec.m128_f32[2]);
+
+	ParticleEmitter::LaserBeam(16, 15, effStartPos, effEndPos, 0.05f,
+		{ 0.6f,0.6f,1.0f,1.0f }, { 0.0f,0.0f,1.0f,1.0f }, 0.4f, 0.01f, 0.5f, 0.0f);
 }
 
 bool Player::Hit()
@@ -581,6 +631,7 @@ void Player::SetWeapon(Weapon* weapon)
 	}
 
 	this->weapon->SetPosition(pos);
+	
 	this->sphereColl->SetPower(GetPower());
 }
 
