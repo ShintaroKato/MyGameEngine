@@ -75,4 +75,6 @@ private:
 	bool buttonClick = false;
 	bool windowActive = false;
 	bool listActive = false;
+
+
 };

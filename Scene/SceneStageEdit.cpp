@@ -20,8 +20,8 @@ void SceneStageEdit::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon
 
 void SceneStageEdit::Initialize2D()
 {
-	buttonTitle->SetPosition({ 0,0 });
-	buttonTitle->SetSize({ 128,64 });
+	buttonBack->SetPosition({ 0,0 });
+	buttonBack->SetSize({ 128,64 });
 
 	buttonObjects->SetPosition({ 64,96 });
 	buttonObjects->SetSize({ 128,64 });
@@ -35,26 +35,26 @@ void SceneStageEdit::Initialize2D()
 	XMFLOAT2 uiPos = spriteUIWindowBlue->GetPosition();
 	float pos_offset = 90;
 
-	buttonWall->SetPosition({ uiPos.x, uiPos.y + pos_offset });
-	buttonWall->SetSize({ 64,64 });
-	buttonWall->SetAnchorPoint({ 0.5f,0.5f });
-	buttonWall->Update();
+	buttonBarrier->SetPosition({ uiPos.x, uiPos.y + pos_offset });
+	buttonBarrier->SetSize({ 64,64 });
+	buttonBarrier->SetAnchorPoint({ 0.5f,0.5f });
+	buttonBarrier->Update();
 
 	buttonTower01->SetPosition({ uiPos.x, uiPos.y + pos_offset * 2.0f });
 	buttonTower01->SetSize({ 64,64 });
 	buttonTower01->SetAnchorPoint({ 0.5f,0.5f });
 	buttonTower01->Update();
 
-	buttonGreen->SetPosition({ uiPos.x, uiPos.y + pos_offset * 3.0f });
-	buttonGreen->SetSize({ 64,64 });
-	buttonGreen->SetAnchorPoint({ 0.5f,0.5f });
-	buttonGreen->Update();
+	buttonBuilding->SetPosition({ uiPos.x, uiPos.y + pos_offset * 3.0f });
+	buttonBuilding->SetSize({ 64,64 });
+	buttonBuilding->SetAnchorPoint({ 0.5f,0.5f });
+	buttonBuilding->Update();
 
-	buttonBlack->SetPosition({ uiPos.x, uiPos.y + pos_offset * 4.0f });
-	buttonBlack->SetSize({ 64,64 });
-	buttonBlack->SetAnchorPoint({ 0.5f,0.5f });
-	buttonBlack->SetColor({ 0.0f,0.0f,0.0f,1.0f });
-	buttonBlack->Update();
+	buttonWall->SetPosition({ uiPos.x, uiPos.y + pos_offset * 4.0f });
+	buttonWall->SetSize({ 64,64 });
+	buttonWall->SetAnchorPoint({ 0.5f,0.5f });
+	buttonWall->SetColor({ 0.0f,0.0f,0.0f,1.0f });
+	buttonWall->Update();
 
 	spriteUIWindowYellow->SetSize({ 400, 64 * 1.5f });
 	spriteUIWindowYellow->SetAnchorPoint({ 0.0f, 0.0f });
@@ -95,35 +95,48 @@ void SceneStageEdit::Initialize3D()
 	PlaneCursor::Initialize(objCursor);
 	PlaneCursor::SetMovableRange(fieldSize);
 
-	player->SetAllive(false);
+	player->SetAlive(false);
 	player->SetInGameFlag(false);
 
-	camera->SetCameraDistance(80);
 	camera->SetTarget(player->GetPosition());
-	camera->SetEye({ 0,50,-100 });
+	camera->SetEye({ 60,0,0 }, 150);
 }
 
 void SceneStageEdit::Update()
 {
 	spriteCursor->SetPosition(input->GetMousePos2());
 
-	if (input->TriggerKey(DIK_ESCAPE) || buttonTitle->Click(MOUSE_LEFT))
+	if (input->TriggerKey(DIK_ESCAPE) || buttonBack->Click(MOUSE_LEFT))
 	{
+		// シーン遷移可能であればtrue
+		bool result = true;
+
 		for (std::forward_list<StageObject>::iterator it = stgObjectEdit.begin(); it != stgObjectEdit.end(); it++)
 		{
 			if (it->GetTag() == STAGE_OBJECT_DEFAULT) continue;
 
-			if (it->GetUsedState() == WAITING)
+			if (it->GetUsedState() == WAITING ||
+				it->GetDragFlag() == true)
 			{
-				it->SetUsedState(USED);
+				// 設置待機中のオブジェクトがあったらfalse
+				result = false;
+				break;
 			}
 
 			stgObjects.push_back(it->GetInstance());
 		}
 
-		SceneManager::SetScene(TITLE);
-
-		return;
+		if(result)
+		{
+			// タイトル画面に戻る
+			SceneManager::SetScene(TITLE);
+			return;
+		}
+		else
+		{
+			// 一度登録していたオブジェクトを全て消去
+			stgObjects.clear();
+		}
 	}
 
 	if (input->PushMouse(MOUSE_RIGHT))  camera->SetCameraMoveFlag(true);
@@ -177,19 +190,27 @@ void SceneStageEdit::Draw()
 	objSkydomeSpace->Draw();
 	objGroundGrid->ObjectOBJ::Draw();
 
+	for (int i = 0; i < 2; i++)
+	{
+		objGroundGridLine[i]->Draw();
+	}
+
 	for (int i = 0; i < 8; i++)
 	{
 		objWall[i]->Draw();
 	}
 
-	if(!menuActive) PlaneCursor::Draw();
+	PlaneCursor::Draw();
 
 	for (std::forward_list<StageObject>::iterator it = stgObjectEdit.begin(); it != stgObjectEdit.end(); it++)
 	{
 		it->Draw();
 	}
 
+	ParticleManager::GetInstance()->Draw(dxCommon->GetCmdList());
+
 	ObjectOBJ::PostDraw();
+
 
 	// FBXモデル
 	//player->ObjectFBX::Draw(dxCommon->GetCmdList());
@@ -244,21 +265,22 @@ void SceneStageEdit::UpdateMenu()
 
 	spriteUIWindowBlue->SetSize({ 120, sizeY });
 	spriteUIWindowBlue->Update();
-	buttonTitle->Update();
+	buttonBack->Update();
 	buttonObjects->Update();
 	spriteCursor->Update();
 
 	if (!windowActive) return;
 
-	MakeObject(buttonWall, modelBarrier, STAGE_OBJECT_WALL, { 1.0f, 5.0f });
+	MakeObject(buttonBarrier, modelBarrier, STAGE_OBJECT_BARRIER, { 1.0f, 5.0f });
 	MakeObject(buttonTower01, modelTower, STAGE_OBJECT_OFFENCE);
-	MakeObject(buttonGreen, modelBuilding, STAGE_OBJECT_BUILDING);
+	MakeObject(buttonBuilding, modelBuilding, STAGE_OBJECT_BUILDING);
+	MakeObject(buttonWall, modelStageWall, STAGE_OBJECT_WALL);
 
-	if (buttonWall->Point() || buttonTower01->Point() || buttonGreen->Point())
+	if (buttonBarrier->Point() || buttonTower01->Point() || buttonBuilding->Point() || buttonWall->Point())
 	{
 		spriteUIWindowYellow->Update();
 
-		if (buttonWall->Point())
+		if (buttonBarrier->Point())
 		{
 			spriteObjectGuideWall->SetPosition({
 					spriteUIWindowYellow->GetPosition().x + 16,
@@ -281,8 +303,10 @@ void SceneStageEdit::UpdateMenu()
 		spriteUIWindowYellow->Update();
 	}
 
-	buttonWall->Update();
+	buttonBarrier->Update();
 	buttonTower01->Update();
+	buttonBuilding->Update();
+	buttonWall->Update();
 }
 
 void SceneStageEdit::DrawMenu()
@@ -297,23 +321,23 @@ void SceneStageEdit::DrawMenu()
 
 	if (listActive)
 	{
-		buttonWall->Draw();
+		buttonBarrier->Draw();
 		buttonTower01->Draw();
-		buttonGreen->Draw();
-		buttonBlack->Draw();
+		buttonBuilding->Draw();
+		buttonWall->Draw();
 
-		if (buttonWall->Point() || buttonTower01->Point())
+		if (buttonBarrier->Point() || buttonTower01->Point())
 		{
 			spriteUIWindowYellow->Draw();
 
-			if (buttonWall->Point()) spriteObjectGuideWall->Draw();
-			if (buttonGreen->Point());
+			if (buttonBarrier->Point()) spriteObjectGuideWall->Draw();
+			if (buttonBuilding->Point());
 			if (buttonTower01->Point()) spriteObjectGuideTower->Draw();
-			if (buttonBlack->Point());
+			if (buttonWall->Point());
 		}
 	}
 
-	buttonTitle->Draw();
+	buttonBack->Draw();
 	buttonObjects->Draw();
 	spriteCursor->Draw();
 	spriteGuide1->Draw();
@@ -329,7 +353,7 @@ bool SceneStageEdit::MakeObject(Button* button, ModelOBJ* model, const Tag& obje
 		stgObject.SetSquareSideLength(sideLength.x, sideLength.y);
 		stgObject.SetUsedState(WAITING);
 		stgObject.Update();
-		button->SetClickFlag(false);
+		//button->SetClickFlag(false);
 
 		SetCursorPos(WinApp::window_width / 2, WinApp::window_height / 2);
 		PlaneCursor::Update();
@@ -344,7 +368,7 @@ bool SceneStageEdit::MakeObject(Button* button, ModelOBJ* model, const Tag& obje
 
 bool SceneStageEdit::MakeObject(Button* button, ModelFBX* model, const Tag& objectTag, const XMFLOAT2& sideLength)
 {
-	if (button->Click(MOUSE_LEFT))
+	if (button->Hold(MOUSE_LEFT))
 	{
 		stgObjectEdit.push_front(*StageObject::Create(model));
 		StageObject& stgObject = stgObjectEdit.front();
