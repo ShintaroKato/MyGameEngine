@@ -16,6 +16,33 @@ enum EnemyType
 	TYPE_COUNT
 };
 
+enum ObjectType
+{
+	NONE_OBJ,
+	OBSTACLE,
+	TARGET_OBJ
+};
+
+struct NaviNode
+{
+	XMFLOAT3 pos;	// 座標
+	float costG;	// スタートからゴールまでのコスト
+	float costH;	// ゴールまでの推定コスト
+	float costF;	// costG - costH
+	ObjectType objectType;	// 障害物の種類
+	NaviNode* parent;	// 一つ前のノードへのポインタ
+
+	NaviNode(XMFLOAT3 pos)
+	{
+		this->pos = pos;
+		costG = 0;
+		costH = 0;
+		costF = 0;
+		objectType = NONE_OBJ;
+		parent = nullptr;
+	}
+};
+
 class Enemy : public ObjectFBX, public ObjectOBJ
 {
 private: // エイリアス
@@ -89,6 +116,11 @@ public:
 	/// 敵との当たり判定
 	/// </summary>
 	void Hit(float attackPower);
+
+	/// <summary>
+	/// 被弾時の反応
+	/// </summary>
+	void HitReaction();
 
 	/// <summary>
 	/// 倒された時の処理
@@ -202,6 +234,32 @@ public:
 	/// 倒されたか否かを取得
 	/// </summary>
 	bool GetDefeatFlag() { return defeated; }
+
+public:
+	/// <summary>
+	/// 経路探索用のメッシュをセット
+	/// </summary>
+	/// <param name="mesh">メッシュのポリゴンのデータ</param>
+	static void CreateNaviMesh(std::vector<Triangle> mesh);
+
+	static std::vector<Triangle> GetNaviMesh() { return naviMesh; }
+
+private:
+
+	// ヒューリスティック関数(ユークリッド距離)
+	float Heuristic(XMFLOAT3 pos, XMFLOAT3 nextpos)
+	{
+		float res = (
+			(pos.x - nextpos.x) * (pos.x - nextpos.x) +
+			(pos.y - nextpos.y) * (pos.y - nextpos.y) +
+			(pos.z - nextpos.z) * (pos.z - nextpos.z));
+
+		return sqrtf(res);
+	}
+
+	static std::vector<NaviNode> naviNode;
+	// 経路探索用メッシュを構成する全てのポリゴンのデータの配列
+	static std::vector<Triangle> naviMesh;
 
 private:
 	// 座標

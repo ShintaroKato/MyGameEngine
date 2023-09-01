@@ -7,6 +7,9 @@
 #include "ParticleEmitter.h"
 #include "BulletManager.h"
 
+std::vector<Triangle> Enemy::naviMesh{};
+std::vector<NaviNode> Enemy::naviNode;
+
 Enemy* Enemy::Create(ModelFBX* fbx, int animationNumber)
 {
 	// 3Dオブジェクトのインスタンスを生成
@@ -135,7 +138,7 @@ void Enemy::Draw()
 	if (!aliveFlag || noDamageTime % 2 == 1) return;
 
 	if(ObjectOBJ::model) ObjectOBJ::Draw();
-	//if(ObjectFBX::model) ObjectFBX::Draw();
+	if(ObjectFBX::model) ObjectFBX::Draw();
 }
 
 void Enemy::Move()
@@ -144,7 +147,7 @@ void Enemy::Move()
 	rot.y = XMConvertToDegrees(
 		atan2f(targetPos.x - pos.x, targetPos.z - pos.z));
 
-	move = { 0,0,0.1f,0 };
+	if (noDamageTime == 0) move = moveDefault;
 	XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rot.y));
 	move = XMVector3TransformNormal(move, matRot);
 
@@ -166,7 +169,7 @@ void Enemy::Move()
 
 void Enemy::MoveRouteSearch()
 {
-	move = moveDefault;
+	if(noDamageTime == 0) move = moveDefault;
 	XMMATRIX matRot{};
 
 	XMVECTOR searchVec{};
@@ -404,6 +407,24 @@ void Enemy::Hit(float attackPower)
 	noDamageTime = noDamageTimeMax;
 }
 
+void Enemy::HitReaction()
+{
+	switch (type)
+	{
+	case STRAIGHT:
+	case ROUTE_SEARCH:
+
+		break;
+
+	case FLYING:
+		
+		break;
+
+	default:
+		break;
+	}
+}
+
 void Enemy::Defeated()
 {
 	if (HP <= 0)
@@ -470,6 +491,7 @@ void Enemy::OnCollision(const CollisionInfo& info)
 	if (info.collider->GetAttribute() == (COLLISION_ATTR_WEAPONS + COLLISION_ATTR_ALLIES) ||
 		info.collider->GetAttribute() == (COLLISION_ATTR_BULLET + COLLISION_ATTR_ALLIES))
 	{
+
 		if (noDamageTime == 0)
 		{
 			Hit(info.collider->attackPower);
@@ -581,4 +603,38 @@ void Enemy::SetWeapon(Weapon* weapon)
 
 	this->weapon->SetPosition(pos);
 	this->sphereColl->SetPower(GetPower());
+}
+
+void Enemy::CreateNaviMesh(std::vector<Triangle> mesh)
+{
+	// 三角面のデータを取得
+	naviMesh = mesh;
+
+	for (int i = 0; i < naviMesh.size(); i++)
+	{
+		// 三角面から伸びる法線をレイとして考える
+		Ray ray{};
+		ray.start = naviMesh[i].p0;
+		ray.dir = naviMesh[i].normal;
+		RaycastHit raycast{};
+
+		// 法線上にステージオブジェクトがあった場合、その法線のもととなる面を障害物として扱う
+		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJECT_MESH, &raycast, 100))
+		{
+			StageObject* obj = static_cast<StageObject*>(raycast.obj);
+
+			if (obj->GetTag() == STAGE_OBJECT_CASTLE)	naviNode[i].objectType = TARGET_OBJ;
+			else										naviNode[i].objectType = OBSTACLE;
+		}
+
+		XMVECTOR p0 = naviMesh[i].p0;
+		XMVECTOR p1 = naviMesh[i].p1;
+		XMVECTOR p2 = naviMesh[i].p2;
+		// ノードの座標を三角面の重心とする
+		naviNode[i].pos = {
+			(p0.m128_f32[0] + p1.m128_f32[0] + p2.m128_f32[0]) / 3,
+			(p0.m128_f32[1] + p1.m128_f32[1] + p2.m128_f32[1]) / 3,
+			(p0.m128_f32[2] + p1.m128_f32[2] + p2.m128_f32[2]) / 3
+		};
+	}
 }
