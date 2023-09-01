@@ -269,6 +269,7 @@ void ObjectOBJ::Update()
 	constMap->camPos = camera->GetEye();
 	constMap->mode = shadeMode;
 	constMap->constColor = color;
+	constMap->uvOffset = uvOffset;
 	constBuffB0->Unmap(0, nullptr);
 
 	// カメラからの距離を計算
@@ -336,4 +337,13 @@ void ObjectOBJ::SetCollider(BaseCollider* collider)
 	UpdateWorldMatrix();
 	// コライダーを更新
 	this->collider->Update();
+}
+
+void ObjectOBJ::UpdateUV(XMFLOAT2 uv)
+{
+	uvOffset.x += uv.x;
+	uvOffset.y += uv.y;
+
+	if (uvOffset.x > 1.0f) uvOffset.x = 0;
+	if (uvOffset.y > 1.0f) uvOffset.y = 0;
 }

@@ -37,6 +37,7 @@ public: // サブクラス
 		XMFLOAT3 camPos;			// カメラの位置
 		UINT mode;			// シェーディングのモード
 		XMFLOAT4 constColor;				// 色
+		XMFLOAT2 uvOffset;	// UVずらし用
 	};
 
 public: // 静的メンバ関数
@@ -189,6 +190,36 @@ public: // メンバ関数
 	/// <param name="info">衝突情報</param>
 	virtual void OnCollision(const CollisionInfo& info) {}
 
+	/// <summary>
+	/// 時間経過でUVをずらす
+	/// </summary>
+	void UpdateUV(XMFLOAT2 uv);
+
+	/// <summary>
+	/// メッシュの頂点の座標を取得
+	/// </summary>
+	/// <param name="mesh_num">メッシュの番号</param>
+	/// <param name="vert_num">頂点の番号</param>
+	/// <returns></returns>
+	XMFLOAT3 GetMeshVertPos(int mesh_num, int vert_num)
+	{
+		std::vector<Mesh*> mesh = model->GetMeshes();
+
+		if(mesh_num >= mesh.size())
+		{
+			assert(0);
+			mesh_num = mesh.size() - 1;
+		}
+
+		if(vert_num >= mesh[mesh_num]->GetVertices().size())
+		{
+			assert(0);
+			vert_num = mesh[mesh_num]->GetVertices().size() - 1;
+		}
+
+		return mesh[mesh_num]->GetVertices()[vert_num].pos;
+	}
+
 private: // メンバ変数
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffB0;
@@ -216,6 +247,9 @@ protected: // メンバ変数
 
 	// シェーディングのモード
 	UINT shadeMode = 0;
+
+	// UVずらし用
+	XMFLOAT2 uvOffset{};
 
 protected:
 	Camera* GetCamera() { return ObjectOBJ::camera; }
