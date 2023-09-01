@@ -129,6 +129,23 @@ void Camera::SetEye(XMFLOAT3 eye)
 	UpdateViewMatrix();
 }
 
+void Camera::SetEye(XMFLOAT3 rotation, float distance)
+{
+	XMFLOAT3 newPos{};
+	float newDist = distance;
+	rot = rotation;
+
+	newPos.x = target.x + newDist * cos(XMConvertToRadians(rot.y - 90)) * cos(XMConvertToRadians(rot.x));
+	newPos.z = target.z + newDist * sin(XMConvertToRadians(rot.y - 90)) * cos(XMConvertToRadians(rot.x));
+
+	newPos.y = target.y + 2 + newDist * sin(XMConvertToRadians(rot.x));
+
+	Camera::eye = newPos;
+	Camera::distance = newDist;
+
+	UpdateViewMatrix();
+}
+
 void Camera::SetTarget(XMFLOAT3 target)
 {
 	Camera::target = target;
@@ -196,13 +213,13 @@ void Camera::ControlCamera()
 		{
 			rot.x = 70;
 		}
+
 	}
 
 	eye.x = target.x + distance * cos(XMConvertToRadians(rot.y - 90)) * cos(XMConvertToRadians(rot.x));
 	eye.z = target.z + distance * sin(XMConvertToRadians(rot.y - 90)) * cos(XMConvertToRadians(rot.x));
 
 	eye.y = target.y + 2 + distance * sin(XMConvertToRadians(rot.x));
-
 
 	if(isInGame)
 	{
@@ -221,7 +238,7 @@ void Camera::ControlCamera()
 	{
 		distance -= distSpeed;
 	}
-	if (input->GetMouseWheelMovement() < 0 && distance <= distMax)
+	else if (input->GetMouseWheelMovement() < 0 && distance <= distMax)
 	{
 		distance += distSpeed;
 	}

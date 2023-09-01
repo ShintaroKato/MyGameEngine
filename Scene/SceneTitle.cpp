@@ -98,6 +98,11 @@ void SceneTitle::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, In
 	spriteGuideTitle->SetPosition({ WinApp::window_width / 2,WinApp::window_height / 2 + 128 });
 	spriteGuideTitle->Update();
 
+	spriteGuide3->SetPosition({ WinApp::window_width, WinApp::window_height });
+	spriteGuide3->SetAnchorPoint({ 1.0f, 1.0f });
+	spriteGuide3->SetSize({ spriteGuide3->GetSize().x * 0.8f, spriteGuide3->GetSize().y * 0.8f });
+	spriteGuide3->Update();
+
 	spriteGuideMenu->SetAnchorPoint({ 0.0f,0.0f });
 
 	SceneBase::Update();
@@ -137,12 +142,7 @@ void SceneTitle::Update()
 			camera->SetCameraControlFlag(true);
 			camera->SetCameraMoveFlag(true);
 
-			camera->SetCameraDistance(10);
-			camera->SetEye({
-				player->GetPosition().x,
-				player->GetPosition().y + 2,
-				player->GetPosition().z - 5
-				});
+			camera->SetEye({ 0,10,0 }, 10);
 			camera->SetTarget(player->GetPosition());
 
 			camera->Update();
@@ -222,6 +222,12 @@ void SceneTitle::Draw()
 	objSkydome->Draw();
 	objSkydomeSpace->Draw();
 	objGroundGrid->ObjectOBJ::Draw();
+	player->ObjectOBJ::Draw();
+
+	for (int i = 0; i < 2; i++)
+	{
+		objGroundGridLine[i]->Draw();
+	}
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -233,12 +239,15 @@ void SceneTitle::Draw()
 		stgObjects[i]->ObjectOBJ::Draw();
 	}
 
-	player->ObjectOBJ::Draw();
 
 	ObjectOBJ::PostDraw();
 
-	particle->Draw(dxCommon->GetCmdList());
+	ObjectFBX::PreDraw(dxCommon->GetCmdList());
 
+
+	ObjectFBX::PostDraw();
+
+	particle->Draw(dxCommon->GetCmdList());
 	// FBXモデル
 	//player->ObjectFBX::Draw(dxCommon->GetCmdList());
 
@@ -260,6 +269,7 @@ void SceneTitle::Draw()
 	}
 	else
 	{
+		spriteGuide3->Draw();
 		spriteGuideMenu->Draw();
 	}
 	// テキスト描画
@@ -277,11 +287,14 @@ void SceneTitle::CameraAnimation()
 	camera->SetCameraControlFlag(false);
 
 	float timeRate = min(nowCount / maxCount, 1.0f);
-	XMFLOAT3 cameraEndPos = {
-		player->GetPosition().x,
-		player->GetPosition().y + 10,
-		player->GetPosition().z - 20
-		};
+	XMFLOAT3 cameraEndPos{};
+	XMFLOAT3 cameraEndRot = { 0,10,0 };
+	XMFLOAT3 playerPos = player->GetPosition();
+	float endDist = 10;
+	cameraEndPos.x = playerPos.x + endDist * cos(XMConvertToRadians(cameraEndRot.y - 90)) * cos(XMConvertToRadians(cameraEndRot.x));
+	cameraEndPos.z = playerPos.z + endDist * sin(XMConvertToRadians(cameraEndRot.y - 90)) * cos(XMConvertToRadians(cameraEndRot.x));
+	cameraEndPos.y = playerPos.y + 2 + endDist * sin(XMConvertToRadians(cameraEndRot.x));
+
 	XMFLOAT3 targetPos = player->GetPosition();
 	XMVECTOR vpos{};
 
@@ -303,7 +316,8 @@ void SceneTitle::CameraAnimation()
 		vpos.m128_f32[2]
 	};
 
-	camera->SetEye(pos);
+	if (startIndex >= 4)	camera->SetEye(cameraEndRot, endDist);
+	else					camera->SetEye(pos);
 
 	// カメラの注視点
 	std::vector<XMFLOAT3> targetPoints = { // 通過点
@@ -344,7 +358,7 @@ void SceneTitle::UpdateMenu()
 		SetCursorPos(WinApp::window_width / 2, WinApp::window_height / 2);
 		camera->SetCameraMoveFlag(true);
 
-		if (input->TriggerKey(DIK_ESCAPE) || GameManager::GetFinishState() != 0)
+		if (input->TriggerKey(DIK_ESCAPE))
 		{
 			windowActive = true;
 		}
@@ -355,7 +369,7 @@ void SceneTitle::UpdateMenu()
 		spriteCursor->Update();
 		camera->SetCameraMoveFlag(false);
 
-		if (input->TriggerKey(DIK_ESCAPE) && GameManager::GetFinishState() == 0)
+		if (input->TriggerKey(DIK_ESCAPE))
 		{
 			windowActive = false;
 		}
@@ -375,16 +389,18 @@ void SceneTitle::UpdateMenu()
 		if (windowSizeX > 0)	windowSizeX -= max / count;
 		else					menuActive = false;
 	}
+	 
+	float alpha = 1;
+	float col = 1;
+	//float col = windowSizeX / max;
+	//if ((int)(col * 100) % 3 == 0)
+	//{
+	//	col = 0;
+	//}
 
-	float alpha = windowSizeX / max;
-	if ((int)(alpha * 100) % 3 == 0)
-	{
-		alpha = 0;
-	}
-
-	buttonStart->SetColor({ 1.0f,1.0f,1.0f, alpha });
-	buttonEdit->SetColor({ 1.0f,1.0f,1.0f, alpha });
-	spriteUIWindowBlue->SetColor({ 1.0f,1.0f,1.0f, alpha });
+	buttonStart->SetColor({ col,col,col, alpha });
+	buttonEdit->SetColor({ col,col,col,  alpha });
+	spriteUIWindowBlue->SetColor({ col,col,col,  alpha });
 	spriteUIWindowBlue->SetSize({ windowSizeX, 256.0f });
 
 	buttonStart->Update();

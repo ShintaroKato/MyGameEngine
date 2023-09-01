@@ -75,6 +75,13 @@ public:
 	static void SetEye(XMFLOAT3 eye);
 
 	/// <summary>
+	/// 視点座標の設定
+	/// </summary>
+	/// <param name="rotation">回転量</param>
+	/// <param name="distance">距離</param>
+	static void SetEye(XMFLOAT3 rotation, float distance);
+
+	/// <summary>
 	/// 注視点座標の取得
 	/// </summary>
 	/// <returns>座標</returns>
