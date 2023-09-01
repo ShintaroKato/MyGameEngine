@@ -5,7 +5,7 @@
 #include <d3d12.h>
 #include <DirectXMath.h>
 #include <d3dx12.h>
-#include <forward_list>
+#include <vector>
 
 #include "Camera.h"
 
@@ -28,8 +28,7 @@ public: // サブクラス
 	struct VertexPos
 	{
 		XMFLOAT3 pos; // xyz座標
-		float scale; // スケール
-		XMFLOAT4 color; //カラー
+		XMFLOAT2 uv;  // UV
 	};
 
 	// 定数バッファ用データ構造体
@@ -39,7 +38,7 @@ public: // サブクラス
 		XMMATRIX matBillboard;	// ビルボード行列
 	};
 
-	struct TrailInfo
+	struct TrailPos
 	{
 		XMFLOAT3 head;
 		XMFLOAT3 tail;
@@ -67,10 +66,10 @@ public: // メンバ関数
 	/// <summary>
 	/// モデルの上端と下端を設定
 	/// </summary>
-	void SetVertexPos(XMFLOAT3 head, XMFLOAT3 tail)
+	void SetVertexPos(XMFLOAT3& head, XMFLOAT3& tail)
 	{
-		info.head = head;
-		info.tail = tail;
+		tempPos.head = head;
+		tempPos.tail = tail;
 	}
 
 	/// <summary>
@@ -121,5 +120,10 @@ private: // メンバ変数
 	ComPtr<ID3D12Resource> constBuff;
 	// カメラ
 	Camera* camera = nullptr;
-	TrailInfo info;
+	// 座標
+	std::vector<TrailPos> pos;
+	// 頂点データ
+	std::vector<VertexPos> vertPos;
+	// 座標(一時保存用)
+	TrailPos tempPos;
 };
