@@ -41,6 +41,11 @@ public: // メンバ関数
 
 	void DrawMenu();
 
+	/// <summary>
+	/// ナビメッシュ再生成
+	/// </summary>
+	void RecreateNaviMesh();
+
 private:
 	bool windowActive = false;
 	bool menuActive = false;

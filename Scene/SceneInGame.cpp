@@ -20,11 +20,13 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 		stgObjects[i]->SetInGameFlag(true);
 		stgObjects[i]->ResetStatus();
 		if (stgObjects[i]->GetTag() == STAGE_OBJECT_CASTLE) objCastle = stgObjects[i];
+
+		stgObjects[i]->Update();
 	}
 
 	player->SetPosition({
 		objCastle->GetPosition().x,
-		objCastle->GetPosition().y + 20,
+		objCastle->GetPosition().y + 40,
 		objCastle->GetPosition().z
 		});
 	player->Update();
@@ -79,64 +81,131 @@ void SceneInGame::Initialize(DirectXCommon* dxCommon, SpriteCommon* sprCommon, I
 	camera->SetInGameFlag(true);
 
 	SceneBase::Update();
+
+	MeshCollider* col = static_cast<MeshCollider*>(objGroundGrid->ObjectOBJ::GetCollider());
+	tri = col->GetTriangle();
+	//Enemy::CreateNaviMesh(tri);
+	//tri = Enemy::GetNaviMesh();
 }
 
 void SceneInGame::Update()
 {
 	UpdateMenu();
 
-	if ((menuActive || GameManager::GetFinishState() != 0) &&
-		buttonTitle->Click(MOUSE_LEFT))
+	switch (GameManager::GetFinishState())
 	{
-		for (int i = 0; i < stgObjects.size(); i++)
+	case CONTINUE:
+		if (!menuActive) break;
+
+		if (buttonTitle->Click(MOUSE_LEFT))
 		{
-			stgObjects[i]->ResetStatus();
+			for (int i = 0; i < stgObjects.size(); i++)
+			{
+				stgObjects[i]->ResetStatus();
+			}
+			SceneManager::SetScene(TITLE);
+			windowActive = false;
+			return;
 		}
-		SceneManager::SetScene(TITLE);
 
-		return;
+		if (buttonRetry->Click(MOUSE_LEFT))
+		{
+			GameManager::Restart();
+
+			for (int i = 0; i < stgObjects.size(); i++)
+			{
+				if (stgObjects[i]->GetHP() > 0) stgObjects[i]->ResetStatus();
+			}
+
+			player->SetPosition({
+				objCastle->GetPosition().x,
+				objCastle->GetPosition().y + 40,
+				objCastle->GetPosition().z
+				});
+			player->AnimationTimerReset();
+			windowActive = false;
+			return;
+		}
+
+		break;
+
+	case WAVE_CLEARE:
+
+		if (buttonTitle->Click(MOUSE_LEFT))
+		{
+			for (int i = 0; i < stgObjects.size(); i++)
+			{
+				stgObjects[i]->ResetStatus();
+			}
+			SceneManager::SetScene(TITLE);
+			windowActive = false;
+			return;
+		}
+
+		if (buttonNext->Click(MOUSE_LEFT))
+		{
+			GameManager::ChangeNextWave();
+
+			player->SetPosition({
+				objCastle->GetPosition().x,
+				objCastle->GetPosition().y + 40,
+				objCastle->GetPosition().z
+				});
+			player->AnimationTimerReset();
+			windowActive = false;
+
+			return;
+		}
+
+		break;
+
+	case WAVE_FAILED:
+
+		if (buttonTitle->Click(MOUSE_LEFT))
+		{
+			for (int i = 0; i < stgObjects.size(); i++)
+			{
+				stgObjects[i]->ResetStatus();
+			}
+			SceneManager::SetScene(TITLE);
+			windowActive = false;
+			return;
+		}
+
+		if (buttonRetry->Click(MOUSE_LEFT))
+		{
+			GameManager::Restart();
+
+			for (int i = 0; i < stgObjects.size(); i++)
+			{
+				if (stgObjects[i]->GetHP() > 0) stgObjects[i]->ResetStatus();
+			}
+
+			player->SetPosition({
+				objCastle->GetPosition().x,
+				objCastle->GetPosition().y + 40,
+				objCastle->GetPosition().z
+				});
+			player->AnimationTimerReset();
+			windowActive = false;
+			return;
+		}
+
+	default:
+		break;
 	}
 
-	if (((menuActive && GameManager::GetFinishState() == 0) || GameManager::GetFinishState() == -1) &&
-		buttonRetry->Click(MOUSE_LEFT))
-	{
-		GameManager::Restart();
 
-		player->SetPosition({
-			objCastle->GetPosition().x,
-			objCastle->GetPosition().y + 20,
-			objCastle->GetPosition().z
-			});
-
-		windowActive = false;
-		return;
-	}
-
-	if (GameManager::GetFinishState() == 1 &&
-		buttonNext->Click(MOUSE_LEFT))
-	{
-		GameManager::ChangeNextWave();
-
-		player->SetPosition({
-			objCastle->GetPosition().x,
-			objCastle->GetPosition().y + 20,
-			objCastle->GetPosition().z
-			});
-
-		windowActive = false;
-
-		return;
-	}
 
 	GameManager::SetStageObject(objCastle);
 
 	if (menuActive) return;
 
-	numberEnemyCount->SetSequence(GameManager::GetEnemyCountTotal(), 0, 64, { 32,64 });
-	numberEnemyCountMax->SetSequence(GameManager::GetEnemyCountMax(),32 * 4, 64, { 32,64 });
-	numberWaitTimer->SetSequence(GameManager::GetWaitTimerSeconds(), (float)WinApp::window_width / 2, 128 + 192, { 32, 64 });
-	numberWave->SetSequence(GameManager::GetWaveNumber(), (float)WinApp::window_width / 2, 128 + 64, { 32, 64 });
-	numberWave->SetSize({ 32,96 });
+	numbers[enemy_count]->SetValue(GameManager::GetEnemyDefeatCount(), 0, 64, {32,64});
+	numbers[enemy_count_max]->SetValue(GameManager::GetEnemyCountMax(), 32 * 4, 64, {32,64});
+	numbers[wait_timer]->SetValue(GameManager::GetWaitTimerSeconds(), (float)WinApp::window_width / 2 - 16, 128 + 200, {32, 64});
+	numbers[wave_number]->SetValue(GameManager::GetWaveNumber(), (float)WinApp::window_width / 2 - 32, 128 + 64, {32, 64});
+	numbers[wave_number]->SetSize({ 64,96 });
 
 	meterPlayerHP->SetValue(player->GetHP(), player->GetHPMax());
 	meterPlayerHP->Update();
@@ -186,20 +255,25 @@ void SceneInGame::Draw()
 	objSkydomeSpace->Draw();
 	objGroundGrid->ObjectOBJ::Draw();
 
+	for (int i = 0; i < 2; i++)
+	{
+		objGroundGridLine[i]->Draw();
+	}
+
 	for (int i = 0; i < 8; i++)
 	{
 		objWall[i]->Draw();
 	}
 
-	player->ObjectOBJ::Draw();
-	player->ObjectOBJ::Draw();
-	weapon[0]->ObjectOBJ::Draw();
-	GameManager::Draw();
 
 	for (int i = 0; i < stgObjects.size(); i++)
 	{
 		stgObjects[i]->Draw();
 	}
+
+	player->ObjectOBJ::Draw();
+	weapon[0]->ObjectOBJ::Draw();
+	GameManager::Draw();
 
 	ObjectOBJ::PostDraw();
 
@@ -207,7 +281,11 @@ void SceneInGame::Draw()
 
 
 	// FBXモデル
-	//player->ObjectFBX::Draw(dxCommon->GetCmdList());
+	ObjectFBX::PreDraw(dxCommon->GetCmdList());
+
+	//player->ObjectFBX::Draw();
+
+	ObjectFBX::PostDraw();
 
 #pragma endregion
 
@@ -219,16 +297,17 @@ void SceneInGame::Draw()
 	// スプライト描画
 	meterPlayerHP->Draw();
 	meterCastleHP->Draw();
-	numberEnemyCount->Draw();
-	numberEnemyCountMax->Draw();
+	numbers[enemy_count]->Draw();
+	numbers[enemy_count_max]->Draw();
 	spriteFractionBar->Draw();
 
 	DrawMenu();
 
+	// テキスト描画
+	text->DrawAll();
+
 	spriteCommon->PostDraw();
 
-	// テキスト描画
-	//text->DrawAll(dxCommon->GetCmdList());
 
 #pragma endregion
 
@@ -276,16 +355,20 @@ void SceneInGame::UpdateMenu()
 	}
 
 	float alpha = windowSizeX / max;
-	if ((int)(alpha * 100) % 3 == 0)
-	{
-		alpha = 0;
-	}
+	spriteWaveClear->SetColor({ 1.0f,1.0f,1.0f, alpha });
+	spriteWaveFailed->SetColor({ 1.0f,1.0f,1.0f, alpha });
+	spritePause->SetColor({ 1.0f,1.0f,1.0f, alpha });
 
+	alpha = 1;
 	buttonTitle->SetColor({ 1.0f,1.0f,1.0f, alpha });
 	buttonNext->SetColor({ 1.0f,1.0f,1.0f, alpha });
 	buttonRetry->SetColor({ 1.0f,1.0f,1.0f, alpha });
 	spriteUIWindowBlue->SetColor({ 1.0f,1.0f,1.0f, alpha });
 	spriteUIWindowBlue->SetSize({ windowSizeX, 256.0f });
+
+	spriteWaveClear->Update();
+	spriteWaveFailed->Update();
+	spritePause->Update();
 
 	buttonTitle->Update();
 	buttonNext->Update();
@@ -297,7 +380,7 @@ void SceneInGame::DrawMenu()
 {
 	if (GameManager::GetWaitTimer() > 0 && !menuActive)
 	{
-		numberWaitTimer->Draw();
+		numbers[wait_timer]->Draw();
 
 		if (GameManager::IsFinalWave())
 		{
@@ -306,7 +389,7 @@ void SceneInGame::DrawMenu()
 		else
 		{
 			spriteWave->Draw();
-			numberWave->Draw();
+			numbers[wave_number]->Draw();
 		}
 	}
 
@@ -318,17 +401,17 @@ void SceneInGame::DrawMenu()
 		{
 			switch (GameManager::GetFinishState())
 			{
-			case 0:
+			case CONTINUE:
 				buttonTitle->Draw();
 				spritePause->Draw();
 				buttonRetry->Draw();
 				break;
-			case 1:
+			case WAVE_CLEARE:
 				buttonTitle->Draw();
 				spriteWaveClear->Draw();
 				if (!GameManager::IsFinalWave()) buttonNext->Draw();
 				break;
-			case -1:
+			case WAVE_FAILED:
 				buttonTitle->Draw();
 				spriteWaveFailed->Draw();
 				buttonRetry->Draw();
@@ -338,4 +421,9 @@ void SceneInGame::DrawMenu()
 
 		spriteCursor->Draw();
 	}
+}
+
+void SceneInGame::RecreateNaviMesh()
+{
+	Enemy::CreateNaviMesh(tri);
 }
