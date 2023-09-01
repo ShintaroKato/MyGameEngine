@@ -47,10 +47,15 @@ public:
 	bool CheckCollisionRay(const Ray& ray, float* distance = nullptr,
 		DirectX::XMVECTOR* inter = nullptr);
 
+	/// <summary>
+	/// 三角面の取得
+	/// </summary>
+	std::vector<Triangle> GetTriangle() { return triangles; }
+
 private:
 	ModelOBJ* obj = nullptr;
 	ModelFBX* fbx = nullptr;
-	std::vector<Triangle>triangles;
+	std::vector<Triangle> triangles;
 	// ワールド行列
 	DirectX::XMMATRIX matWorld;
 	// ワールド行列の逆行列
