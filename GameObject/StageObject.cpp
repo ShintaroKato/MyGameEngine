@@ -173,13 +173,13 @@ void StageObject::Drag()
 		PlaneCursor::SetIsDrag(isDragStatic);
 	}
 	else if (CollisionManager::GetInstance()->CheckAllCollision(sphereColl, COLLISION_ATTR_PLANE_CURSOR) &&
-		input->TriggerMouse(MOUSE_LEFT) && !isDrag ||
-		used == WAITING)
+			input->TriggerMouse(MOUSE_LEFT) && !isDrag ||
+			used == WAITING)
 	{
 		// ’Í‚ñ‚Å‚¢‚éó‘Ô‚É‚·‚é
-		if(!isDragStatic) isDrag = true;
-		isDragStatic = true;
-		PlaneCursor::SetIsDrag(isDragStatic);
+		if (!isDragStatic) isDrag = true;
+			isDragStatic = true;
+			PlaneCursor::SetIsDrag(isDragStatic);
 	}
 
 	// ’Í‚Ü‚ê‚Ä‚¢‚éŽž‚Ìˆ—
@@ -195,6 +195,20 @@ void StageObject::Drag()
 
 		sphere.center = XMLoadFloat3(&pos);
 		sphereColl->SetOffset(sphere.center);
+	}
+	
+	if (!isDragStatic)
+	{
+		if(!PlaneCursor::GetHit())
+		{
+			PlaneCursor::SetColor({ 1.0f,1.0f,1.0f,1.0f }); // ”’
+			PlaneCursor::SetRadius(5.0f);
+		}
+		if (CollisionManager::GetInstance()->CheckAllCollision(sphereColl, COLLISION_ATTR_PLANE_CURSOR))
+		{
+			PlaneCursor::SetColor({ 0.0f,1.0f,0.0f,0.0f }); // —Î
+			PlaneCursor::SetHit(true);
+		}
 	}
 
 	if (PlaneCursor::GetIsDrag() && isDrag)
@@ -280,32 +294,32 @@ void StageObject::ObjectType()
 	switch (tag)
 	{
 	case STAGE_OBJECT_CASTLE:
-		radius = 5.0f;
+		radius = 16.0f;
 		HPMax = 500;
 		HP = HPMax;
 		break;
 
-	case STAGE_OBJECT_WALL:
+	case STAGE_OBJECT_BARRIER:
 		radius = 5.0f;
 		HPMax = 1200;
 		HP = HPMax;
 		break;
 
 	case STAGE_OBJECT_BUILDING:
-		radius = 4.0f;
+		radius = 5.0f;
 		HPMax = 100;
 		HP = HPMax;
 		break;
 
-	case BLUE_OBJECT:
-		radius = 5.0f;
-		HPMax = 800;
+	case STAGE_OBJECT_WALL:
+		radius = 6.0f;
+		HPMax = 400;
 		HP = HPMax;
 		break;
 
 	case STAGE_OBJECT_OFFENCE:
 		sensor = new Sensor(pos, 32);
-		radius = 4.0f;
+		radius = 6.0f;
 		HPMax = 100;
 		HP = HPMax;
 		power = 100.0f;
