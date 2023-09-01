@@ -18,7 +18,7 @@ public:
 	/// <param name="y">Y座標</param>
 	/// <param name="space">文字同士の間隔</param>
 	/// <param name="rectSize">切り取るサイズ</param>
-	void SetSequence(int value, float x, float y, XMFLOAT2 rectSize, int space = 0);
+	void SetValue(int value, float x, float y, XMFLOAT2 rectSize, int space = 0);
 
 	void SetSize(const XMFLOAT2& size)
 	{

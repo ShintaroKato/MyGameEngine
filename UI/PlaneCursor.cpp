@@ -10,6 +10,7 @@ XMFLOAT3 PlaneCursor::pos;
 float PlaneCursor::radius = 5.0f;
 bool PlaneCursor::isDrag;
 bool PlaneCursor::used;
+bool PlaneCursor::hit;
 bool PlaneCursor::isInGame;
 Sphere PlaneCursor::sphere;
 SphereCollider* PlaneCursor::sphereColl;
@@ -32,6 +33,8 @@ void PlaneCursor::Initialize(ObjectOBJ* object)
 void PlaneCursor::Update()
 {
 	if (SceneManager::GetScene() != EDIT) return;
+
+	hit = false;
 
 	Move();
 

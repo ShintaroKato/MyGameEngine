@@ -16,7 +16,7 @@ Button* Button::Create(SpriteCommon* spriteCommon, UINT texNumber, XMFLOAT2 posi
 
 void Button::Update()
 {
-	if (Point() && !hold)
+	if (Point())
 	{
 		SetColor({ 1.2f, 1.2f, 1.2f, 1.0f });
 	}

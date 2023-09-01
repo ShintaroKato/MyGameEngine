@@ -25,7 +25,7 @@ Number* Number::Create(SpriteCommon* spriteCommon, UINT texNumber, unsigned int 
 	return instance;
 }
 
-void Number::SetSequence(int value, float x, float y, XMFLOAT2 rectSize, int space)
+void Number::SetValue(int value, float x, float y, XMFLOAT2 rectSize, int space)
 {
 	// ŠeˆÊ‚Ì”š‚ğ•Û‘¶
 	std::vector<char> eachNumber(digit);

@@ -40,6 +40,10 @@ public:
 
 	static bool GetIsDrag() { return isDrag; }
 
+	static void SetHit(bool hit) { PlaneCursor::hit = hit; }
+
+	static bool GetHit() { return hit; }
+
 	static void SetRadius(float radius) { PlaneCursor::radius = radius; }
 
 	static void SetSquareSideLength(float length_X, float length_Y)
@@ -69,6 +73,8 @@ private:
 	static float radius;
 	// 掴まれているか否か
 	static bool isDrag;
+	// 何かに触れているか否か
+	static bool hit;
 	// 使用されているか否か
 	static bool used;
 	// ゲーム本編か否か
