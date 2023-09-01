@@ -20,6 +20,8 @@ using namespace std;
 ID3D12Device* ObjectFBX::device = nullptr;
 PipelineSet ObjectFBX::pipelineSet;
 Camera* ObjectFBX::camera = nullptr;
+ID3D12GraphicsCommandList* ObjectFBX::cmdList = nullptr;
+
 
 bool ObjectFBX::StaticInitialize(ID3D12Device* device)
 {
@@ -330,21 +332,72 @@ void ObjectFBX::UpdateWorldMatrix()
 	}
 }
 
-void ObjectFBX::Draw(ID3D12GraphicsCommandList* cmdList)
+void ObjectFBX::PreDraw(ID3D12GraphicsCommandList* cmdList)
 {
-	// nullptrチェック
-	assert(device);
+	// PreDrawとPostDrawがペアで呼ばれていなければエラー
+	assert(ObjectFBX::cmdList == nullptr);
 
-	// モデルがセットされていなければ描画をスキップ
-	if (model == nullptr) return;
-	assert(pipelineSet.rootsignature.Get());
+	// コマンドリストをセット
+	ObjectFBX::cmdList = cmdList;
 
 	cmdList->SetPipelineState(pipelineSet.pipelinestate.Get());
 	cmdList->SetGraphicsRootSignature(pipelineSet.rootsignature.Get());
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+}
+
+void ObjectFBX::PostDraw()
+{
+	cmdList = nullptr;
+}
+
+XMMATRIX ObjectFBX::GetBoneMatrix(string name)
+{
+	vector<ModelFBX::Bone> bones = model->GetBones();
+	// 今の姿勢行列
+	XMMATRIX matCurrentPose{};
+
+	for (int i = 0; i < bones.size(); i++)
+	{
+		if (bones[i].name != name) continue;
+
+		// 今の姿勢行列を取得
+		FbxAMatrix fbxCurrentPose =
+			bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
+		// XMMATRIXに変換
+		FBXLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
+
+		break;
+	}
+
+	return matCurrentPose;
+}
+
+XMMATRIX ObjectFBX::GetBoneMatrix(int number)
+{
+	vector<ModelFBX::Bone> bones = model->GetBones();
+	// 今の姿勢行列
+	XMMATRIX matCurrentPose;
+	// 今の姿勢行列を取得
+	FbxAMatrix fbxCurrentPose =
+		bones[number].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
+	// XMMATRIXに変換
+	FBXLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
+
+	return matCurrentPose;
+}
+
+void ObjectFBX::Draw()
+{
+	// nullptrチェック
+	assert(device);
+
+	assert(pipelineSet.rootsignature.Get());
+
+	// モデルがセットされていなければ描画をスキップ
+	if (model == nullptr) return;
+
 	cmdList->SetGraphicsRootConstantBufferView(0, constBuffB0->GetGPUVirtualAddress());
 	cmdList->SetGraphicsRootConstantBufferView(2, constBufferSkin->GetGPUVirtualAddress());
-
 	// モデルを描画
 	model->Draw(cmdList);
 }

@@ -30,7 +30,7 @@ protected: // エイリアス
 
 public: // 定数
 	// ボーンの最大数
-	static const int MAX_BONES = 32;
+	static const int MAX_BONES = 64;
 
 public: // サブクラス
 
@@ -105,7 +105,10 @@ public: // メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	virtual void Draw(ID3D12GraphicsCommandList* cmdList);
+	virtual void Draw();
+
+	static void PreDraw(ID3D12GraphicsCommandList* cmdList);
+	static void PostDraw();
 
 	/// <summary>
 	/// 座標の取得
@@ -130,6 +133,20 @@ public: // メンバ関数
 	/// コライダーを取得
 	/// </summary>
 	BaseCollider* GetCollider() { return collider; }
+
+	/// <summary>
+	/// ボーンの姿勢行列を取得
+	/// </summary>
+	/// <param name="name">ボーンの名前</param>
+	/// <returns>行列</returns>
+	XMMATRIX GetBoneMatrix(std::string name);
+
+	/// <summary>
+	/// ボーンの姿勢行列を取得
+	/// </summary>
+	/// <param name="name">ボーンの番号</param>
+	/// <returns>行列</returns>
+	XMMATRIX GetBoneMatrix(int i);
 
 	/// <summary>
 	/// 座標の設定
@@ -187,7 +204,8 @@ public: // メンバ関数
 	virtual void OnCollision(const CollisionInfo& info) {}
 
 private: // メンバ変数
-
+	// コマンドリスト
+	static ID3D12GraphicsCommandList* cmdList;
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffB0;
 	// 定数バッファ(スキン)
