@@ -1,6 +1,4 @@
 #pragma once
-//#include <forward_list>
-//#include <vector>
 #include "Enemy.h"
 #include "StageObject.h"
 
@@ -10,6 +8,13 @@ enum SpawnDirection
 	East,
 	South,
 	West
+};
+
+enum GameState
+{
+	CONTINUE,
+	WAVE_FAILED,
+	WAVE_CLEARE
 };
 
 class GameManager
@@ -32,7 +37,7 @@ public:
 	// タイマー取得(秒に換算)
 	static int GetTimerSeconds() { return timer / 60; }
 	// 今までに倒した敵の合計を取得
-	static int GetEnemyCountTotal() { return score; }
+	static int GetEnemyDefeatCount() { return score; }
 	// 敵の数の最大値を取得
 	static int GetEnemyCountMax() { return groupCountMax * enemyMaxAll; }
 	// 待機時間取得
@@ -50,6 +55,8 @@ public:
 	// エネミーのモデルを保存(OBJ)
 	static void SetEnemyModel(ModelOBJ* model[])
 	{
+		modelObjEnemy.clear();
+
 		for (int i = 0; i < EnemyType::TYPE_COUNT; i++)
 		{
 			modelObjEnemy.push_back(model[i]);
@@ -58,6 +65,8 @@ public:
 	// エネミーのモデルを保存(FBX)
 	static void SetEnemyModel(ModelFBX* model[])
 	{
+		modelFbxEnemy.clear();
+
 		for (int i = 0; i < EnemyType::TYPE_COUNT; i++)
 		{
 			modelFbxEnemy.push_back(model[i]);
@@ -68,7 +77,7 @@ private:
 	// レベル
 	static void Level();
 	// エネミー出現
-	static void Spawn();
+	static bool Spawn();
 	// エネミーを一定数の集団として出現させる
 	static void SpawnEnemyGroup();
 	// エネミーを更新
@@ -82,22 +91,23 @@ private:
 	static float spawn_angle;
 	// 守る対象のオブジェクト
 	static StageObject* stageObject;
-	// レベル
-	static int level;
-	// 敵のタイプごとの出現上限数
+	// 敵の一つのグループにおけるタイプごとの出現上限数
 	static int enemyCountMax[EnemyType::TYPE_COUNT];
-	// 敵の出現上限数の合計
+	// 敵の一つのグループにおける出現上限数の合計
 	static int enemyMaxAll;
 	// 敵をタイプごとにカウント
 	static int enemyCount[EnemyType::TYPE_COUNT];
-	// 敵のが今までに出現した数
+	// 敵が今までに出現した数
 	static int enemyCountTotal;
 	// 敵の集団一つ分が消えてから再出現する間隔
-	static int spawnCount;
-	static int spawnCountMax;
+	static int groupRespawnTimer;
+	static int groupRespawnTimerMax;
+	// 敵の集団の数
+	static int groupCount;
+	static int groupCountMax;
 	// 一体が出現する間隔
-	static int spawnInterval;
-	static int spawnIntervalMax;
+	static int enemySpawnTimer;
+	static int enemySpawnTimerMax;
 	static XMFLOAT3 spawnPos;
 	// 開始前待機時間
 	static const int waitTimerMax = 5 * 60;
@@ -105,9 +115,6 @@ private:
 	// 制限時間
 	static int timerMax;
 	static int timer;
-	// 敵の集団の数
-	static int groupCount;
-	static int groupCountMax;
 	// スコア
 	static int scoreTotal;
 	static int score;

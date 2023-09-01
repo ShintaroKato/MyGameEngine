@@ -1,5 +1,5 @@
 #include "GameManager.h"
-#include "ParticleManager.h"
+#include "ParticleEmitter.h"
 #include "BulletManager.h"
 #include <algorithm>
 
@@ -10,11 +10,10 @@ int GameManager::wave = 1;
 int GameManager::scoreTotal = 0;
 int GameManager::score = 0;
 int GameManager::finish = 0;
-int GameManager::level = 1;
-int GameManager::spawnInterval = 0;
-int GameManager::spawnIntervalMax = 20;
-int GameManager::spawnCount = 0;
-int GameManager::spawnCountMax = 60;
+int GameManager::enemySpawnTimer = 0;
+int GameManager::enemySpawnTimerMax = 20;
+int GameManager::groupRespawnTimer = 0;
+int GameManager::groupRespawnTimerMax = 60;
 int GameManager::groupCount = 0;
 int GameManager::groupCountMax = 5;
 int GameManager::enemyCountMax[EnemyType::TYPE_COUNT] = {};
@@ -31,11 +30,10 @@ std::vector<ModelFBX*> GameManager::modelFbxEnemy;
 
 void GameManager::Start()
 {
-	wave = 2;
+	wave = 1;
 
 	Level();
 
-	score = 0;
 	enemyCountTotal = 0;
 	groupCount = 0;
 	waitTimer = waitTimerMax;
@@ -43,7 +41,7 @@ void GameManager::Start()
 	score = 0;
 	scoreTotal = 0;
 
-	finish = 0;
+	finish = CONTINUE;
 
 	ParticleManager::GetInstance()->DeleteAllParticle();
 }
@@ -55,14 +53,13 @@ void GameManager::Restart()
 	DeleteEnemy();
 	stageObject->ResetStatus();
 
-	score = 0;
 	enemyCountTotal = 0;
 	groupCount = 0;
 	waitTimer = waitTimerMax;
 	timer = timerMax;
 	score = 0;
 
-	finish = 0;
+	finish = CONTINUE;
 
 	ParticleManager::GetInstance()->DeleteAllParticle();
 }
@@ -73,10 +70,10 @@ void GameManager::Update()
 	switch (finish)
 	{
 
-	case 0: // ゲーム継続
+	case CONTINUE: // ゲーム継続
 
 		// クリア判定の処理
-		if (score >= enemyMaxAll * groupCountMax) finish = 1;
+		if (score >= enemyMaxAll * groupCountMax) finish = WAVE_CLEARE;
 
 		if (waitTimer > 0) waitTimer--; // 待機時間
 		//else if (timer > 0) timer--; // 制限時間
@@ -84,7 +81,7 @@ void GameManager::Update()
 
 		// 失敗判定の処理
 		if (stageObject != nullptr &&
-			stageObject->GetHP() <= 0) finish = -1;
+			stageObject->GetHP() <= 0) finish = WAVE_FAILED;
 
 		if (waitTimer > 0) break;
 
@@ -94,10 +91,10 @@ void GameManager::Update()
 
 		break;
 
-	case 1: // クリア
+	case WAVE_FAILED: // 失敗
 		break;
 
-	case -1: // 失敗
+	case WAVE_CLEARE: // クリア
 		break;
 	}
 }
@@ -113,7 +110,7 @@ void GameManager::Draw()
 	}
 }
 
-void GameManager::Spawn()
+bool GameManager::Spawn()
 {
 	// 出現する敵のタイプをランダムで設定
 	EnemyType enemy_type = (EnemyType)(rand() % EnemyType::TYPE_COUNT);
@@ -125,10 +122,10 @@ void GameManager::Spawn()
 	{
 		// 余分に増えた分を減らす
 		enemyCount[enemy_type]--;
-		return;
+		return false;
 	}
 
-	if (!modelObjEnemy[enemy_type]) return;
+	if (!modelObjEnemy[enemy_type]) return false;
 	enemies.push_front(*Enemy::Create(modelObjEnemy[enemy_type]));
 	Enemy& e = enemies.front();
 	e.SetAllive(true);
@@ -165,8 +162,11 @@ void GameManager::Spawn()
 	e.SetPosition(spawnPos);
 	e.SetType(enemy_type);
 	e.SetTargetPos(stageObject);
+	e.SetSpawnAnimationActiveFlag(true);
 
 	enemyCountTotal++;
+
+	return true;
 }
 
 void GameManager::DeleteEnemy()
@@ -204,33 +204,47 @@ void GameManager::UpdateEnemy()
 
 void GameManager::SpawnEnemyGroup()
 {
-	// 敵が全滅していたら次の集団の出現タイマーカウント開始
-	if (std::distance(enemies.begin(), enemies.end()) <= 0)
+	// 敵が全滅していたら次のグループの出現タイマーカウント開始
+	if (groupRespawnTimer < groupRespawnTimerMax)
 	{
-		spawnCount++;
-
-		if (spawnCount == spawnCountMax)
-		{
-			groupCount++;
-		}
-
+		groupRespawnTimer++;
 	}
-	if (spawnCount > spawnCountMax)
+	else if (groupRespawnTimer == groupRespawnTimerMax)
 	{
-		spawnInterval++;
-
-		//敵の数をカウント
-		if (std::distance(enemies.begin(), enemies.end()) < enemyMaxAll)
+		// 既に溜まっているカウントを初期化
+		for (int i = 0; i < EnemyType::TYPE_COUNT; i++)
 		{
-			if (spawnInterval >= spawnIntervalMax)
+			enemyCount[i] = 0;
+		}
+		enemyCountTotal = 0;
+
+		// 今まで出現したグループのカウントを増やす
+		groupCount++;
+
+		groupRespawnTimer++;
+	}
+
+	if (groupRespawnTimer > groupRespawnTimerMax)
+	{
+		//敵の数をカウント
+		if (enemyCountTotal < enemyMaxAll)
+		{
+			// 1体出現するまでの間隔をカウント
+			enemySpawnTimer++;
+
+			// 最大でなければ増やす
+			if (enemySpawnTimer >= enemySpawnTimerMax)
 			{
-				Spawn();
-				spawnInterval = 0;
+				if(Spawn())
+				{
+					enemySpawnTimer = 0;
+				}
 			}
 		}
-		else
+		else if (std::distance(enemies.begin(), enemies.end()) <= 0)
 		{
-			spawnCount = 0;
+			// 敵の数が最大かつ全滅していたらグループ出現用タイマーをリセット
+			groupRespawnTimer = 0;
 		}
 	}
 }
@@ -262,25 +276,6 @@ void GameManager::Level()
 	enemyMaxAll = 0;
 
 	switch (wave)
-	{
-	case 1:
-		level = 1;
-		break;
-	case 2:
-		level = 2;
-		break;
-	case 3:
-		level = 3;
-		break;
-	case 4:
-		level = 4;
-		break;
-	case 5:
-		level = 5;
-		break;
-	}
-
-	switch (level)
 	{
 	case 1:
 		enemyCountMax[STRAIGHT] = 10;
@@ -315,9 +310,9 @@ void GameManager::Level()
 		break;
 	}
 
-	// 敵の出現上限数の合計
+	// 敵の一つのグループにおける出現上限数の合計
 	for (int i = 0; i < EnemyType::TYPE_COUNT; i++)
 	{
-		enemyMaxAll += enemyCountMax[i];
+		enemyMaxAll += enemyCountMax[i]; 
 	}
 }
