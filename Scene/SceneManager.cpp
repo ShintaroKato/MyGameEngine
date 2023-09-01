@@ -2,12 +2,15 @@
 #include "CollisionManager.h"
 #include "ParticleManager.h"
 #include "BulletManager.h"
+#include "SafeDelete.h"
 
 SceneNum SceneManager::currentScene = TITLE;
 
 SceneTitle* SceneManager::title;
 SceneStageEdit* SceneManager::edit;
 SceneInGame* SceneManager::game;
+
+bool SceneManager::titleEnd;
 
 SceneBase* SceneManager::scenes[] ={
 	title,
@@ -58,8 +61,7 @@ void SceneManager::DeleteScene()
 	ParticleManager::GetInstance()->DeleteAllParticle();
 	GameManager::DeleteEnemy();
 
-	delete scenes[currentScene];
-	scenes[currentScene] = nullptr;
+	safe_delete(scenes[currentScene]);
 }
 
 void SceneManager::SceneChange()

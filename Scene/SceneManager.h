@@ -53,6 +53,16 @@ public:
 		else return false;
 	}
 
+	/// <summary>
+	/// タイトル画面から先に進んだことがあるか否か
+	/// </summary>
+	static bool GetTitleEnd() { return titleEnd; }
+
+	/// <summary>
+	/// タイトル画面から先に進んだことがある状態に変更
+	/// </summary>
+	static void ChangeTitleEnd() { titleEnd = true; }
+
 private:
 	SceneManager() = default;
 	SceneManager(const SceneManager&) = delete;
@@ -64,4 +74,7 @@ private:
 	static SceneStageEdit* edit;
 	static SceneInGame* game;
 	static SceneBase* scenes[];
+
+	// タイトル画面から先に進んだことがあるか否か
+	static bool titleEnd;
 };
